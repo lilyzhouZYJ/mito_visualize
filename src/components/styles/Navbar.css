@@ -1,0 +1,44 @@
+body {
+    font-family: sans-serif;
+}
+
+
+/* Navbar container */
+/*
+.nav-wrapper {
+    background-color: #00356B;
+    padding: 0 10rem;
+    border: 0;
+    height: 5rem;
+}
+
+.right {
+    float: right;
+    margin: 0;
+    padding-top: 1.6rem;
+    list-style-type: none; 
+}
+
+/* Links inside the navbar */
+/*
+.right li {
+    display: inline-block;
+    padding-left: 3rem;
+}
+
+.right li {
+    display: inline-block;
+    font-size: 16px;
+    color: dimgray;
+    text-align: center;
+    font-weight: 600;
+    padding: 14px 16px;
+    text-decoration: none;
+  }
+
+  
+
+*/
+.active {
+    font-weight: bold;
+}
