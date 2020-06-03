@@ -9,102 +9,19 @@ class Mttd extends React.Component{
             t.setAttribute('stroke',"#000000");
             t.setAttribute('stroke-width',"1");
             t.setAttribute('stroke-linecap',"round");
-            var newY1 = parseFloat(t.getAttribute('y1'))+47;
-            var newY2 = parseFloat(t.getAttribute('y2'))+47;
-            t.setAttribute('y1',newY1);
-            t.setAttribute('y2',newY2);
         }
         var allCircles = document.getElementById('svg-container').getElementsByTagName('circle');
         for(var t of allCircles){
             t.setAttribute('fill', '#000000');
-            var newY = parseFloat(t.getAttribute('cy'))+47;
-            t.setAttribute('cy',newY);
         }
         var allText = document.getElementById('svg-container').getElementsByTagName('text');
         for(var t of allText){
             t.setAttribute('font-size', '12');
             t.setAttribute('fill', '#000000');
             t.setAttribute('font-family', 'monospace');
-            var newY = parseFloat(t.getAttribute('y'))+47;
-            t.setAttribute('y',newY);
+            t.setAttribute('text-anchor','middle');
+            t.setAttribute('alignment-baseline','middle');
         }
-        
-        //highlight variant
-        var variant = this.props.variant;
-        var allText = document.getElementsByTagName('title');
-        for(var t of allText){
-            if(t.innerHTML==variant){
-                var textNode = t.parentElement;
-                textNode.setAttribute('font-weight',"bold");
-                textNode.setAttribute('font-size',"15");
-                textNode.setAttribute('fill',"crimson");
-                var newX = parseFloat(textNode.getAttribute('x'))-1;
-                var newY = parseFloat(textNode.getAttribute('y'))+1.5;
-                textNode.setAttribute('x',newX);
-                textNode.setAttribute('y',newY);
-                textNode.setAttribute('id', 'highlight');
-
-                //add circle for background color of highlight
-                var circle = document.createElementNS('http://www.w3.org/2000/svg','circle');
-                circle.setAttribute('cx',newX+4);
-                circle.setAttribute('cy',newY-5);
-                circle.setAttribute('r',9);
-                circle.setAttribute('fill','yellow');
-                var svgnode = document.getElementById("svg-container"); 
-                svgnode.insertBefore(circle, svgnode.childNodes[0]);
-            }
-        }
-
-        //add text legend
-        var geneName = document.createTextNode(this.props.gene);
-
-        var textX = 55;
-        var textY = 59;
-        
-        var geneNameNode = document.createElementNS('http://www.w3.org/2000/svg','text');
-        geneNameNode.appendChild(geneName);
-        geneNameNode.setAttribute("x",textX);
-        geneNameNode.setAttribute("y",textY);
-        geneNameNode.setAttribute("text-anchor","start");
-        geneNameNode.setAttribute("font-family","Roboto, sans-serif");
-        geneNameNode.setAttribute("font-size","14");
-
-        var svgnode = document.getElementById("svg-container"); 
-        svgnode.appendChild(geneNameNode);
-        
-        if(this.props.variantId!==undefined){
-            var variantId = document.createTextNode(this.props.variantId);
-            var variantIdNode = document.createElementNS('http://www.w3.org/2000/svg','text');
-            variantIdNode.appendChild(variantId);
-            variantIdNode.setAttribute("x",textX);
-            variantIdNode.setAttribute("y",textY+20);
-            variantIdNode.setAttribute("text-anchor","start");
-            variantIdNode.setAttribute("font-family","Roboto, sans-serif");
-            variantIdNode.setAttribute("font-size","14");
-            svgnode.appendChild(variantIdNode);
-        }
-
-        if(this.props.conseq!==undefined){
-            var conseq = document.createTextNode(this.props.conseq);
-            var conseqNode = document.createElementNS('http://www.w3.org/2000/svg','text');  
-            conseqNode.appendChild(conseq);
-            conseqNode.setAttribute("x",textX);
-            conseqNode.setAttribute("y",textY+40);
-            conseqNode.setAttribute("text-anchor","start");
-            conseqNode.setAttribute("font-family","Roboto, sans-serif");
-            conseqNode.setAttribute("font-size","14");
-            svgnode.appendChild(conseqNode);
-        }
-
-        var legend = document.createTextNode("tRNA Secondary Structure");
-        var legendNode = document.createElementNS('http://www.w3.org/2000/svg','text');
-        legendNode.appendChild(legend);
-        legendNode.setAttribute("x","55");
-        legendNode.setAttribute("y","33");
-        legendNode.setAttribute("font-family","Roboto, sans-serif");
-        legendNode.setAttribute("font-size","15");
-        legendNode.setAttribute("font-weight","bold");
-        svgnode.appendChild(legendNode);
 
     }
 
@@ -112,20 +29,38 @@ class Mttd extends React.Component{
         
         return(
             <svg id="svg-container" height="390" width="350" xmlns="http://www.w3.org/2000/svg">
-                
+                <text x='35' y='10' style={{fontSize:'17', fontFamily:"sans-serif",textAnchor:'start',fontWeight:'bold'}}>MT-TD</text>
+                <text x='35' y='35' style={{fontSize:'17', fontFamily:"sans-serif",textAnchor:'start',fontWeight:'bold'}}>mt-tRNA
+                    <tspan style={{fontSize:'12'}} baselineShift="super">Asp</tspan>
+                </text>
+                <text x="205" y="10" >A<title></title> </text>
+                <text x="205" y="25" >C<title></title> </text>
+                <text x="205" y="40" >C<title></title> </text>
                 <text x="205" y="55" >A<title>7585</title> </text>
                 <text x="205" y="70" >T<title>7584</title> </text>
+                <line x1="196.0" y1="70" x2="188.0" y2="70"><title>7584,7518</title> </line>
                 <text x="205" y="85" >T<title>7583</title> </text>
+                <line x1="196.0" y1="85" x2="188.0" y2="85"><title>7583,7519</title> </line>
                 <text x="205" y="100" >C<title>7582</title> </text>
+                <line x1="196.0" y1="100" x2="188.0" y2="100"><title>7582,7520</title> </line>
                 <text x="205" y="115" >T<title>7581</title> </text>
+                <circle cx="192.0" cy="115.0" r="2"><title>7581,7521</title> </circle>
                 <text x="205" y="130" >A<title>7580</title> </text>
+                <line x1="196.0" y1="130" x2="188.0" y2="130"><title>7580,7522</title> </line>
                 <text x="205" y="145" >T<title>7579</title> </text>
+                <line x1="196.0" y1="145" x2="188.0" y2="145"><title>7579,7523</title> </line>
                 <text x="205" y="160" >A<title>7578</title> </text>
+                <line x1="196.0" y1="160" x2="188.0" y2="160"><title>7578,7524</title> </line>
                 <text x="220" y="170" >T<title>7577</title> </text>
+                <line x1="220" y1="185.0" x2="220" y2="177.0"><title>7577,7562</title> </line>
                 <text x="233" y="170" >A<title>7576</title> </text>
+                <line x1="233" y1="185.0" x2="233" y2="177.0"><title>7576,7563</title> </line>
                 <text x="246" y="170" >T<title>7575</title> </text>
+                <line x1="246" y1="185.0" x2="246" y2="177.0"><title>7575,7564</title> </line>
                 <text x="259" y="170" >C<title>7574</title> </text>
+                <line x1="259" y1="185.0" x2="259" y2="177.0"><title>7574,7565</title> </line>
                 <text x="272" y="170" >C<title>7573</title> </text>
+                <line x1="272" y1="185.0" x2="272" y2="177.0"><title>7573,7566</title> </line>
                 <text x="283" y="163" >T<title>7572</title> </text>
                 <text x="296" y="163" >A<title>7571</title> </text>
                 <text x="308" y="175" >A<title>7570</title> </text>
@@ -142,10 +77,15 @@ class Mttd extends React.Component{
                 <text x="218" y="225" >A<title>7559</title> </text>
                 <text x="206" y="228" >A<title>7558</title> </text>
                 <text x="200" y="238" >A<title>7557</title> </text>
+                <line x1="191.0" y1="238" x2="183.0" y2="238"><title>7557,7541</title> </line>
                 <text x="200" y="253" >T<title>7556</title> </text>
+                <line x1="191.0" y1="253" x2="183.0" y2="253"><title>7556,7542</title> </line>
                 <text x="200" y="268" >T<title>7555</title> </text>
+                <line x1="191.0" y1="268" x2="183.0" y2="268"><title>7555,7543</title> </line>
                 <text x="200" y="283" >G<title>7554</title> </text>
+                <line x1="191.0" y1="283" x2="183.0" y2="283"><title>7554,7544</title> </line>
                 <text x="200" y="298" >A<title>7553</title> </text>
+                <line x1="191.0" y1="298" x2="183.0" y2="298"><title>7553,7545</title> </line>
                 <text x="208" y="308" >A<title>7552</title> </text>
                 <text x="208" y="323" >A<title>7551</title> </text>
                 <text x="200" y="334" >C<title>7550</title> </text>
@@ -160,9 +100,13 @@ class Mttd extends React.Component{
                 <text x="175" y="238" >T<title>7541</title> </text>
                 <text x="163" y="228" >A<title>7540</title> </text>
                 <text x="152" y="215" >C<title>7539</title> </text>
+                <line x1="152" y1="207.0" x2="152" y2="199.0"><title>7539,7527</title> </line>
                 <text x="139" y="215" >T<title>7538</title> </text>
+                <line x1="139" y1="207.0" x2="139" y2="199.0"><title>7538,7528</title> </line>
                 <text x="126" y="215" >T<title>7537</title> </text>
+                <line x1="126" y1="207.0" x2="126" y2="199.0"><title>7537,7529</title> </line>
                 <text x="113" y="215" >T<title>7536</title> </text>
+                <line x1="113" y1="207.0" x2="113" y2="199.0"><title>7536,7530</title> </line>
                 <text x="100" y="222" >A<title>7535</title> </text>
                 <text x="87" y="217" >C<title>7534</title> </text>
                 <text x="80" y="203.5" >C<title>7533</title> </text>
@@ -181,27 +125,6 @@ class Mttd extends React.Component{
                 <text x="180" y="100" >G<title>7520</title> </text>
                 <text x="180" y="85" >A<title>7519</title> </text>
                 <text x="180" y="70" >A<title>7518</title> </text>
-                <line x1="190" y1="67" x2="203" y2="67"><title>190,67 203,67</title> </line>
-                <line x1="190" y1="82" x2="203" y2="82"><title>190,82 203,82</title> </line>
-                <line x1="190" y1="97" x2="203" y2="97"><title>190,97 203,97</title> </line>
-                <circle cx="196" cy="112" r="2"><title>196,112</title> </circle>
-                <line x1="190" y1="127" x2="203" y2="127"><title>190,127 203,127</title> </line>
-                <line x1="190" y1="142" x2="203" y2="142"><title>190,142 203,142</title> </line>
-                <line x1="190" y1="157" x2="203" y2="157"><title>190,157 203,157</title> </line>
-                <line x1="224" y1="173" x2="224" y2="183"><title>224,173 224,183</title> </line>
-                <line x1="237" y1="173" x2="237" y2="183"><title>237,173 237,183</title> </line>
-                <line x1="250" y1="173" x2="250" y2="183"><title>250,173 250,183</title> </line>
-                <line x1="263" y1="173" x2="263" y2="183"><title>263,173 263,183</title> </line>
-                <line x1="276" y1="173" x2="276" y2="183"><title>276,173 276,183</title> </line>
-                <line x1="185" y1="235" x2="198" y2="235"><title>185,235 198,235</title> </line>
-                <line x1="185" y1="250" x2="198" y2="250"><title>185,250 198,250</title> </line>
-                <line x1="185" y1="265" x2="198" y2="265"><title>185,265 198,265</title> </line>
-                <line x1="185" y1="280" x2="198" y2="280"><title>185,280 198,280</title> </line>
-                <line x1="185" y1="295" x2="198" y2="295"><title>185,295 198,295</title> </line>
-                <line x1="117" y1="195" x2="117" y2="205"><title>117,195 117,205</title> </line>
-                <line x1="130" y1="195" x2="130" y2="205"><title>130,195 130,205</title> </line>
-                <line x1="143" y1="195" x2="143" y2="205"><title>143,195 143,205</title> </line>
-                <line x1="156" y1="195" x2="156" y2="205"><title>156,195 156,205</title> </line>
             </svg>
 
         )

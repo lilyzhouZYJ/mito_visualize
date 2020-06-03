@@ -2,15 +2,38 @@ body {
     font-family: sans-serif;
 }
 
-
-/* Navbar container */
-/*
 .nav-wrapper {
     background-color: #00356B;
     padding: 0 10rem;
     border: 0;
     height: 5rem;
 }
+
+.nav-wrapper .container {
+    height: 100%;
+}
+
+.nav-wrapper ul{
+    height: 100%;
+}
+
+.nav-wrapper ul li {
+    height: 100%
+}
+
+.nav-wrapper ul a {
+    height: 100%;
+    padding: 8px;
+}
+
+.nav-wrapper ul a:hover {
+    background-color: lightblue;
+    color: #00356B;
+}
+
+/* Navbar container */
+/*
+
 
 .right {
     float: right;

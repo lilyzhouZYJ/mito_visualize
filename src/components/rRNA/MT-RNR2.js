@@ -1,21 +1,25 @@
 import React from 'react';
 
-class Mtrnr2Zoom extends React.Component{
+class Mtrnr2 extends React.Component{
+
+    state = {
+        variant: null
+    }
 
     componentDidMount(){
 
         //set styles
-        var allLines = document.getElementById('rrna-svg-container-zoom').getElementsByTagName('line');
+        var allLines = document.getElementById('rrna-svg-container').getElementsByTagName('line');
         for(var t of allLines){
             t.setAttribute('stroke',"#000000");
             t.setAttribute('stroke-width',"1");
             t.setAttribute('stroke-linecap',"round");
         }
-        var allCircles = document.getElementById('rrna-svg-container-zoom').getElementsByTagName('circle');
+        var allCircles = document.getElementById('rrna-svg-container').getElementsByTagName('circle');
         for(var t of allCircles){
             t.setAttribute('fill', '#000000');
         }
-        var allText = document.getElementById('rrna-svg-container-zoom').getElementsByTagName('text');
+        var allText = document.getElementById('rrna-svg-container').getElementsByTagName('text');
         for(var t of allText){
             t.setAttribute('font-size', '15');
             t.setAttribute('fill', '#000000');
@@ -23,7 +27,7 @@ class Mtrnr2Zoom extends React.Component{
             t.setAttribute('text-anchor','middle');
             t.setAttribute('alignment-baseline','middle');
         }
-        var allPath = document.getElementById('rrna-svg-container-zoom').getElementsByTagName('path');
+        var allPath = document.getElementById('rrna-svg-container').getElementsByTagName('path');
         for(var t of allPath){
             t.setAttribute('stroke','black');
             t.setAttribute('fill','transparent');
@@ -32,8 +36,8 @@ class Mtrnr2Zoom extends React.Component{
     }
 
     render() {
-        return(    
-            <svg id="rrna-svg-container-zoom" height="650" width="650" xmlns="http://www.w3.org/2000/svg">
+        return(
+            <svg id="rrna-svg-container" style={{backgroundColor:"white"}} viewBox='100 30 2850 1974' height="450" width="650" xmlns="http://www.w3.org/2000/svg">
                 <line x1="1170" y1="1018" x2="1762" y2="1018"><title>2452,2453</title> </line>
                 <text x="1105" y="1425">G<title>1671</title> </text>
                 <line x1="1094.33333333" y1="1424.66666667" x2="1083.66666667" y2="1424.33333333"><title>1671,1817</title> </line>
@@ -1906,4 +1910,4 @@ class Mtrnr2Zoom extends React.Component{
 
 }
 
-export default Mtrnr2Zoom;
+export default Mtrnr2;

@@ -1,21 +1,43 @@
 import React from 'react';
 
-class Mtrnr1Zoom extends React.Component{
+class Mtrnr1 extends React.Component{
+
+    state = {
+        variant: null
+    }
 
     componentDidMount(){
 
+        //this is for removing repeated lines (will be needed with rrna2 again)
+        // var allTitle = document.getElementById('rrna-svg-container').getElementsByTagName('title');
+        // for(var a of allTitle){
+        //     if(a.parentElement.tagName=="line"||a.parentElement.tagName=="circle"){
+        //         for(var b of allTitle){
+        //             if(b.parentElement.tagName=="line"||b.parentElement.tagName=="circle"){
+        //                 if(a.innerHTML.split(',')[0]==b.innerHTML.split(',')[1]&&a.innerHTML.split(',')[1]==b.innerHTML.split(',')[0]){
+        //                     console.log(a.innerHTML+" "+b.innerHTML);
+        //                     b.parentElement.remove();
+        //                 }
+        //             }
+        //         }
+        //         // if(a.innerHTML.split(',')[0]>a.innerHTML.split(',')[1]){
+        //         //     a.parentElement.remove();
+        //         // }
+        //     }
+        // }
+
         //set styles
-        var allLines = document.getElementById('rrna-svg-container-zoom').getElementsByTagName('line');
+        var allLines = document.getElementById('rrna-svg-container').getElementsByTagName('line');
         for(var t of allLines){
             t.setAttribute('stroke',"#000000");
             t.setAttribute('stroke-width',"1");
             t.setAttribute('stroke-linecap',"round");
         }
-        var allCircles = document.getElementById('rrna-svg-container-zoom').getElementsByTagName('circle');
+        var allCircles = document.getElementById('rrna-svg-container').getElementsByTagName('circle');
         for(var t of allCircles){
             t.setAttribute('fill', '#000000');
         }
-        var allText = document.getElementById('rrna-svg-container-zoom').getElementsByTagName('text');
+        var allText = document.getElementById('rrna-svg-container').getElementsByTagName('text');
         for(var t of allText){
             t.setAttribute('font-size', '9');
             t.setAttribute('fill', '#000000');
@@ -23,7 +45,7 @@ class Mtrnr1Zoom extends React.Component{
             t.setAttribute('text-anchor','middle');
             t.setAttribute('alignment-baseline','middle');
         }
-        var allPath = document.getElementById('rrna-svg-container-zoom').getElementsByTagName('path');
+        var allPath = document.getElementById('rrna-svg-container').getElementsByTagName('path');
         for(var t of allPath){
             t.setAttribute('stroke','black');
             t.setAttribute('fill','transparent');
@@ -32,8 +54,8 @@ class Mtrnr1Zoom extends React.Component{
     }
 
     render() {
-        return(    
-            <svg id="rrna-svg-container-zoom" height="650" width="650" xmlns="http://www.w3.org/2000/svg">
+        return(
+            <svg id="rrna-svg-container" style={{backgroundColor:"white"}} viewBox='0 0 1000 1000' height="650" width="650" xmlns="http://www.w3.org/2000/svg">
                 <line x1="486" y1="410" x2="494" y2="420"><title>1137,1138</title> </line>
                 <line x1="540" y1="503" x2="529" y2="509"><title>657,658</title> </line>
                 <line x1="504" y1="508" x2="520" y2="511"><title>656,657</title> </line>
@@ -2220,4 +2242,4 @@ class Mtrnr1Zoom extends React.Component{
 
 }
 
-export default Mtrnr1Zoom;
+export default Mtrnr1;

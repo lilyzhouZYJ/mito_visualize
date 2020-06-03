@@ -1,10 +1,9 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom';
 import GeneDropDown from './GeneDropDown';
+import './styles/TrnaPage.css';
 
-// Import Materialize
-import M from "materialize-css";
-
+//can delete this??
 //list of all valid gene names
 const components = [
     'MT-TA',
@@ -30,11 +29,10 @@ const components = [
     'MT-TM',
     'MT-TR'];
 
-class RnaPage extends React.Component{
+class TrnaPage extends React.Component{
 
     state = {
         geneSubmitted: false,
-        varSubmitted: false
     }
 
     handleGeneSubmit = (e) => {
@@ -42,18 +40,13 @@ class RnaPage extends React.Component{
         this.setState({geneSubmitted:true});
     }
     
-    componentDidMount() {
-        // Auto initialize M for Materialize select (dropdown)
-        M.AutoInit();
-    }
-
     render() {
 
-        if(this.state.geneSubmitted){
+        if(this.state.geneSubmitted){   //when a gene has been selected, redirect to trna svg page
             var geneInput = document.getElementById('gene-input').value;
             if(components.includes(geneInput)){
                 return(
-                    <Redirect push to={'./gene/'+geneInput} />
+                    <Redirect push to={'./'+geneInput} />
                 );
             }
             // else{
@@ -62,9 +55,9 @@ class RnaPage extends React.Component{
             //     );
             // }
         }
-        else{
+        else{   //a gene hasn't been selected, show dropdown menu
             return(
-                <GeneDropDown onSubmit={this.handleGeneSubmit}/>
+                <GeneDropDown rnaType="tRNA" onSubmit={this.handleGeneSubmit}/>
             )
         }
 
@@ -72,5 +65,5 @@ class RnaPage extends React.Component{
     
 }
 
-export default RnaPage;
+export default TrnaPage;
 

@@ -1,7 +1,47 @@
 import React from 'react';
 
+const loc = {
+    'MT-TF': [577,647],
+    'MT-RNR1': [648,1601],
+    'MT-TV':  [1602,1670],
+    'MT-RNR2':[1671, 3229],
+    'MT-TL1':[3230, 3304],
+    'MT-ND1':[3307,4262],
+    'MT-TI':[4263,4331],
+    'MT-TQ':[4329,4400],
+    'MT-TM':[4402,4469],
+    'MT-ND2':[4470,5511],
+    'MT-TW':[5512,5579],
+    'MT-TA':[5587,5655],
+    'MT-TN':[5657,5729],
+    'MT-TC':[5761,5826],
+    'MT-TY':[5826,5891],
+    'MT-CO1':[5904,7445],
+    'MT-TS1':[7446,7514],
+    'MT-TD':[7518,7585],
+    'MT-CO2':[7586,8269],
+    'MT-TK':[8295,8364],
+    'MT-ATP8':[8366,8572],
+    'MT-ATP6':[8527,9207],
+    'MT-CO3':[9207,9990],
+    'MT-TG':[9991,10058],
+    'MT-ND3':[10059,10404],
+    'MT-TR':[10405,10469],
+    'MT-ND4L':[10470,10766],
+    'MT-ND4':[10760,12137],
+    'MT-TH':[12138,12206],
+    'MT-TS2': [12207,12265],
+    'MT-TL2': [12266,12336],
+    'MT-ND5': [12337,14148],
+    'MT-ND6': [14149,14673],
+    'MT-TE': [14674,14742],
+    'MT-CYB': [14747,15887],
+    'MT-TT': [15888,15953],
+    'MT-TP': [15956,16023],
+};
+
 class Mtta extends React.Component{
-    
+
     componentDidMount(){
         //set styles
         var allLines = document.getElementById('svg-container').getElementsByTagName('line');
@@ -9,210 +49,247 @@ class Mtta extends React.Component{
             t.setAttribute('stroke',"#000000");
             t.setAttribute('stroke-width',"1");
             t.setAttribute('stroke-linecap',"round");
-            var newY1 = parseFloat(t.getAttribute('y1'))+47;
-            var newY2 = parseFloat(t.getAttribute('y2'))+47;
-            t.setAttribute('y1',newY1);
-            t.setAttribute('y2',newY2);
         }
         var allCircles = document.getElementById('svg-container').getElementsByTagName('circle');
         for(var t of allCircles){
             t.setAttribute('fill', '#000000');
-            var newY = parseFloat(t.getAttribute('cy'))+47;
-            t.setAttribute('cy',newY);
         }
         var allText = document.getElementById('svg-container').getElementsByTagName('text');
         for(var t of allText){
             t.setAttribute('font-size', '12');
             t.setAttribute('fill', '#000000');
             t.setAttribute('font-family', 'monospace');
-            var newY = parseFloat(t.getAttribute('y'))+47;
-            t.setAttribute('y',newY);
+            t.setAttribute('text-anchor','middle');
+            t.setAttribute('alignment-baseline','middle');
         }
-        
-        //highlight variant
-        var variantCor = this.props.variantCor;
-        var allText = document.getElementById('svg-container').getElementsByTagName('title');
-        for(var t of allText){
-            if(t.innerHTML==variantCor){
-                var textNode = t.parentElement;
-                textNode.setAttribute('font-weight',"bold");
-                textNode.setAttribute('font-size',"15");
-                textNode.setAttribute('fill',"crimson");
-                var newX = parseFloat(textNode.getAttribute('x'))-1;
-                var newY = parseFloat(textNode.getAttribute('y'))+1.5;
-                textNode.setAttribute('x',newX);
-                textNode.setAttribute('y',newY);
-                textNode.setAttribute('id', 'highlight');
-
-                //add circle for background color of highlight
-                var circle = document.createElementNS('http://www.w3.org/2000/svg','circle');
-                circle.setAttribute('cx',newX+4);
-                circle.setAttribute('cy',newY-5);
-                circle.setAttribute('r',9);
-                circle.setAttribute('fill','yellow');
-                var svgnode = document.getElementById("svg-container"); 
-                svgnode.insertBefore(circle, svgnode.childNodes[0]);
-            }
-        }
-
-        //add text legend
-        var geneName = document.createTextNode(this.props.gene);
-
-        var textX = 55;
-        var textY = 59;
-        
-        var geneNameNode = document.createElementNS('http://www.w3.org/2000/svg','text');
-        geneNameNode.appendChild(geneName);
-        geneNameNode.setAttribute("x",textX);
-        geneNameNode.setAttribute("y",textY);
-        geneNameNode.setAttribute("text-anchor","start");
-        geneNameNode.setAttribute("font-family","Roboto, sans-serif");
-        geneNameNode.setAttribute("font-size","14");
-
-        var svgnode = document.getElementById("svg-container"); 
-        svgnode.appendChild(geneNameNode);
-        
-        if(this.props.variantId!==undefined){
-            var variantId = document.createTextNode(this.props.variantId);
-            var variantIdNode = document.createElementNS('http://www.w3.org/2000/svg','text');
-            variantIdNode.appendChild(variantId);
-            variantIdNode.setAttribute("x",textX);
-            variantIdNode.setAttribute("y",textY+20);
-            variantIdNode.setAttribute("text-anchor","start");
-            variantIdNode.setAttribute("font-family","Roboto, sans-serif");
-            variantIdNode.setAttribute("font-size","14");
-            svgnode.appendChild(variantIdNode);
-        }
-
-        if(this.props.conseq!==undefined){
-            var conseq = document.createTextNode(this.props.conseq);
-            var conseqNode = document.createElementNS('http://www.w3.org/2000/svg','text');  
-            conseqNode.appendChild(conseq);
-            conseqNode.setAttribute("x",textX);
-            conseqNode.setAttribute("y",textY+40);
-            conseqNode.setAttribute("text-anchor","start");
-            conseqNode.setAttribute("font-family","Roboto, sans-serif");
-            conseqNode.setAttribute("font-size","14");
-            svgnode.appendChild(conseqNode);
-        }
-
-        var legend = document.createTextNode("tRNA Secondary Structure");
-        var legendNode = document.createElementNS('http://www.w3.org/2000/svg','text');
-        legendNode.appendChild(legend);
-        legendNode.setAttribute("x","55");
-        legendNode.setAttribute("y","33");
-        legendNode.setAttribute("font-family","Roboto, sans-serif");
-        legendNode.setAttribute("font-size","15");
-        legendNode.setAttribute("font-weight","bold");
-        svgnode.appendChild(legendNode);
 
     }
 
     render() {
-        
+
         return(
             <svg id="svg-container" height="390" width="350" xmlns="http://www.w3.org/2000/svg">
-                <text x="205" y="55" > A<title>5587</title> </text>
-                <text x="205" y="70" > T<title>5588</title> </text>
-                <text x="205" y="85" > T<title>5589</title> </text>
-                <text x="205" y="100" > C<title>5590</title> </text>
-                <text x="205" y="115" > C<title>5591</title> </text>
-                <text x="205" y="130" > T<title>5592</title> </text>
-                <text x="205" y="145" > G<title>5593</title> </text>
-                <text x="205" y="160" > A<title>5594</title> </text>
-                <text x="220" y="170" > C<title>5595</title> </text>
-                <text x="233" y="170" > G<title>5596</title> </text>
-                <text x="246" y="170" > T<title>5597</title> </text>
-                <text x="259" y="170" > T<title>5598</title> </text>
-                <text x="272" y="170" > T<title>5599</title> </text>
-                <text x="282" y="163" > T<title>5600</title> </text>
-                <text x="294" y="160" > G<title>5601</title> </text>
-                <text x="306" y="168" > G<title>5602</title> </text>
-                <text x="312" y="181.5" > G<title>5603</title> </text>
-                <text x="306" y="195" > G<title>5604</title> </text>
-                <text x="294" y="203" > T<title>5605</title> </text>
-                <text x="282" y="200" > G<title>5606</title> </text>
-                <text x="272" y="193" > A<title>5607</title> </text>
-                <text x="259" y="193" > G<title>5608</title> </text>
-                <text x="246" y="193" > A<title>5609</title> </text>
-                <text x="233" y="193" > C<title>5610</title> </text>
-                <text x="220" y="193" > G<title>5611</title> </text>
-                <text x="220" y="205" > T<title>5612</title> </text>
-                <text x="226" y="215" > A<title>5613</title> </text>
-                <text x="218" y="225" > G<title>5614</title> </text>
-                <text x="206" y="228" > T<title>5615</title> </text>
-                <text x="200" y="238" > T<title>5616</title> </text>
-                <text x="200" y="253" > G<title>5617</title> </text>
-                <text x="200" y="268" > A<title>5618</title> </text>
-                <text x="200" y="283" > C<title>5619</title> </text>
-                <text x="200" y="298" > T<title>5620</title> </text>
-                <text x="208" y="308" > T<title>5621</title> </text>
-                <text x="208" y="323" > G<title>5622</title> </text>
-                <text x="200" y="334" > C<title>5623</title> </text>
-                <text x="187.5" y="336" > G<title>5624</title> </text>
-                <text x="175" y="334" > T<title>5625</title> </text>
-                <text x="167" y="323" > T<title>5626</title> </text>
-                <text x="167" y="308" > T<title>5627</title> </text>
-                <text x="175" y="298" > A<title>5628</title> </text>
-                <text x="175" y="283" > G<title>5629</title> </text>
-                <text x="175" y="268" > T<title>5630</title> </text>
-                <text x="175" y="253" > C<title>5631</title> </text>
-                <text x="175" y="238" > G<title>5632</title> </text>
-                <text x="163" y="228" > G<title>5633</title> </text>
-                <text x="152" y="215" > T<title>5634</title> </text>
-                <text x="139" y="215" > G<title>5635</title> </text>
-                <text x="126" y="215" > A<title>5636</title> </text>
-                <text x="113" y="215" > A<title>5637</title> </text>
-                <text x="100" y="222" > A<title>5638</title> </text>
-                <text x="87" y="217" > T<title>5639</title> </text>
-                <text x="80" y="203.5" > T<title>5640</title> </text>
-                <text x="87" y="190" > A<title>5641</title> </text>
-                <text x="100" y="185" > A<title>5642</title> </text>
-                <text x="113" y="192" > T<title>5643</title> </text>
-                <text x="126" y="192" > T<title>5644</title> </text>
-                <text x="139" y="192" > C<title>5645</title> </text>
-                <text x="152" y="192" > G<title>5646</title> </text>
-                <text x="165" y="183" > A<title>5647</title> </text>
-                <text x="173" y="173" > T<title>5648</title> </text>
-                <text x="180" y="160" > T<title>5649</title> </text>
-                <text x="180" y="145" > C<title>5650</title> </text>
-                <text x="180" y="130" > G<title>5651</title> </text>
-                <text x="180" y="115" > G<title>5652</title> </text>
-                <text x="180" y="100" > G<title>5653</title> </text>
-                <text x="180" y="85" > A<title>5654</title> </text>
-                <text x="180" y="70" > A<title>5655</title> </text>
-
-                <line x1="190" y1="67" x2="203" y2="67" ><title>190,67 203,67</title> </line>
-                <line x1="190" y1="82" x2="203" y2="82" ><title>190,82 203,82</title> </line>
-                <line x1="190" y1="97" x2="203" y2="97" ><title>190,97 203,97</title> </line>
-                <line x1="190" y1="112" x2="203" y2="112" ><title>190,112 203,112</title> </line>
-
-                <circle cx="196" cy="127" r="2" ><title>196,127</title> </circle>
-
-                <line x1="190" y1="142" x2="203" y2="142" ><title>190,142 203,142</title> </line>
-                <line x1="190" y1="157" x2="203" y2="157" ><title>190,157 203,157</title> </line>
-                <line x1="224" y1="173" x2="224" y2="183" ><title>224,173 224,183</title> </line>
-                <line x1="237" y1="173" x2="237" y2="183" ><title>237,173 237,183</title> </line>
-                <line x1="250" y1="173" x2="250" y2="183" ><title>250,173 250,183</title> </line>
-
-                <circle cx="263" cy="177" r="2" ><title>263,177</title> </circle>
-
-                <line x1="276" y1="173" x2="276" y2="183" ><title>276,173 276,183</title> </line>
-
-                <circle cx="192" cy="235" r="2" ><title>192,235</title> </circle>
-
-                <line x1="185" y1="250" x2="198" y2="250" ><title>185,250 198,250</title> </line>
-                <line x1="185" y1="265" x2="198" y2="265" ><title>185,265 198,265</title> </line>
-                <line x1="185" y1="280" x2="198" y2="280" ><title>185,280 198,280</title> </line>
-                <line x1="185" y1="295" x2="198" y2="295" ><title>185,295 198,295</title> </line>
-                <line x1="117" y1="195" x2="117" y2="205" ><title>117,195 117,205</title> </line>
-                <line x1="130" y1="195" x2="130" y2="205" ><title>130,195 130,205</title> </line>
-                <line x1="143" y1="195" x2="143" y2="205" ><title>143,195 143,205</title> </line>
-                
-                <circle cx="156" cy="200" r="2" ><title>156,200</title> </circle>
+                <text x='35' y='10' style={{fontSize:'17', fontFamily:"sans-serif",textAnchor:'start',fontWeight:'bold'}}>MT-TA</text>
+                <text x='35' y='35' style={{fontSize:'17', fontFamily:"sans-serif",textAnchor:'start',fontWeight:'bold'}}>mt-tRNA
+                    <tspan style={{fontSize:'12'}} baselineShift="super">Ala</tspan>
+                </text>
+                <text x="205" y="10">A<title></title> </text>
+                <text x="205" y="25">C<title></title> </text>
+                <text x="205" y="40">C<title></title> </text>
+                <text x="205" y="55">A<title>5587</title> </text>
+                <text x="205" y="70">T<title>5588</title> </text>
+                <line x1="196.0" y1="70" x2="188.0" y2="70" ><title>5588,5655</title> </line>
+                <text x="205" y="85">T<title>5589</title> </text>
+                <line x1="196.0" y1="85" x2="188.0" y2="85" ><title>5589,5654</title> </line>
+                <text x="205" y="100">C<title>5590</title> </text>
+                <line x1="196.0" y1="100" x2="188.0" y2="100" ><title>5590,5653</title> </line>
+                <text x="205" y="115">C<title>5591</title> </text>
+                <line x1="196.0" y1="115" x2="188.0" y2="115" ><title>5591,5652</title> </line>
+                <text x="205" y="130">T<title>5592</title> </text>
+                <circle cx="192.0" cy="130.0" r="2" ><title>5592,5651</title> </circle>
+                <text x="205" y="145">G<title>5593</title> </text>
+                <line x1="196.0" y1="145" x2="188.0" y2="145" ><title>5593,5650</title> </line>
+                <text x="205" y="160">A<title>5594</title> </text>
+                <line x1="196.0" y1="160" x2="188.0" y2="160" ><title>5594,5649</title> </line>
+                <text x="220" y="170">C<title>5595</title> </text>
+                <line x1="220" y1="185.0" x2="220" y2="177.0" ><title>5595,5611</title> </line>
+                <text x="233" y="170">G<title>5596</title> </text>
+                <line x1="233" y1="185.0" x2="233" y2="177.0" ><title>5596,5610</title> </line>
+                <text x="246" y="170">T<title>5597</title> </text>
+                <line x1="246" y1="185.0" x2="246" y2="177.0" ><title>5597,5609</title> </line>
+                <text x="259" y="170">T<title>5598</title> </text>
+                <circle cx="259.0" cy="181.0" r="2" ><title>5598,5608</title> </circle>
+                <text x="272" y="170">T<title>5599</title> </text>
+                <line x1="272" y1="185.0" x2="272" y2="177.0" ><title>5599,5607</title> </line>
+                <text x="282" y="163">T<title>5600</title> </text>
+                <text x="294" y="160">G<title>5601</title> </text>
+                <text x="306" y="168">G<title>5602</title> </text>
+                <text x="312" y="181.5">G<title>5603</title> </text>
+                <text x="306" y="195">G<title>5604</title> </text>
+                <text x="294" y="203">T<title>5605</title> </text>
+                <text x="282" y="200">G<title>5606</title> </text>
+                <text x="272" y="193">A<title>5607</title> </text>
+                <text x="259" y="193">G<title>5608</title> </text>
+                <text x="246" y="193">A<title>5609</title> </text>
+                <text x="233" y="193">C<title>5610</title> </text>
+                <text x="220" y="193">G<title>5611</title> </text>
+                <text x="220" y="205">T<title>5612</title> </text>
+                <text x="226" y="215">A<title>5613</title> </text>
+                <text x="218" y="225">G<title>5614</title> </text>
+                <text x="206" y="228">T<title>5615</title> </text>
+                <text x="200" y="238">T<title>5616</title> </text>
+                <circle cx="187.0" cy="238.0" r="2" ><title>5616,5632</title> </circle>
+                <text x="200" y="253">G<title>5617</title> </text>
+                <line x1="191.0" y1="253" x2="183.0" y2="253" ><title>5617,5631</title> </line>
+                <text x="200" y="268">A<title>5618</title> </text>
+                <line x1="191.0" y1="268" x2="183.0" y2="268" ><title>5618,5630</title> </line>
+                <text x="200" y="283">C<title>5619</title> </text>
+                <line x1="191.0" y1="283" x2="183.0" y2="283" ><title>5619,5629</title> </line>
+                <text x="200" y="298">T<title>5620</title> </text>
+                <line x1="191.0" y1="298" x2="183.0" y2="298" ><title>5620,5628</title> </line>
+                <text x="208" y="308">T<title>5621</title> </text>
+                <text x="208" y="323">G<title>5622</title> </text>
+                <text x="200" y="334">C<title>5623</title> </text>
+                <text x="187.5" y="336">G<title>5624</title> </text>
+                <text x="175" y="334">T<title>5625</title> </text>
+                <text x="167" y="323">T<title>5626</title> </text>
+                <text x="167" y="308">T<title>5627</title> </text>
+                <text x="175" y="298">A<title>5628</title> </text>
+                <text x="175" y="283">G<title>5629</title> </text>
+                <text x="175" y="268">T<title>5630</title> </text>
+                <text x="175" y="253">C<title>5631</title> </text>
+                <text x="175" y="238">G<title>5632</title> </text>
+                <text x="163" y="228">G<title>5633</title> </text>
+                <text x="152" y="215">T<title>5634</title> </text>
+                <circle cx="152.0" cy="203.0" r="2" ><title>5634,5646</title> </circle>
+                <text x="139" y="215">G<title>5635</title> </text>
+                <line x1="139" y1="207.0" x2="139" y2="199.0" ><title>5635,5645</title> </line>
+                <text x="126" y="215">A<title>5636</title> </text>
+                <line x1="126" y1="207.0" x2="126" y2="199.0" ><title>5636,5644</title> </line>
+                <text x="113" y="215">A<title>5637</title> </text>
+                <line x1="113" y1="207.0" x2="113" y2="199.0" ><title>5637,5643</title> </line>
+                <text x="100" y="222">A<title>5638</title> </text>
+                <text x="87" y="217">T<title>5639</title> </text>
+                <text x="80" y="203.5">T<title>5640</title> </text>
+                <text x="87" y="190">A<title>5641</title> </text>
+                <text x="100" y="185">A<title>5642</title> </text>
+                <text x="113" y="192">T<title>5643</title> </text>
+                <text x="126" y="192">T<title>5644</title> </text>
+                <text x="139" y="192">C<title>5645</title> </text>
+                <text x="152" y="192">G<title>5646</title> </text>
+                <text x="165" y="183">A<title>5647</title> </text>
+                <text x="173" y="173">T<title>5648</title> </text>
+                <text x="180" y="160">T<title>5649</title> </text>
+                <text x="180" y="145">C<title>5650</title> </text>
+                <text x="180" y="130">G<title>5651</title> </text>
+                <text x="180" y="115">G<title>5652</title> </text>
+                <text x="180" y="100">G<title>5653</title> </text>
+                <text x="180" y="85">A<title>5654</title> </text>
+                <text x="180" y="70">A<title>5655</title> </text>
             </svg>
 
         )
+        
+        // return(
+        //     <svg id="svg-container" height="390" width="350" xmlns="http://www.w3.org/2000/svg">
+        //         <text x="205" y="10">A<title></title> </text>
+        //         <text x="205" y="25">C<title></title> </text>
+        //         <text x="205" y="40">C<title></title> </text>
+        //         <text x="205" y="55">A<title>5587</title> </text>
+        //         <text x="205" y="70">T<title>5588</title> </text>
+        //         <line x1="196.0" y1="70" x2="188.0" y2="70" ><title>5588,5655</title> </line>
+        //         <text x="205" y="85">T<title>5589</title> </text>
+        //         <line x1="196.0" y1="85" x2="188.0" y2="85" ><title>5589,5654</title> </line>
+        //         <text x="205" y="100">C<title>5590</title> </text>
+        //         <line x1="196.0" y1="100" x2="188.0" y2="100" ><title>5590,5653</title> </line>
+        //         <text x="205" y="115">C<title>5591</title> </text>
+        //         <line x1="196.0" y1="115" x2="188.0" y2="115" ><title>5591,5652</title> </line>
+        //         <text x="205" y="130">T<title>5592</title> </text>
+        //         <circle cx="192.0" cy="130.0" r="2" ><title>5592,5651</title> </circle>
+        //         <text x="205" y="145">G<title>5593</title> </text>
+        //         <line x1="196.0" y1="145" x2="188.0" y2="145" ><title>5593,5650</title> </line>
+        //         <text x="205" y="160">A<title>5594</title> </text>
+        //         <line x1="196.0" y1="160" x2="188.0" y2="160" ><title>5594,5649</title> </line>
+        //         <text x="220" y="170">C<title>5595</title> </text>
+        //         <line x1="220" y1="185.0" x2="220" y2="177.0" ><title>5595,5611</title> </line>
+        //         <text x="233" y="170">G<title>5596</title> </text>
+        //         <line x1="233" y1="185.0" x2="233" y2="177.0" ><title>5596,5610</title> </line>
+        //         <text x="246" y="170">T<title>5597</title> </text>
+        //         <line x1="246" y1="185.0" x2="246" y2="177.0" ><title>5597,5609</title> </line>
+        //         <text x="259" y="170">T<title>5598</title> </text>
+        //         <circle cx="259.0" cy="181.0" r="2" ><title>5598,5608</title> </circle>
+        //         <text x="272" y="170">T<title>5599</title> </text>
+        //         <line x1="272" y1="185.0" x2="272" y2="177.0" ><title>5599,5607</title> </line>
+        //         <text x="282" y="163">T<title>5600</title> </text>
+        //         <text x="294" y="160">G<title>5601</title> </text>
+        //         <text x="306" y="168">G<title>5602</title> </text>
+        //         <text x="312" y="181.5">G<title>5603</title> </text>
+        //         <text x="306" y="195">G<title>5604</title> </text>
+        //         <text x="294" y="203">T<title>5605</title> </text>
+        //         <text x="282" y="200">G<title>5606</title> </text>
+        //         <text x="272" y="193">A<title>5607</title> </text>
+        //         <line x1="272" y1="185.0" x2="272" y2="177.0" ><title>5607,5599</title> </line>
+        //         <text x="259" y="193">G<title>5608</title> </text>
+        //         <circle cx="259.0" cy="181.0" r="2" ><title>5608,5598</title> </circle>
+        //         <text x="246" y="193">A<title>5609</title> </text>
+        //         <line x1="246" y1="185.0" x2="246" y2="177.0" ><title>5609,5597</title> </line>
+        //         <text x="233" y="193">C<title>5610</title> </text>
+        //         <line x1="233" y1="185.0" x2="233" y2="177.0" ><title>5610,5596</title> </line>
+        //         <text x="220" y="193">G<title>5611</title> </text>
+        //         <line x1="220" y1="185.0" x2="220" y2="177.0" ><title>5611,5595</title> </line>
+        //         <text x="220" y="205">T<title>5612</title> </text>
+        //         <text x="226" y="215">A<title>5613</title> </text>
+        //         <text x="218" y="225">G<title>5614</title> </text>
+        //         <text x="206" y="228">T<title>5615</title> </text>
+        //         <text x="200" y="238">T<title>5616</title> </text>
+        //         <circle cx="187.0" cy="238.0" r="2" ><title>5616,5632</title> </circle>
+        //         <text x="200" y="253">G<title>5617</title> </text>
+        //         <line x1="191.0" y1="253" x2="183.0" y2="253" ><title>5617,5631</title> </line>
+        //         <text x="200" y="268">A<title>5618</title> </text>
+        //         <line x1="191.0" y1="268" x2="183.0" y2="268" ><title>5618,5630</title> </line>
+        //         <text x="200" y="283">C<title>5619</title> </text>
+        //         <line x1="191.0" y1="283" x2="183.0" y2="283" ><title>5619,5629</title> </line>
+        //         <text x="200" y="298">T<title>5620</title> </text>
+        //         <line x1="191.0" y1="298" x2="183.0" y2="298" ><title>5620,5628</title> </line>
+        //         <text x="208" y="308">T<title>5621</title> </text>
+        //         <text x="208" y="323">G<title>5622</title> </text>
+        //         <text x="200" y="334">C<title>5623</title> </text>
+        //         <text x="187.5" y="336">G<title>5624</title> </text>
+        //         <text x="175" y="334">T<title>5625</title> </text>
+        //         <text x="167" y="323">T<title>5626</title> </text>
+        //         <text x="167" y="308">T<title>5627</title> </text>
+        //         <text x="175" y="298">A<title>5628</title> </text>
+        //         <line x1="191.0" y1="298" x2="183.0" y2="298" ><title>5628,5620</title> </line>
+        //         <text x="175" y="283">G<title>5629</title> </text>
+        //         <line x1="191.0" y1="283" x2="183.0" y2="283" ><title>5629,5619</title> </line>
+        //         <text x="175" y="268">T<title>5630</title> </text>
+        //         <line x1="191.0" y1="268" x2="183.0" y2="268" ><title>5630,5618</title> </line>
+        //         <text x="175" y="253">C<title>5631</title> </text>
+        //         <line x1="191.0" y1="253" x2="183.0" y2="253" ><title>5631,5617</title> </line>
+        //         <text x="175" y="238">G<title>5632</title> </text>
+        //         <circle cx="187.0" cy="238.0" r="2" ><title>5632,5616</title> </circle>
+        //         <text x="163" y="228">G<title>5633</title> </text>
+        //         <text x="152" y="215">T<title>5634</title> </text>
+        //         <circle cx="152.0" cy="203.0" r="2" ><title>5634,5646</title> </circle>
+        //         <text x="139" y="215">G<title>5635</title> </text>
+        //         <line x1="139" y1="207.0" x2="139" y2="199.0" ><title>5635,5645</title> </line>
+        //         <text x="126" y="215">A<title>5636</title> </text>
+        //         <line x1="126" y1="207.0" x2="126" y2="199.0" ><title>5636,5644</title> </line>
+        //         <text x="113" y="215">A<title>5637</title> </text>
+        //         <line x1="113" y1="207.0" x2="113" y2="199.0" ><title>5637,5643</title> </line>
+        //         <text x="100" y="222">A<title>5638</title> </text>
+        //         <text x="87" y="217">T<title>5639</title> </text>
+        //         <text x="80" y="203.5">T<title>5640</title> </text>
+        //         <text x="87" y="190">A<title>5641</title> </text>
+        //         <text x="100" y="185">A<title>5642</title> </text>
+        //         <text x="113" y="192">T<title>5643</title> </text>
+        //         <line x1="113" y1="207.0" x2="113" y2="199.0" ><title>5643,5637</title> </line>
+        //         <text x="126" y="192">T<title>5644</title> </text>
+        //         <line x1="126" y1="207.0" x2="126" y2="199.0" ><title>5644,5636</title> </line>
+        //         <text x="139" y="192">C<title>5645</title> </text>
+        //         <line x1="139" y1="207.0" x2="139" y2="199.0" ><title>5645,5635</title> </line>
+        //         <text x="152" y="192">G<title>5646</title> </text>
+        //         <circle cx="152.0" cy="203.0" r="2" ><title>5646,5634</title> </circle>
+        //         <text x="165" y="183">A<title>5647</title> </text>
+        //         <text x="173" y="173">T<title>5648</title> </text>
+        //         <text x="180" y="160">T<title>5649</title> </text>
+        //         <line x1="196.0" y1="160" x2="188.0" y2="160" ><title>5649,5594</title> </line>
+        //         <text x="180" y="145">C<title>5650</title> </text>
+        //         <line x1="196.0" y1="145" x2="188.0" y2="145" ><title>5650,5593</title> </line>
+        //         <text x="180" y="130">G<title>5651</title> </text>
+        //         <circle cx="192.0" cy="130.0" r="2" ><title>5651,5592</title> </circle>
+        //         <text x="180" y="115">G<title>5652</title> </text>
+        //         <line x1="196.0" y1="115" x2="188.0" y2="115" ><title>5652,5591</title> </line>
+        //         <text x="180" y="100">G<title>5653</title> </text>
+        //         <line x1="196.0" y1="100" x2="188.0" y2="100" ><title>5653,5590</title> </line>
+        //         <text x="180" y="85">A<title>5654</title> </text>
+        //         <line x1="196.0" y1="85" x2="188.0" y2="85" ><title>5654,5589</title> </line>
+        //         <text x="180" y="70">A<title>5655</title> </text>
+        //         <line x1="196.0" y1="70" x2="188.0" y2="70" ><title>5655,5588</title> </line>
+        //     </svg>
+
+        // )
+
     }
     
 }

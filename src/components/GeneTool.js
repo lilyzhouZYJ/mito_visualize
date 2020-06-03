@@ -498,7 +498,7 @@ class GeneTool extends React.Component{
 
     render() {
         return(
-            <div>
+            <div id="gene-tool">
                 <svg id="circle" width="700" height="700">
                     <circle cx="350" cy="350" r="250" stroke="saddlebrown" strokeWidth="1" fill="transparent" />
                     <circle cx="350" cy="350" r="240" stroke="none" fill="#ffffff90" filter="url(#blurMe)" />

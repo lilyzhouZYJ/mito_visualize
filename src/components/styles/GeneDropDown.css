@@ -1,0 +1,31 @@
+#dropdown-form {
+    width: 40rem;
+    margin: 10rem auto;
+    display: block;
+}
+
+#dropdown-form p {
+    margin: 0;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+#dropdown-form label {
+    font-size: 15px;
+    color: black;
+    display: inline;
+}
+
+
+#dropdown-form button{
+    background-color: #00356B;
+    color: white;
+    border: none;
+    padding: 15px 30px;
+}
+
+#dropdown-form button:hover{
+    background-color: lightblue;
+    cursor: pointer;
+    color: #00356B;
+}
