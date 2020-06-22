@@ -60,50 +60,12 @@ const saveSvgAsPng = require('save-svg-as-png')
 const imageOptions = {
   scale: 5,
   encoderOptions: 1,
-  backgroundColor: 'white',
-  left: 30,
+  backgroundColor: 'yellow',
+  left: 5,
+  top: -20,
+  height: 390,
+  width: 350
 }
-
-/*
-    second version
-*/
-
-// Initiate download of blob
-// function download(
-//     filename, // string
-//     blob // Blob
-// ) {
-//     if (window.navigator.msSaveOrOpenBlob) {
-//     window.navigator.msSaveBlob(blob, filename);
-//     } else {
-//     const elem = window.document.createElement('a');
-//     elem.href = window.URL.createObjectURL(blob);
-//     elem.download = filename;
-//     document.body.appendChild(elem);
-//     elem.click();
-//     document.body.removeChild(elem);
-//     }
-// }
-
-/*
-    https://jsgao0.wordpress.com/2016/06/02/export-svg-as-png-using-canvg-js-and-canvas/
-*/
-
-// function SVG2PNG(svg, callback) {
-//     var canvas = document.createElement('canvas'); // Create a Canvas element.
-//     var ctx = canvas.getContext('2d'); // For Canvas returns 2D graphic.
-//     var data = svg.outerHTML; // Get SVG element as HTML code.
-//     canvg(canvas, data); // Render SVG on Canvas.
-//     callback(canvas); // Execute callback function.
-//   }
-
-//   function generateLink(fileName, data) {
-//     var link = document.createElement('a');
-//     link.download = fileName;
-//     link.href = data;
-//     return link;
-//   }
-
 
 class TrnaSVG extends React.Component{
 
@@ -113,7 +75,15 @@ class TrnaSVG extends React.Component{
     }
 
     handleClick = () => {
-        saveSvgAsPng.saveSvgAsPng(document.getElementById('svg-container'), 'shapes.png', imageOptions);
+
+        var fileName;
+        if(this.state.varSubmitted==null){
+            fileName = this.props.gene;
+        } else {
+            fileName = this.state.varSubmitted + " [" + this.props.gene + "].png";
+        }
+
+        saveSvgAsPng.saveSvgAsPng(document.getElementById('svg-container'), fileName, imageOptions);
     };
 
     //second version
@@ -159,6 +129,12 @@ class TrnaSVG extends React.Component{
     //remove preexisting variant highlight
     removeVariantHighlight() {
 
+        //remove variant name in svg legend
+        var legExists = document.getElementById('var-legend');
+        if(legExists!==null){
+            legExists.remove();
+        }
+
         //remove preeixsting highlighted letter
         var elementExists = document.getElementById('highlight');
         if(elementExists!==null){
@@ -196,6 +172,13 @@ class TrnaSVG extends React.Component{
             document.getElementById('svg-container').insertBefore(newLine, elementExists);
             elementExists.remove();
         }
+
+        //remove note on variant highlight
+        var noteExists = document.getElementById('varNote');
+        if(noteExists!==null){
+            noteExists.remove();
+        }
+
     }
 
     componentDidUpdate(){
@@ -207,6 +190,18 @@ class TrnaSVG extends React.Component{
         
         //make new highlight
         if(variant!==null){
+
+            //add variant name to svg legend
+            var varLegend = document.createElementNS('http://www.w3.org/2000/svg','text');
+            varLegend.setAttribute('x','35');
+            varLegend.setAttribute('y','55');
+            varLegend.setAttribute('font-size','12');
+            varLegend.setAttribute('font-weight','bold');
+            varLegend.setAttribute('font-family','sans-serif');
+            varLegend.setAttribute('text-anchor','start');
+            varLegend.setAttribute('id','var-legend');
+            varLegend.innerHTML = variant;
+            document.getElementById('svg-container').appendChild(varLegend);
 
             //if the gene is on the reverse strand
             if(reverseStrand.includes(this.props.gene)){
@@ -262,6 +257,13 @@ class TrnaSVG extends React.Component{
                     origLine.remove();
                 }
             }
+
+            //add note on the variant highlight
+            var varNote = document.createElement('li');
+            varNote.innerHTML = "The base and pair type change (if applicable) is shown in red.";
+            varNote.setAttribute('id','varNote');
+            document.getElementById('notes').appendChild(varNote);
+
         }
         
     }
@@ -271,30 +273,47 @@ class TrnaSVG extends React.Component{
         var gene = this.props.gene;
        
         var SvgComponent = tRNAs[gene];
-        if(this.state.varSubmitted!==null){
+        // if(this.state.varSubmitted!==null){
             return(
                 <div id="trna-svg">
-                    
-                    <SvgComponent gene={gene} variant={this.state.varSubmitted} />
-                    <VarInput handleVarSubmit={this.handleVarSubmit} gene={gene}/>
-                    <VarInfoTable variant={this.state.varSubmitted} varCor={this.state.varCor} />
-                    <VarInfo gene={gene} variant={this.state.varSubmitted} variantCor={this.state.varCor}/>
-                    <button id="download-btn" onClick={this.handleClick}>Download Image</button>
+                    <div id="left-container">
+                        <SvgComponent gene={gene} variant={this.state.varSubmitted} />
+                        <ul id="notes">
+                            {reverseStrand.includes(gene) &&
+                                    <li>Note: {gene} is on the reverse strand.</li>
+                            }
+                            <li>Lines represent Watson-Crick (WC) base pairs, and dots non-WC pairs.</li>
+                            <li>Hovering over each base will display the genomic coordinate.</li>
+                        </ul>
+                        <button id="download-btn" onClick={this.handleClick}>Download Image (png)</button> 
+                    </div>
+                    <div id="right-container">
+                        <VarInput handleVarSubmit={this.handleVarSubmit} gene={gene}/>
+                        {this.state.varSubmitted!==null &&
+                            <VarInfoTable variant={this.state.varSubmitted} varCor={this.state.varCor} />
+                        }
+                        <VarInfo gene={gene} variant={this.state.varSubmitted} variantCor={this.state.varCor}/>
+                    </div>
                 </div>
             )
-        } else {
-            return(
-                <div id="trna-svg">
+        // } else {
+        //     return(
+        //         <div id="trna-svg">
+        //             <div id="left-container">
+        //                 <SvgComponent gene={gene} variant={this.state.varSubmitted} /> 
+        //                 {reverseStrand.includes(this.props.gene) &&
+        //                     <p id="reverse-label">Note: this gene is on the reverse strand.</p>
+        //                 }
+        //                 <button id="download-btn" onClick={this.handleClick}>Download Image (png)</button>
+        //             </div>
+        //             <div id="right-container">
+        //                 <VarInput handleVarSubmit={this.handleVarSubmit} gene={gene}/>
+        //                 <VarInfo gene={gene} variant={this.state.varSubmitted} variantCor={this.state.varCor} />
+        //             </div>
                     
-                    <SvgComponent gene={gene} variant={this.state.varSubmitted} />
-                    <VarInput handleVarSubmit={this.handleVarSubmit} gene={gene}/>
-                    <VarInfo gene={gene} variant={this.state.varSubmitted} variantCor={this.state.varCor} />
-                    {/* <button onClick={this.handleClick}>Download Image</button> */}
-                    <button id="download-btn" onClick={this.handleClick}>Download Image</button>
-                    {/* <button id="downloadBtn">Download Image2</button> */}
-                </div>
-            )
-        }
+        //         </div>
+        //     )
+        // }
     }
     
 }

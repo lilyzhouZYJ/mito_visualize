@@ -1,4 +1,4 @@
-#trna-svg input {
+/* #trna-svg input {
     display: inline-block;
 }
 
@@ -9,12 +9,10 @@
 }
 
 #svg-container {
-    /*margin: 20px 0 0 250px; with var-info on top of the page*/
     margin: 100px 0 0 250px;
 }
 
 #var-form {
-    /*margin-top: 20px; with var-info at top of the page */
     margin-top: 100px;
     margin-right: 300px;
     float: right;
@@ -66,15 +64,11 @@
 
 #rrna-svg #var-info-table{
     margin-right: 250px;
-    /* var-info on top
-    bottom: -200px;
-    */
     bottom: -210px;
     left: 645px;
     
 }
 
-/*var info at bottom of page*/
 #var-info{
     float: right;
     font-size: 18px;
@@ -88,16 +82,6 @@
     top: 230px;
     left: -250px;
 }
-
-/* 
-if var-info is at the top of the page
-#var-info{
-    display: block;
-    font-size: 18px;
-    margin: 40px 300px;
-    height: 50px;
-}
-*/
 
 #rrna-svg-container {
     margin-left: 130px;
@@ -113,8 +97,8 @@ if var-info is at the top of the page
 
 #download-btn {
     margin-left: 250px;
-    width: 180px;
-    height: 40px;
+    width: 200px;
+    height: 35px;
     font-size: 15px;
     background-color: #00356B;
     color: white;
@@ -132,3 +116,185 @@ if var-info is at the top of the page
     top: 725px;
     margin-left: 130px;
 }
+
+#reverse-label{
+    display: block;
+    margin-left: 250px;
+    font-size: 15px;
+    margin-top: 0;
+} */
+
+#left-container{
+    margin-left: 250px;
+    margin-top: 100px;
+    width: 500px;
+    margin-right: 0;
+    display: inline-block;
+}
+
+#rrna-svg #left-container{
+    margin-left: 130px;
+    margin-top: 30px;
+    width: 650px;
+}
+
+#right-container{
+    float: right;
+    margin-right: 300px;
+    margin-top:100px;
+    width: 400px;
+}
+
+#rrna-svg #right-container{
+    margin-top: 30px;
+    margin-right: 250px;
+}
+
+#var-form h5, #left-container h5 {
+    margin: 0;
+    font-size: 21px;
+    font-weight: bold;
+}
+
+#left-container h6 {
+    margin: 5px 0 10px 0;
+    font-size: 17px;
+    font-weight: bold;
+}
+
+#var-form p{
+    margin: 5px 0;
+    font-size: 15px;
+}
+
+#var-form button {
+    margin: 5px 15px 0 0;
+    background-color: #00356B;
+    color: white;
+    border: none;
+    padding: 15px 30px;
+}
+
+#var-form button:hover{
+    background-color: lightblue;
+    cursor: pointer;
+    color: #00356B;
+}
+
+#var-form input {
+    display: inline-block;
+    width: 100%;
+}
+
+#var-form label {
+    font-size: 13px;
+    color: grey;
+    font-weight: normal;
+}
+
+#var-info-table {
+    /* margin-right: 270px; */
+    /* float: right; */
+    width: 100%;
+    margin-top: 30px;
+    /* position: relative; */
+    /* bottom: 300px; */
+    /* right: 35px; */
+}
+
+/* #rrna-svg #var-info-table{
+    margin-right: 250px;
+    bottom: -210px;
+    left: 645px;
+    
+} */
+
+#var-info{
+    /* float: right; */
+    font-size: 18px;
+    width: 100%;
+    margin-top: 35px;
+    /* position: relative;
+    left: 365px;
+    top: -30px; */
+}
+
+/* #rrna-svg #var-info{
+    top: 230px;
+    left: -250px;
+} */
+
+#rrna-svg-container {
+    /* margin-left: 130px; */
+    position: absolute;
+    /* bottom: 656px; */
+    /* margin-top: 60px; */
+}
+
+#rrna-svg-container-zoom {
+    /* margin-left: 130px; */
+    position: absolute;
+    /* margin-top: 60px; */
+}
+
+
+#trna-svg li{
+    font-size: 14px;
+    list-style-type: square;
+    list-style-position: inside;
+    width: 100%;
+}
+
+#rrna-svg li{
+    font-size: 14px;
+    list-style-type: square;
+    list-style-position: inside;
+    position: relative;
+    top: 650px;
+    width: 100%;
+}
+
+#download-btn {
+    width: 200px;
+    height: 45px;
+    font-size: 15px;
+    background-color: #00356B;
+    color: white;
+    border: none;
+}
+
+#download-btn:hover{
+    background-color: lightblue;
+    cursor: pointer;
+    color: #00356B;
+}
+
+#rrna-svg #download-btn{
+    position: relative;
+    top: 645px;
+}
+
+#select-download{
+    position: relative;
+    top: 597px;
+    left: 210px;
+}
+
+#select-download span{
+    font-size: 13px;
+    padding-left: 25px;
+    margin-right: 15px;
+    color: grey;
+}
+
+#select-download p{
+    margin: 0;
+}
+
+
+/* #rrna-svg #download-btn {
+    position: relative;
+    top: 725px;
+    margin-left: 130px;
+} */
+

@@ -1,31 +1,13 @@
 import React from 'react';
 
-class Mtrnr1 extends React.Component{
+class MtRNR1Small extends React.Component{
 
     state = {
         variant: null
     }
 
     componentDidMount(){
-
-        //this is for removing repeated lines (will be needed with rrna2 again)
-        // var allTitle = document.getElementById('rrna-svg-container').getElementsByTagName('title');
-        // for(var a of allTitle){
-        //     if(a.parentElement.tagName=="line"||a.parentElement.tagName=="circle"){
-        //         for(var b of allTitle){
-        //             if(b.parentElement.tagName=="line"||b.parentElement.tagName=="circle"){
-        //                 if(a.innerHTML.split(',')[0]==b.innerHTML.split(',')[1]&&a.innerHTML.split(',')[1]==b.innerHTML.split(',')[0]){
-        //                     console.log(a.innerHTML+" "+b.innerHTML);
-        //                     b.parentElement.remove();
-        //                 }
-        //             }
-        //         }
-        //         // if(a.innerHTML.split(',')[0]>a.innerHTML.split(',')[1]){
-        //         //     a.parentElement.remove();
-        //         // }
-        //     }
-        // }
-
+        
         //set styles
         var allLines = document.getElementById('rrna-svg-container').getElementsByTagName('line');
         for(var t of allLines){
@@ -56,6 +38,7 @@ class Mtrnr1 extends React.Component{
     render() {
         return(
             <svg id="rrna-svg-container" style={{backgroundColor:"white"}} viewBox='-15 0 1010 1010' height="650" width="650" xmlns="http://www.w3.org/2000/svg">
+                <text x="0" y="30" style={{fontSize:"27", fontWeight:"bold", fontFamily:"sans-serif", textAnchor:"start"}}>MT-RNR1</text>
                 <line x1="486" y1="410" x2="494" y2="420"><title>1137,1138</title> </line>
                 <line x1="540" y1="503" x2="529" y2="509"><title>657,658</title> </line>
                 <line x1="504" y1="508" x2="520" y2="511"><title>656,657</title> </line>
@@ -2242,4 +2225,4 @@ class Mtrnr1 extends React.Component{
 
 }
 
-export default Mtrnr1;
+export default MtRNR1Small;

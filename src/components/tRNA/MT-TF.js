@@ -31,8 +31,8 @@ class Mttf extends React.Component{
         return(
             <svg id="svg-container" height="390" width="350" xmlns="http://www.w3.org/2000/svg">
                 <text x='35' y='10' style={{fontSize:'17', fontFamily:"sans-serif",textAnchor:'start',fontWeight:'bold'}}>MT-TF</text>
-                <text x='35' y='35' style={{fontSize:'17', fontFamily:"sans-serif",textAnchor:'start',fontWeight:'bold'}}>mt-tRNA
-                    <tspan style={{fontSize:'12'}} baselineShift="super">Phe</tspan>
+                <text x='35' y='35' style={{fontSize:'12', fontFamily:"sans-serif",textAnchor:'start',fontWeight:'bold'}}>mt-tRNA
+                    <tspan style={{fontSize:'9'}} baselineShift="super">Phe</tspan>
                 </text>
                 <text x="205" y="10" >A<title></title> </text>
                 <text x="205" y="25" >C<title></title> </text>

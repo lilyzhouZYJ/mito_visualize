@@ -3,9 +3,6 @@ import { Redirect } from 'react-router-dom';
 import GeneDropDown from './GeneDropDown';
 import "./styles/TrnaPage.css";
 
-// Import Materialize
-import M from "materialize-css";
-
 class RrnaPage extends React.Component{
 
     state = {
