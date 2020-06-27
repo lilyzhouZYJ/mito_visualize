@@ -4,12 +4,13 @@ const schema = require('./schema/schema');
 
 const app = express();
 
-//when the user goes to this route, express will interact with graphql
+//bind express with graphql - when the user goes to this route, express will interact with graphql
 app.use('/graphql', graphqlHTTP({
-    schema: schema
-}))
+    schema: schema,
+    graphiql: true  //to use graphiql
+}));
 
 //the port that the server runs on
 app.listen(4000, () => {
     console.log('now listening for requests on port 4000');
-})
+});
