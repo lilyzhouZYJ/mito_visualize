@@ -24,7 +24,6 @@ import Mttr from './tRNA/MT-TR';
 import VarInput from './VarInput';
 import VarInfoTable from './VarInfoTable';
 import VarInfo from './VarInfo';
-import Canvg from 'canvg';
 
 //match each gene to its respective component
 const tRNAs = {
