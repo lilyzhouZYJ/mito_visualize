@@ -272,7 +272,6 @@ class TrnaSVG extends React.Component{
         var gene = this.props.gene;
        
         var SvgComponent = tRNAs[gene];
-        // if(this.state.varSubmitted!==null){
             return(
                 <div id="trna-svg">
                     <div id="left-container">
@@ -295,24 +294,6 @@ class TrnaSVG extends React.Component{
                     </div>
                 </div>
             )
-        // } else {
-        //     return(
-        //         <div id="trna-svg">
-        //             <div id="left-container">
-        //                 <SvgComponent gene={gene} variant={this.state.varSubmitted} /> 
-        //                 {reverseStrand.includes(this.props.gene) &&
-        //                     <p id="reverse-label">Note: this gene is on the reverse strand.</p>
-        //                 }
-        //                 <button id="download-btn" onClick={this.handleClick}>Download Image (png)</button>
-        //             </div>
-        //             <div id="right-container">
-        //                 <VarInput handleVarSubmit={this.handleVarSubmit} gene={gene}/>
-        //                 <VarInfo gene={gene} variant={this.state.varSubmitted} variantCor={this.state.varCor} />
-        //             </div>
-                    
-        //         </div>
-        //     )
-        // }
     }
     
 }

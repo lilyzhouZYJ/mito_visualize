@@ -1,10 +1,45 @@
 import React from 'react';
+import {gql} from 'apollo-boost';
+import {graphql} from 'react-apollo';
+
+//construct the query
+const getVarInfoQuery = gql`
+    query($id:ID){
+        variant(id:$id){
+            gene_name
+            var_id
+            information
+        }
+    }
+`
+
+//HOW TO SEARCH SPECIFICALLY FOR A VARIANT RATHER THAN LISTING ALL?
 
 class VarInfoTable extends React.Component{
 
+    // //display fetched gene name
+    // displayGeneName(){
+    //     var data = this.props.data;
+    //     if(!data.loading){
+    //         return (
+    //             <td>{data.variant.gene_name}</td>
+    //         )
+    //     }
+    // }
+
+    // //display fetched information
+    // displayInformation(){
+    //     var data = this.props.data;
+    //     if(!data.loading){
+    //         return (
+    //             <td>{data.variant.information}</td>
+    //         )
+    //     }
+    // }
 
     render() {
     
+        console.log(this.props);
         return(
             <table id="var-info-table">
                 <tr>
@@ -13,11 +48,11 @@ class VarInfoTable extends React.Component{
                 </tr>
                 <tr>
                     <td>Maximum heteroplasmy in gnomAD</td>
-                    <td>placeholder</td>
+                    {/* <td>{this.displayGeneName()}</td> */}
                 </tr>
                 <tr>
                     <td>In silico predictions</td>
-                    <td>placeholder</td>
+                    {/* <td>{this.displayInformation}</td> */}
                 </tr>
                 <tr>
                     <td>Status in Mitomap</td>
@@ -34,5 +69,5 @@ class VarInfoTable extends React.Component{
     
 }
 
-export default VarInfoTable;
+export default graphql(getVarInfoQuery)(VarInfoTable);
 
