@@ -76,9 +76,14 @@ def populate_data(es):
 
 
 if __name__ == '__main__':
-	es = connect_elasticsearch()
-	#create_transcript_expression_index(es)	
-	#populate_transcript_data('full.ncbiRef.Gene.counts.txt.gz',es)
+	# es = connect_elasticsearch()
+	# #create_transcript_expression_index(es)	
+	# #populate_transcript_data('full.ncbiRef.Gene.counts.txt.gz',es)
 	
-	create_index(es)
-	populate_data(es)
+	# create_index(es)
+	# populate_data(es)
+
+    
+    for e in dummyData:
+        test = e.get('gene_name')
+        print(test)
