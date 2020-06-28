@@ -62,9 +62,9 @@ def populate_data(es):
         index_name = element.get('gene_name').lower()
 
         data = {
-            "gene_name": element.gene_name,
-            "var_id": element.var_id,
-            "information": element.information
+            "gene_name": element.get('gene_name'),
+            "var_id": element.get('var_id'),
+            "information": element.get('information')
         }
 
         #print(record)
@@ -76,14 +76,9 @@ def populate_data(es):
 
 
 if __name__ == '__main__':
-	# es = connect_elasticsearch()
-	# #create_transcript_expression_index(es)	
-	# #populate_transcript_data('full.ncbiRef.Gene.counts.txt.gz',es)
+	es = connect_elasticsearch()
+	#create_transcript_expression_index(es)	
+	#populate_transcript_data('full.ncbiRef.Gene.counts.txt.gz',es)
 	
-	# create_index(es)
-	# populate_data(es)
-
-    
-    for e in dummyData:
-        test = e.get('gene_name')
-        print(test)
+	create_index(es)
+	populate_data(es)
