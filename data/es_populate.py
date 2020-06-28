@@ -4,13 +4,51 @@ import gzip
 dummyData = [
     {
         "gene_name": "MT-TA",
-        "var_id": "m.5618A>G",
-        "information": "hi this is some information"
+		"var_id": "m.5618A>G",
+		"var_coordinate": 5618,
+		"var_alt": "A",
+		"var_ref": "G",
+		"freq_gnomad": "0.1",
+		"freq_mitomap": "0.2",
+		"heteroplasmy": "0.3",
+		"prediction_mitotip": "0.4",
+		"prediction_pon_mt_tRNA": "0.5",
+		"status_mitomap": "placeholder",
+		"status_clinvar": "placeholder",
+		"conservation": "placeholder",
+		"post_transcription_modifications": "placeholder"
+    },
+    {
+        "gene_name": "MT-TA",
+		"var_id": "m.5620T>C",
+		"var_coordinate": 5620,
+		"var_alt": "T",
+		"var_ref": "C",
+		"freq_gnomad": "0.1",
+		"freq_mitomap": "0.2",
+		"heteroplasmy": "0.3",
+		"prediction_mitotip": "0.4",
+		"prediction_pon_mt_tRNA": "0.5",
+		"status_mitomap": "placeholder",
+		"status_clinvar": "placeholder",
+		"conservation": "placeholder",
+		"post_transcription_modifications": "placeholder"
     },
     {
         "gene_name": "MT-TC",
-        "var_id": "m.5800A>C",
-        "information": "hi this is some more information"
+		"var_id": "m.5800G>T",
+		"var_coordinate": 5800,
+		"var_alt": "G",
+		"var_ref": "T",
+		"freq_gnomad": "0.1",
+		"freq_mitomap": "0.2",
+		"heteroplasmy": "0.3",
+		"prediction_mitotip": "0.4",
+		"prediction_pon_mt_tRNA": "0.5",
+		"status_mitomap": "placeholder",
+		"status_clinvar": "placeholder",
+		"conservation": "placeholder",
+		"post_transcription_modifications": "placeholder"
     }]
 
 
@@ -44,7 +82,19 @@ def create_index(es):
                     "properties": {
                         "gene_name": { "type": "text"},
                         "var_id": { "type": "text"},
-                        "information": {"type": "text"}
+                        "var_coordinate": { "type": "integer"},
+                        "var_alt": { "type": "text"},
+                        "var_ref": { "type": "text"},
+                        "freq_gnomad": { "type": "float"},
+                        "freq_mitomap": { "type": "float"},
+                        "heteroplasmy": { "type": "float"},
+                        "prediction_mitotip": { "type": "float"},
+                        "prediction_pon_mt_tRNA": { "type": "float"},
+                        "status_mitomap": { "type": "text"},
+                        "status_clinvar": { "type": "text"},
+                        "conservation": { "type": "text"},
+                        "post_transcription_modifications": { "type": "text"},
+
                     }
                 }
             }
