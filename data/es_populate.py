@@ -28,32 +28,11 @@ def connect_elasticsearch():
 
 
 
-def create_mtta_index(es, index_name='mt-ta'):
-	settings = {
-		"settings": {
-            "number_of_shards": 1,
-            "number_of_replicas": 0
-        },
-		"mappings": {
-			"_doc": {
-				"properties": {
-					"gene_name": { "type": "text"},
-					"var_id": { "type": "text"},
-					"information": {"type": "text"}
-				}
-			}
-		}
-	}
-	es.indices.create(index=index_name, body=settings)
-
-
-
-
 def create_index(es):
    
     for element in dummyData:
 
-        index_name = element.get('gene_name')
+        index_name = element.get('gene_name').lower()
         
         settings = {
             "settings": {
@@ -80,7 +59,7 @@ def populate_data(es):
 
     for element in dummyData:
 
-        index_name = element.get('gene_name')
+        index_name = element.get('gene_name').lower()
 
         data = {
             "gene_name": element.gene_name,
