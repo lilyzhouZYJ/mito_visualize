@@ -60,6 +60,7 @@ def populate_data(es):
     for element in dummyData:
 
         index_name = element.get('gene_name').lower()
+        doc_id = element.get('var_id')
 
         data = {
             "gene_name": element.get('gene_name'),
@@ -67,8 +68,8 @@ def populate_data(es):
             "information": element.get('information')
         }
 
-        #print(record)
-        es.index(index=index_name, doc_type='_doc', body=data)
+        print('some data added')
+        es.index(index=index_name, doc_type='_doc', id=doc_id, body=data)
 
 
 
@@ -80,5 +81,5 @@ if __name__ == '__main__':
 	#create_transcript_expression_index(es)	
 	#populate_transcript_data('full.ncbiRef.Gene.counts.txt.gz',es)
 	
-	create_index(es)
+	#create_index(es)
 	populate_data(es)
