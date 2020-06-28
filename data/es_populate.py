@@ -53,7 +53,7 @@ def create_index(es):
    
     for element in dummyData:
 
-        index_name = element.gene_name
+        index_name = element.get(gene_name)
         
         settings = {
             "settings": {
@@ -80,7 +80,7 @@ def populate_data(es):
 
     for element in dummyData:
 
-        index_name = element.gene_name
+        index_name = element.get(gene_name)
 
         data = {
             "gene_name": element.gene_name,
