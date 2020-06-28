@@ -115,7 +115,18 @@ def populate_data(es):
         data = {
             "gene_name": element.get('gene_name'),
             "var_id": element.get('var_id'),
-            "information": element.get('information')
+            "var_coordinate": element.get('var_coordinate'),
+            "var_alt": element.get('var_alt'),
+            "var_ref": element.get('var_ref'),
+            "freq_gnomad": element.get('freq_gnomad'),
+            "freq_mitomap": element.get('freq_mitomap'),
+            "heteroplasmy": element.get('heteroplasmy'),
+            "prediction_mitotip": element.get('prediction_mitotip'),
+            "prediction_pon_mt_tRNA": element.get('prediction_pon_mt_tRNA'),
+            "status_mitomap": element.get('status_mitomap'),
+            "status_clinvar": element.get('status_clinvar'),
+            "conservation": element.get('conservation'),
+            "post_transcription_modifications": element.get('post_transcription_modifications'),
         }
 
         print('some data added')
