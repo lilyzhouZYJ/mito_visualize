@@ -81,7 +81,7 @@ def create_index(es):
                 "_doc": {
                     "properties": {
                         "gene_name": { "type": "text"},
-                        "var_id": { "type": "text"},
+                        "var_id": { "type": "keyword"},
                         "var_coordinate": { "type": "integer"},
                         "var_alt": { "type": "text"},
                         "var_ref": { "type": "text"},
@@ -100,7 +100,8 @@ def create_index(es):
             }
         }
 
-        es.indices.create(index=index_name, body=settings)
+        if not es.indices.exists(index=index_name):
+            es.indices.create(index=index_name, body=settings)
 
 
 
@@ -142,5 +143,5 @@ if __name__ == '__main__':
 	#create_transcript_expression_index(es)	
 	#populate_transcript_data('full.ncbiRef.Gene.counts.txt.gz',es)
 	
-	#create_index(es)
+	create_index(es)
 	populate_data(es)

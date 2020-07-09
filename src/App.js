@@ -8,7 +8,7 @@ import {ApolloProvider} from 'react-apollo';  //bind react to Apollo
 
 // apollo client setup
 const client = new ApolloClient({
-  uri: 'http://localhost:4000/graphql' //endpoint that Apollo will make request/queries to
+  uri: 'http://34.92.100.56:4000/graphql' //endpoint that Apollo will make request/queries to
 })
 
 class App extends React.Component{

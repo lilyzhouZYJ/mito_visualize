@@ -49,7 +49,7 @@ class VarInput extends React.Component{
             
             this.props.handleVarSubmit('','');  //pass empty strings to TrnaSVG (which would then update state to null)
             
-            var errMsgText = document.createTextNode("Wrong input format. Please enter the variant using this format: ‘m.5618A>G.");
+            var errMsgText = document.createTextNode("Wrong input format. Please enter the variant using this format: m.5618A>G.");
             var errMsg = document.createElement('div');
             errMsg.appendChild(errMsgText);
             errMsg.style.fontSize = '20px';

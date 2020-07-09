@@ -66,7 +66,7 @@ export const fetchVarDetails = async (ctx, var_id) => {
     })
 
     const doc = response.hits.hits[0]
-    console.log(doc)
+    //console.log(doc)
 
     return doc ? doc._source : null // eslint-disable-line no-underscore-dangle
 }

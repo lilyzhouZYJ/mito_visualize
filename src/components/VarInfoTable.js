@@ -2,6 +2,9 @@ import React from 'react';
 import {gql} from 'apollo-boost';
 import {graphql} from 'react-apollo';
 
+import { fetchVarInfo } from './fetch.js'
+
+/*apollo
 //construct the query
 const getVarInfoQuery = gql`
     query($var_id:String!){
@@ -23,33 +26,41 @@ const getVarInfoQuery = gql`
         }
     }
 `;
+*/
 
 class VarInfoTable extends React.Component{
 
-    // //display fetched gene name
-    // displayGeneName(){
-    //     var data = this.props.data;
-    //     if(!data.loading){
-    //         return (
-    //             <td>{data.variant.gene_name}</td>
-    //         )
-    //     }
-    // }
+    state = {
+        varData: null,
+        isLoadingData: false,
+        loadError: null,
+    }
 
-    // //display fetched information
-    // displayInformation(){
-    //     var data = this.props.data;
-    //     if(!data.loading){
-    //         return (
-    //             <td>{data.variant.information}</td>
-    //         )
-    //     }
-    // }
+    componentDidMount() {
+        fetchVarInfo(this.props.variant).then(response => {
+            const varData = response.data.variant;
+            this.setState({varData: varData});
+            //console.log(this.state.varData);
+        })
+    }
 
-    render() {
+    componentDidUpdate() {
+        fetchVarInfo(this.props.variant).then(response => {
+            console.log(this.props.variant);
+            const varData = response.data.variant;
+            console.log(varData);
+            this.setState({varData: varData});
+            //console.log(this.state.varData);
+        })
+    }
+
+    render() {   
     
-        console.log(this.props);
-        if(!this.props.data.loading){
+        //console.log(this.props);
+        //if(!this.props.data.loading){
+        
+        var data = this.state.varData;
+        if(data!==null){
             return(
                 <table id="var-info-table">
                     <tr>
@@ -58,11 +69,11 @@ class VarInfoTable extends React.Component{
                     </tr>
                     <tr>
                         <td>Maximum heteroplasmy in gnomAD</td>
-                        <td>{this.props.data.variant.heteroplasmy}</td>
+                        <td>{data.heteroplasmy}</td>
                     </tr>
                     <tr>
                         <td>In silico predictions</td>
-                        <td>{this.props.data.variant.prediction_mitotip}</td>
+                        <td>{data.prediction_mitotip+" "+data.prediction_pon_mt_tRNA}</td>
                     </tr>
                     <tr>
                         <td>Status in Mitomap</td>
@@ -75,12 +86,15 @@ class VarInfoTable extends React.Component{
                 </table>
             )
         } else {
-            return null;
+            return (<p>Loading...</p>);
         }
     }
     
 }
 
+export default VarInfoTable;
+
+/* apollo
 export default graphql(getVarInfoQuery, {
     options: (props) => {
         return {
@@ -90,4 +104,5 @@ export default graphql(getVarInfoQuery, {
         }
     }
 })(VarInfoTable);
+*/
 
