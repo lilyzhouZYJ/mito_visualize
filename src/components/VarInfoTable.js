@@ -9,7 +9,6 @@ import { fetchVarInfo } from './fetch.js'
 const getVarInfoQuery = gql`
     query($var_id:String!){
         variant(var_id:$var_id){
-            gene_name,
             var_id,
             var_coordinate,
             var_alt,
@@ -18,9 +17,12 @@ const getVarInfoQuery = gql`
             freq_mitomap,
             heteroplasmy,
             prediction_mitotip,
+            prediction_mitotip_category,
             prediction_pon_mt_tRNA,
-            status_mitomap,
-            status_clinvar,
+            prediction_pon_mt_tRNA_category,
+            disease_status_mitomap,
+            diseases_mitomap,
+            diseases_clinvar,
             conservation,
             post_transcription_modifications
         }
@@ -38,6 +40,7 @@ class VarInfoTable extends React.Component{
 
     componentDidMount() {
         fetchVarInfo(this.props.variant).then(response => {
+            console.log(response)
             const varData = response.data.variant;
             this.setState({varData: varData});
             //console.log(this.state.varData);
@@ -46,9 +49,8 @@ class VarInfoTable extends React.Component{
 
     componentDidUpdate() {
         fetchVarInfo(this.props.variant).then(response => {
-            console.log(this.props.variant);
+            console.log(response)
             const varData = response.data.variant;
-            console.log(varData);
             this.setState({varData: varData});
             //console.log(this.state.varData);
         })
@@ -56,31 +58,30 @@ class VarInfoTable extends React.Component{
 
     render() {   
     
-        //console.log(this.props);
-        //if(!this.props.data.loading){
+        var variant = this.props.variant;
         
         var data = this.state.varData;
         if(data!==null){
             return(
                 <table id="var-info-table">
                     <tr>
-                        <td>Population frequency</td>
-                        <td>{this.props.variant}</td>
+                        <td class='left-col'>Population frequency</td>
+                        <td>{'gnomAD: '+data.freq_gnomad+' / '}<a href={'https://mitomap.org/cgi-bin/search_allele?variant='+variant.substring(2)}>MitoMap</a>{': '+data.freq_mitomap}</td>
                     </tr>
                     <tr>
-                        <td>Maximum heteroplasmy in gnomAD</td>
+                        <td class='left-col'>Maximum heteroplasmy in gnomAD</td>
                         <td>{data.heteroplasmy}</td>
                     </tr>
                     <tr>
-                        <td>In silico predictions</td>
-                        <td>{data.prediction_mitotip+" "+data.prediction_pon_mt_tRNA}</td>
+                        <td class='left-col'>In silico predictions<br/>(score & interpretation)</td>
+                        <td><a href='https://www.mitomap.org/MITOMAP/MitoTipScores'>MitoTip</a>{': '+(Math.round(data.prediction_mitotip*10)/10).toFixed(1)+" - "+data.prediction_mitotip_category}<br/><a href='http://structure.bmc.lu.se/PON-mt-tRNA/about.html/'>PON-mt-tRNA</a>{': '+(Math.round(data.prediction_pon_mt_tRNA*10)/10).toFixed(1)+" - "+data.prediction_pon_mt_tRNA_category}</td>
                     </tr>
                     <tr>
-                        <td>Status in Mitomap</td>
-                        <td>placeholder</td>
+                        <td class='left-col'>Disease associations</td>
+                        <td><a href={'https://mitomap.org/cgi-bin/search_allele?variant='+variant.substring(2)}>MitoMap</a>{': '+data.diseases_mitomap+' / ClinVar: '+data.diseases_clinvar}</td>
                     </tr>
                     <tr>
-                        <td>Status in Phylotree</td>
+                        <td class='left-col'>Status in Phylotree</td>
                         <td>placeholder</td>
                     </tr>
                 </table>

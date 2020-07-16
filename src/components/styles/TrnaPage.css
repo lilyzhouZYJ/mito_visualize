@@ -1,129 +1,3 @@
-/* #trna-svg input {
-    display: inline-block;
-}
-
-#trna-svg label {
-    font-size: 13px;
-    color: grey;
-    font-weight: normal;
-}
-
-#svg-container {
-    margin: 100px 0 0 250px;
-}
-
-#var-form {
-    margin-top: 100px;
-    margin-right: 300px;
-    float: right;
-    width: 400px;
-}
-
-#var-form form {
-    margin: 0;
-    width: 100%
-}
-
-#var-form p {
-    margin: 0;
-    font-size: 21px;
-    font-weight: bold;
-}
-
-#var-form button {
-    margin: 5px 15px 0 0;
-    background-color: #00356B;
-    color: white;
-    border: none;
-    padding: 15px 30px;
-}
-
-#var-form button:hover{
-    background-color: lightblue;
-    cursor: pointer;
-    color: #00356B;
-}
-
-#var-input{
-    width: 100%;
-}
-
-#rrna-svg #var-form {
-    margin-right: 250px;
-    margin-top: 60px;
-}
-
-#var-info-table {
-    margin-right: 270px;
-    float: right;
-    width: 400px;
-    position: relative;
-    bottom: 300px;
-    right: 35px;
-}
-
-#rrna-svg #var-info-table{
-    margin-right: 250px;
-    bottom: -210px;
-    left: 645px;
-    
-}
-
-#var-info{
-    float: right;
-    font-size: 18px;
-    width: 400px;
-    position: relative;
-    left: 365px;
-    top: -30px;
-}
-
-#rrna-svg #var-info{
-    top: 230px;
-    left: -250px;
-}
-
-#rrna-svg-container {
-    margin-left: 130px;
-    position: absolute;
-    margin-top: 60px;
-}
-
-#rrna-svg-container-zoom {
-    margin-left: 130px;
-    position: absolute;
-    margin-top: 60px;
-}
-
-#download-btn {
-    margin-left: 250px;
-    width: 200px;
-    height: 35px;
-    font-size: 15px;
-    background-color: #00356B;
-    color: white;
-    border: none;
-}
-
-#download-btn:hover{
-    background-color: lightblue;
-    cursor: pointer;
-    color: #00356B;
-}
-
-#rrna-svg #download-btn {
-    position: relative;
-    top: 725px;
-    margin-left: 130px;
-}
-
-#reverse-label{
-    display: block;
-    margin-left: 250px;
-    font-size: 15px;
-    margin-top: 0;
-} */
-
 #left-container{
     margin-left: 250px;
     margin-top: 100px;
@@ -140,9 +14,9 @@
 
 #right-container{
     float: right;
-    margin-right: 300px;
+    margin-right: 250px;
     margin-top:100px;
-    width: 400px;
+    width: 450px;
 }
 
 #rrna-svg #right-container{
@@ -183,7 +57,7 @@
 
 #var-form input {
     display: inline-block;
-    width: 100%;
+    width: 80%;
 }
 
 #var-form label {
@@ -200,6 +74,10 @@
     /* position: relative; */
     /* bottom: 300px; */
     /* right: 35px; */
+}
+
+#var-info-table .left-col {
+    width: 170px
 }
 
 /* #rrna-svg #var-info-table{

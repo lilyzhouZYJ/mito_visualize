@@ -6,7 +6,6 @@ export const fetchVarInfo = varId => {
 
     const query = `{
        variant(${argument}){
-            gene_name,
             var_id,
             var_coordinate,
             var_alt,
@@ -15,9 +14,12 @@ export const fetchVarInfo = varId => {
             freq_mitomap,
             heteroplasmy,
             prediction_mitotip,
+            prediction_mitotip_category,
             prediction_pon_mt_tRNA,
-            status_mitomap,
-            status_clinvar,
+            prediction_pon_mt_tRNA_category,
+            disease_status_mitomap,
+            diseases_mitomap,
+            diseases_clinvar,
             conservation,
             post_transcription_modifications
        }
