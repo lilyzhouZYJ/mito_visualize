@@ -1,7 +1,7 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom';
 import GeneDropDown from './GeneDropDown';
-import './styles/TrnaPage.css';
+import './styles/RnaPages.css';
 
 //can delete this??
 //list of all valid gene names

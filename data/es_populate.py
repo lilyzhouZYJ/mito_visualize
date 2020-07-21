@@ -1,6 +1,7 @@
 from elasticsearch import Elasticsearch
 #import gzip
 import urllib2
+import pprint
 
 geneLoc = {
     'MT-TF': [577,647],
@@ -209,8 +210,9 @@ def populate_data(es):
                     "var_ref": ref,
                     "prediction_pon_mt_tRNA": score,
                     "prediction_pon_mt_tRNA_category": cat,
+                    "disease_status_mitomap": "None listed", #initializing
                     "diseases_mitomap": "None listed",	#initializing disease associations for mitomap
-                    "freq_mitomap": 0	#initializing population freq for mitomap
+                    "freq_mitomap": 0
                 }
 
                 if es.exists(index=g.lower(), doc_type='_doc', id=var_id):
@@ -308,7 +310,25 @@ def populate_data(es):
                         #print('some more doc was added with mitotip disease data: '+var_id)
 
     
+def test_func(es):
 
+    q = {
+            "query":{
+                "bool":{
+                    "must_not":{
+                        "exists": {
+                            "field": "freq_mitomap"
+                        }
+                    }
+                }
+            }
+        }
+
+    indices = []
+    result = es.search(index='mt-ta', doc_type='_doc', body=q)
+    for hit in result['hits']['hits']:
+        indices.append(hit['_id'])
+    print(indices)
 
 
 if __name__ == '__main__':
@@ -318,3 +338,4 @@ if __name__ == '__main__':
 
 	create_index(es)
 	populate_data(es)
+        #test_func(es)

@@ -58,27 +58,34 @@ class VarInfoTable extends React.Component{
 
     render() {   
     
-        var variant = this.props.variant;
-        
-        var data = this.state.varData;
+        var variant = this.props.variant;        
+        var data = this.state.varData;        
+
         if(data!==null){
+
+            var freqMitomap = data.freq_mitomap==null ? 0 : data.freq_mitomap;
+            var diseasesMitomap = data.diseases_mitomap==null ? "None listed" : data.diseases_mitomap;
+            var diseaseStatusMitomap = data.disease_status_mitomap==null ? "None listed" : data.disease_status_mitomap;
+            
             return(
                 <table id="var-info-table">
                     <tr>
                         <td class='left-col'>Population frequency</td>
-                        <td>{'gnomAD: '+data.freq_gnomad+' / '}<a href={'https://mitomap.org/cgi-bin/search_allele?variant='+variant.substring(2)}>MitoMap</a>{': '+data.freq_mitomap}</td>
+                        <td>{'gnomAD: '+data.freq_gnomad+' / '}<a href={'https://mitomap.org/cgi-bin/search_allele?variant='+variant.substring(2)}>MitoMap</a>{': '+freqMitomap}</td>
                     </tr>
                     <tr>
                         <td class='left-col'>Maximum heteroplasmy in gnomAD</td>
                         <td>{data.heteroplasmy}</td>
                     </tr>
-                    <tr>
-                        <td class='left-col'>In silico predictions<br/>(score & interpretation)</td>
-                        <td><a href='https://www.mitomap.org/MITOMAP/MitoTipScores'>MitoTip</a>{': '+(Math.round(data.prediction_mitotip*10)/10).toFixed(1)+" - "+data.prediction_mitotip_category}<br/><a href='http://structure.bmc.lu.se/PON-mt-tRNA/about.html/'>PON-mt-tRNA</a>{': '+(Math.round(data.prediction_pon_mt_tRNA*10)/10).toFixed(1)+" - "+data.prediction_pon_mt_tRNA_category}</td>
-                    </tr>
+                    {this.props.rnaType=="tRNA" &&
+                        <tr>
+                            <td class='left-col'>In silico predictions<br/>(score & interpretation)</td>
+                            <td><a href='https://www.mitomap.org/MITOMAP/MitoTipScores'>MitoTip</a>{': '+(Math.round(data.prediction_mitotip*10)/10).toFixed(1)+" - "+data.prediction_mitotip_category}<br/><a href='http://structure.bmc.lu.se/PON-mt-tRNA/about.html/'>PON-mt-tRNA</a>{': '+(Math.round(data.prediction_pon_mt_tRNA*10)/10).toFixed(1)+" - "+data.prediction_pon_mt_tRNA_category}</td>
+                        </tr>
+                    }
                     <tr>
                         <td class='left-col'>Disease associations</td>
-                        <td><a href={'https://mitomap.org/cgi-bin/search_allele?variant='+variant.substring(2)}>MitoMap</a>{': '+data.diseases_mitomap+' / ClinVar: '+data.diseases_clinvar}</td>
+                        <td><a href={'https://mitomap.org/cgi-bin/search_allele?variant='+variant.substring(2)}>MitoMap</a>{': '+diseaseStatusMitomap+' / ClinVar: '+data.diseases_clinvar}</td>
                     </tr>
                     <tr>
                         <td class='left-col'>Status in Phylotree</td>

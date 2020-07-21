@@ -469,7 +469,7 @@ class RrnaSVG extends React.Component{
                 <div id="right-container">
                     <VarInput handleVarSubmit={this.handleVarSubmit} gene={gene}/>
                     {this.state.varSubmitted!==null && 
-                        <VarInfoTable variant={this.state.varSubmitted} varCor={this.state.varCor} />
+                        <VarInfoTable variant={this.state.varSubmitted} rnaType="rRNA" />
                     }           
                     <VarInfo gene={gene} variant={this.state.varSubmitted} variantCor={this.state.varCor}/>
                 </div>
