@@ -25,7 +25,9 @@ const VarType = new GraphQLObjectType({
 	prediction_pon_mt_tRNA_category:{ type: GraphQLString },
 	disease_status_mitomap:{ type: GraphQLString },
 	diseases_mitomap:{ type: GraphQLString },
+	disease_status_clinvar:{ type: GraphQLString },
 	diseases_clinvar:{ type: GraphQLString },
+	clinvar_variant_id:{ type: GraphQLString },
 	conservation:{ type: GraphQLString },
 	post_transcription_modifications:{ type: GraphQLString },
     })

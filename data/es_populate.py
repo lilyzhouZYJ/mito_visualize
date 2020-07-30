@@ -1,5 +1,5 @@
 from elasticsearch import Elasticsearch
-#import gzip
+import gzip
 import urllib2
 import pprint
 
@@ -9,36 +9,23 @@ geneLoc = {
     'MT-TV':  [1602,1670],
     'MT-RNR2':[1671, 3229],
     'MT-TL1':[3230, 3304],
-    'MT-ND1':[3307,4262],
     'MT-TI':[4263,4331],
     'MT-TQ':[4329,4400],
     'MT-TM':[4402,4469],
-    'MT-ND2':[4470,5511],
     'MT-TW':[5512,5579],
     'MT-TA':[5587,5655],
     'MT-TN':[5657,5729],
     'MT-TC':[5761,5826],
     'MT-TY':[5826,5891],
-    'MT-CO1':[5904,7445],
     'MT-TS1':[7446,7514],
     'MT-TD':[7518,7585],
-    'MT-CO2':[7586,8269],
     'MT-TK':[8295,8364],
-    'MT-ATP8':[8366,8572],
-    'MT-ATP6':[8527,9207],
-    'MT-CO3':[9207,9990],
     'MT-TG':[9991,10058],
-    'MT-ND3':[10059,10404],
     'MT-TR':[10405,10469],
-    'MT-ND4L':[10470,10766],
-    'MT-ND4':[10760,12137],
     'MT-TH':[12138,12206],
     'MT-TS2': [12207,12265],
     'MT-TL2': [12266,12336],
-    'MT-ND5': [12337,14148],
-    'MT-ND6': [14149,14673],
     'MT-TE': [14674,14742],
-    'MT-CYB': [14747,15887],
     'MT-TT': [15888,15953],
     'MT-TP': [15956,16023],
 }
@@ -87,7 +74,9 @@ def create_index(es):
                         "prediction_pon_mt_tRNA_category": { "type": "text"},
                         "disease_status_mitomap": { "type": "text"},
                         "diseases_mitomap": { "type": "text"},
+                        "disease_status_clinvar": { "type": "text"},
                         "diseases_clinvar": { "type": "text"},
+                        "clinvar_variant_id": { "type": "integer"},
                         "conservation": { "type": "text"},
                         "post_transcription_modifications": { "type": "text"},
 
@@ -102,7 +91,7 @@ def create_index(es):
 
 
 
-def populate_data(es):
+def populate_in_silico(es):
 
     #prediction_mitotip: in silico scores from MitoTip
     #f = open('mitotip_scores.txt','r')
@@ -210,9 +199,6 @@ def populate_data(es):
                     "var_ref": ref,
                     "prediction_pon_mt_tRNA": score,
                     "prediction_pon_mt_tRNA_category": cat,
-                    "disease_status_mitomap": "None listed", #initializing
-                    "diseases_mitomap": "None listed",	#initializing disease associations for mitomap
-                    "freq_mitomap": 0
                 }
 
                 if es.exists(index=g.lower(), doc_type='_doc', id=var_id):
@@ -226,7 +212,14 @@ def populate_data(es):
                 #    print("deleted stuff")
                 #    es.delete(index=g.lower(), doc_type='_doc', id=var_id)
 
-    #disease association (mitomap, disease.cgi) + part of population frequency (mitomap, disease.cgi)
+
+
+
+
+#disease association 
+def populate_disease_association(es):
+
+    #mitomap, disease.cgi, "status" and "disease"
     f = urllib2.urlopen('https://mitomap.org/cgi-bin/disease.cgi')
 
     for line in f:
@@ -240,7 +233,6 @@ def populate_data(es):
                 alt = info[3]
                 diseases = info[7]
                 status = info[8]
-                freq = info[11]
  
                 var_id = 'm.'+info[1]+ref+'>'+alt
                 #print(var_id)
@@ -259,6 +251,107 @@ def populate_data(es):
                     "var_ref": ref,
                     "diseases_mitomap": diseases,
                     "disease_status_mitomap": status,
+                }
+
+                for g in gene_name:
+                    if es.exists(index=g.lower(), doc_type='_doc', id=var_id):
+                        es.update(index=g.lower(), doc_type='_doc', id=var_id, body={'doc':data})
+                        print('some doc was updated with mitotip disease data: '+var_id)
+                    else:
+                        es.index(index=g.lower(), doc_type='_doc', id=var_id, body=data)
+                        print('some doc was added with mitotip disease data: '+var_id)
+
+    #clinvar, variant_summary.txt.gz, "ClinicalSignificance" and "PhenotypeList"
+    f = gzip.open('variant_summary.txt.gz', 'rt')
+
+    for line in f:
+    #for n in range(1,5000):
+    #    line = f.readline()
+
+        if line[0].isdigit():
+            #print(line)
+            info = line.split('\t')
+            name = info[2]
+
+            if info[1]=="single nucleotide variant" and 'm.' in name and '>' in name:
+                #print(line)
+                ind1 = name.index('m.')
+                ind2 = name.index('>')
+                coorStr = name[ind1+2:ind2-1]
+
+                if coorStr.isdigit():
+                    coorInt = int(coorStr)
+                    ref = name[ind2-1]
+                    alt = name[ind2+1]
+
+                    status = info[6]
+                    diseases = info[13]
+                    varid = info[30].split('\n')[0]
+ 
+                    var_id = 'm.'+coorStr+ref+'>'+alt
+                    #print(var_id)
+
+                    #find index
+                    gene_name = []
+                    for gene in geneLoc:
+                        if coorInt>=geneLoc[gene][0] and coorInt<=geneLoc[gene][1]:
+                            gene_name.append(gene)
+                    #print(gene_name)
+
+                    data = {
+                        "var_id": var_id,
+                        "var_coordinate": coorInt,
+                        "var_alt": alt,
+                        "var_ref": ref,
+                        "diseases_clinvar": diseases,
+                        "disease_status_clinvar": status,
+                        "clinvar_variant_id": varid
+                    }
+
+                    for g in gene_name:
+                        if es.exists(index=g.lower(), doc_type='_doc', id=var_id):
+                            es.update(index=g.lower(), doc_type='_doc', id=var_id, body={'doc':data})
+                            print('some doc was updated with clinvar disease data: '+var_id)
+                        else:
+                            es.index(index=g.lower(), doc_type='_doc', id=var_id, body=data)
+                            print('some doc was added with clinvar disease data: '+var_id)
+
+
+
+
+
+#population frequency (mitomap)
+def populate_population_freq(es):
+
+    #part of population frequency (mitomap - disease.cgi)
+    f = urllib2.urlopen('https://mitomap.org/cgi-bin/disease.cgi')
+
+    for line in f:
+
+        if line[0].isdigit():
+            info = line.split('\t')
+
+            if len(info[2])==1 and len(info[3])==1 and len(info[4])==0 and info[3]!=':':
+                coor = int(info[1])
+                ref = info[2]
+                alt = info[3]
+                freq = info[11]
+ 
+                var_id = 'm.'+info[1]+ref+'>'+alt
+                #print(var_id)
+
+                #find index
+                gene_name = []
+                for gene in geneLoc:
+                    if coor>=geneLoc[gene][0] and coor<=geneLoc[gene][1]:
+                        gene_name.append(gene)
+                #print(gene_name)
+
+                data = {
+                    "var_id": var_id,
+                    "var_coordinate": coor,
+                    "var_alt": alt,
+                    "var_ref": ref,
                     "freq_mitomap": freq
                 }
 
@@ -270,7 +363,7 @@ def populate_data(es):
                         es.index(index=g.lower(), doc_type='_doc', id=var_id, body=data)
                         print('some doc was added with mitotip disease data: '+var_id)
 
-    #the other part of population frequency (mitomap, polymorphisms.cgi.txt)
+    #the other part of population frequency (mitomap - polymorphisms.cgi.txt)
     f = urllib2.urlopen('https://mitomap.org/cgi-bin/polymorphisms.cgi')
 
     for line in f:
@@ -309,6 +402,10 @@ def populate_data(es):
                         es.index(index=g.lower(), doc_type='_doc', id=var_id, body=data)
                         #print('some more doc was added with mitotip disease data: '+var_id)
 
+
+
+
+
     
 def test_func(es):
 
@@ -330,12 +427,19 @@ def test_func(es):
         indices.append(hit['_id'])
     print(indices)
 
+def test_gzip(file):
+    f = gzip.open(file, 'rt')
+
+    for n in range(1,3):
+        row = f.readline().split('\t')
+        print(row)
 
 if __name__ == '__main__':
 	es = connect_elasticsearch()
-	#create_transcript_expression_index(es)	
-	#populate_transcript_data('full.ncbiRef.Gene.counts.txt.gz',es)
-
-	create_index(es)
-	populate_data(es)
+	
+	#create_index(es)
+        #populate_in_silico(es)
+        populate_disease_association(es)
+        #populate_population_freq(es)
         #test_func(es)
+        #test_gzip('variant_summary.txt.gz')

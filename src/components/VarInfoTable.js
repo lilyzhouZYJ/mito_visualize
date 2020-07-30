@@ -22,7 +22,9 @@ const getVarInfoQuery = gql`
             prediction_pon_mt_tRNA_category,
             disease_status_mitomap,
             diseases_mitomap,
+            disease_status_clinvar,
             diseases_clinvar,
+            clinvar_variant_id,
             conservation,
             post_transcription_modifications
         }
@@ -66,12 +68,17 @@ class VarInfoTable extends React.Component{
             var freqMitomap = data.freq_mitomap==null ? 0 : data.freq_mitomap;
             var diseasesMitomap = data.diseases_mitomap==null ? "None listed" : data.diseases_mitomap;
             var diseaseStatusMitomap = data.disease_status_mitomap==null ? "None listed" : data.disease_status_mitomap;
+            var diseasesClinvar = data.diseases_clinvar==null ? "None listed" : data.diseases_mitomap;
+            var diseaseStatusClinvar = data.disease_status_clinvar==null ? "None listed" : data.disease_status_clinvar;
+
+            var mitomapLink = 'https://mitomap.org/cgi-bin/search_allele?variant='+variant.substring(2);
+            var clinvarLink = data.clinvar_variant_id==null ? '' : 'https://www.ncbi.nlm.nih.gov/clinvar/variation/' + data.clinvar_variant_id;
             
             return(
                 <table id="var-info-table">
                     <tr>
                         <td class='left-col'>Population frequency</td>
-                        <td>{'gnomAD: '+data.freq_gnomad+' / '}<a href={'https://mitomap.org/cgi-bin/search_allele?variant='+variant.substring(2)}>MitoMap</a>{': '+freqMitomap}</td>
+                        <td>{'gnomAD: '+data.freq_gnomad+' / MitoMap: '}<a href={mitomapLink}>{freqMitomap}</a></td>
                     </tr>
                     <tr>
                         <td class='left-col'>Maximum heteroplasmy in gnomAD</td>
@@ -85,7 +92,7 @@ class VarInfoTable extends React.Component{
                     }
                     <tr>
                         <td class='left-col'>Disease associations</td>
-                        <td><a href={'https://mitomap.org/cgi-bin/search_allele?variant='+variant.substring(2)}>MitoMap</a>{': '+diseaseStatusMitomap+' / ClinVar: '+data.diseases_clinvar}</td>
+                        <td>MitoMap: <a href={mitomapLink}>{diseaseStatusMitomap}</a> / ClinVar: <a href={clinvarLink}>{diseaseStatusClinvar}</a></td>
                     </tr>
                     <tr>
                         <td class='left-col'>Status in Phylotree</td>

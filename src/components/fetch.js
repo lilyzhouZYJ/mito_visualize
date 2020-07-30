@@ -19,7 +19,9 @@ export const fetchVarInfo = varId => {
             prediction_pon_mt_tRNA_category,
             disease_status_mitomap,
             diseases_mitomap,
+            disease_status_clinvar,
             diseases_clinvar,
+            clinvar_variant_id,
             conservation,
             post_transcription_modifications
        }

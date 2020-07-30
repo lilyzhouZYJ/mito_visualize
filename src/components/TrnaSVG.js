@@ -59,7 +59,7 @@ const saveSvgAsPng = require('save-svg-as-png')
 const imageOptions = {
   scale: 5,
   encoderOptions: 1,
-  backgroundColor: 'yellow',
+  backgroundColor: 'white',
   left: 5,
   top: -20,
   height: 390,
