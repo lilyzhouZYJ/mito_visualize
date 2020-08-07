@@ -67,6 +67,7 @@ def create_index(es):
                         "var_ref": { "type": "text"},
                         "freq_gnomad": { "type": "float"},
                         "freq_mitomap": { "type": "float"},
+                        "count_mitomap": { "type": "integer"},
                         "heteroplasmy": { "type": "float"},
                         "prediction_mitotip": { "type": "float"},
                         "prediction_mitotip_category": { "type": "text"},
@@ -76,8 +77,11 @@ def create_index(es):
                         "diseases_mitomap": { "type": "text"},
                         "disease_status_clinvar": { "type": "text"},
                         "diseases_clinvar": { "type": "text"},
-                        "clinvar_variant_id": { "type": "integer"},
-                        "conservation": { "type": "text"},
+                        "clinvar_variant_id": { "type": "text"},
+                        "haplogroups": { "type": "text"},
+                        "count_haplos": { "type": "integer"},
+                        "conserv_phylop": { "type": "float"},
+                        "conserv_phastcons": { "type": "float"},
                         "post_transcription_modifications": { "type": "text"},
 
                     }
@@ -103,7 +107,7 @@ def populate_in_silico(es):
             info = line.split('\t')
 
             if info[2] is not ':':
-                coor = int(info[0])
+                coor = info[0]
                 ref = info[1]
                 alt = info[2]
                 score = float(info[3])
@@ -117,13 +121,13 @@ def populate_in_silico(es):
                     cat = 'likely benign'
                 #print(cat)
 
-                var_id = 'm.'+info[0]+ref+'>'+alt
+                var_id = 'm.'+coor+ref+'>'+alt
                 #print(var_id)
 
                 #find index
                 gene_name = []
                 for gene in geneLoc:
-                    if coor>=geneLoc[gene][0] and coor<=geneLoc[gene][1]:
+                    if int(coor)>=geneLoc[gene][0] and int(coor)<=geneLoc[gene][1]:
                         gene_name.append(gene)
                 #print(gene_name)
  
@@ -156,14 +160,14 @@ def populate_in_silico(es):
         if not isJunk:
             info = line.split('\t')
 
-            coor = int(info[1])
-            score = float(info[5])
+            coor = info[1]
+            score = info[5]
             cat = info[4].lower()
 
             #find index
             gene_name = []
             for gene in geneLoc:
-                if coor>=geneLoc[gene][0] and coor<=geneLoc[gene][1]:
+                if int(coor)>=geneLoc[gene][0] and int(coor)<=geneLoc[gene][1]:
                     gene_name.append(gene)
             #print(gene_name)
 
@@ -190,7 +194,7 @@ def populate_in_silico(es):
                     ref = info[2]
                     alt = info[3]
 
-                var_id = 'm.'+info[1]+ref+'>'+alt
+                var_id = 'm.'+coor+ref+'>'+alt
 
                 data = {
                     "var_id": var_id,
@@ -228,19 +232,19 @@ def populate_disease_association(es):
             info = line.split('\t')
 
             if len(info[2])==1 and len(info[3])==1 and len(info[4])==0 and info[3]!=':':
-                coor = int(info[1])
+                coor = info[1]
                 ref = info[2]
                 alt = info[3]
                 diseases = info[7]
                 status = info[8]
  
-                var_id = 'm.'+info[1]+ref+'>'+alt
+                var_id = 'm.'+coor+ref+'>'+alt
                 #print(var_id)
 
                 #find index
                 gene_name = []
                 for gene in geneLoc:
-                    if coor>=geneLoc[gene][0] and coor<=geneLoc[gene][1]:
+                    if int(coor)>=geneLoc[gene][0] and int(coor)<=geneLoc[gene][1]:
                         gene_name.append(gene)
                 #print(gene_name)
 
@@ -277,10 +281,9 @@ def populate_disease_association(es):
                 #print(line)
                 ind1 = name.index('m.')
                 ind2 = name.index('>')
-                coorStr = name[ind1+2:ind2-1]
+                coor = name[ind1+2:ind2-1]
 
-                if coorStr.isdigit():
-                    coorInt = int(coorStr)
+                if coor.isdigit():
                     ref = name[ind2-1]
                     alt = name[ind2+1]
 
@@ -288,19 +291,19 @@ def populate_disease_association(es):
                     diseases = info[13]
                     varid = info[30].split('\n')[0]
  
-                    var_id = 'm.'+coorStr+ref+'>'+alt
+                    var_id = 'm.'+coor+ref+'>'+alt
                     #print(var_id)
 
                     #find index
                     gene_name = []
                     for gene in geneLoc:
-                        if coorInt>=geneLoc[gene][0] and coorInt<=geneLoc[gene][1]:
+                        if int(coor)>=geneLoc[gene][0] and int(coor)<=geneLoc[gene][1]:
                             gene_name.append(gene)
                     #print(gene_name)
 
                     data = {
                         "var_id": var_id,
-                        "var_coordinate": coorInt,
+                        "var_coordinate": coor,
                         "var_alt": alt,
                         "var_ref": ref,
                         "diseases_clinvar": diseases,
@@ -332,18 +335,19 @@ def populate_population_freq(es):
             info = line.split('\t')
 
             if len(info[2])==1 and len(info[3])==1 and len(info[4])==0 and info[3]!=':':
-                coor = int(info[1])
+                coor = info[1]
                 ref = info[2]
                 alt = info[3]
+                count = info[10]
                 freq = info[11]
  
-                var_id = 'm.'+info[1]+ref+'>'+alt
+                var_id = 'm.'+coor+ref+'>'+alt
                 #print(var_id)
 
                 #find index
                 gene_name = []
                 for gene in geneLoc:
-                    if coor>=geneLoc[gene][0] and coor<=geneLoc[gene][1]:
+                    if int(coor)>=geneLoc[gene][0] and int(coor)<=geneLoc[gene][1]:
                         gene_name.append(gene)
                 #print(gene_name)
 
@@ -352,7 +356,8 @@ def populate_population_freq(es):
                     "var_coordinate": coor,
                     "var_alt": alt,
                     "var_ref": ref,
-                    "freq_mitomap": freq
+                    "freq_mitomap": freq,
+                    "count_mitomap": count
                 }
 
                 for g in gene_name:
@@ -371,18 +376,19 @@ def populate_population_freq(es):
         if line[0].isdigit():
             info = line.split('\t')
             if len(info[2])==1 and len(info[3])==1 and (info[4]=='tRNA' or info[4]=='rRNA') and info[3] is not ':':
-                coor = int(info[1])
+                coor = info[1]
                 ref = info[2]
                 alt = info[3]
+                count = info[6]
                 freq = info[7]
  
-                var_id = 'm.'+info[1]+ref+'>'+alt
+                var_id = 'm.'+coor+ref+'>'+alt
                 #print(var_id)
 
                 #find index
                 gene_name = []
                 for gene in geneLoc:
-                    if coor>=geneLoc[gene][0] and coor<=geneLoc[gene][1]:
+                    if int(coor)>=geneLoc[gene][0] and int(coor)<=geneLoc[gene][1]:
                         gene_name.append(gene)
                 #print(gene_name)
 
@@ -391,7 +397,8 @@ def populate_population_freq(es):
                     "var_coordinate": coor,
                     "var_alt": alt,
                     "var_ref": ref,
-                    "freq_mitomap": freq
+                    "freq_mitomap": freq,
+                    "count_mitomap": count
                 }
 
                 for g in gene_name:
@@ -401,6 +408,142 @@ def populate_population_freq(es):
                     else:
                         es.index(index=g.lower(), doc_type='_doc', id=var_id, body=data)
                         #print('some more doc was added with mitotip disease data: '+var_id)
+
+
+
+
+
+
+#haplogroups (phylotree, haplogroups & haplogroup count)
+def populate_haplogroup(es):
+
+    f = open('phylo_vars_with_haplo_final.txt','r')
+    f.readline()
+
+    for line in f:
+
+        info = line.split('\t')
+
+        coor = info[0][1:-1]
+        if coor.isdigit():
+            ref = info[0][0]
+            alt = info[0][-1]
+            haplos = info[1]
+            count = info[2]
+
+            var_id = 'm.'+coor+ref+'>'+alt
+            #print(var_id)
+
+            #find index
+            gene_name = []
+            for gene in geneLoc:
+                if int(coor)>=geneLoc[gene][0] and int(coor)<=geneLoc[gene][1]:
+                    gene_name.append(gene)
+            #print(gene_name)
+
+            data = {
+                "var_id": var_id,
+                "var_coordinate": coor,
+                "var_alt": alt,
+                "var_ref": ref,
+                "haplogroups": haplos,
+                "count_haplos": count
+            }
+
+            for g in gene_name:
+                if es.exists(index=g.lower(), doc_type='_doc', id=var_id):
+                    es.update(index=g.lower(), doc_type='_doc', id=var_id, body={'doc':data})
+                    print('some doc was updated with haplogroup data: '+var_id)
+                else:
+                    es.index(index=g.lower(), doc_type='_doc', id=var_id, body=data)
+                    print('some doc was added with haplogroup data: '+var_id)
+
+
+
+
+
+
+
+#conservation metrics (phyloP + PhastCons)
+def populate_conserv(es):
+
+    #PhyloP (http://hgdownload.soe.ucsc.edu/goldenPath/hg38/phyloP100way/hg38.100way.phyloP100way/)
+    f = gzip.open('chrM.phyloP100way.wigFix.gz', 'rt')
+    f.readline()
+
+    coor = 0
+
+    for line in f:
+
+        coor += 1
+        score = line
+
+        #find index
+        gene_name = []
+        for gene in geneLoc:
+            if coor>=geneLoc[gene][0] and coor<=geneLoc[gene][1]:
+                gene_name.append(gene)
+        #print(gene_name)
+
+        q = {
+                "script":{
+                    "source": "ctx._source.conserv_phylop = params.score",
+                    "lang": "painless",
+                    "params": {"score": score}
+                },
+                "query":{
+                    "bool":{
+                        "must": [
+                            {"match":{"var_coordinate": coor}}
+                        ]
+                    }
+                }
+            }
+
+        for g in gene_name:
+            es.update_by_query(index=g.lower(), doc_type='_doc', body = q)
+            print('some doc was updated with conservation phylop data: '+str(coor))
+
+
+    #phastCons (http://hgdownload.soe.ucsc.edu/goldenPath/hg38/phastCons100way/hg38.100way.phastCons/)
+    f = gzip.open('chrM.phastCons100way.wigFix.gz', 'rt')
+    f.readline()
+
+    coor = 0
+
+    for line in f:
+
+        coor += 1
+        score = line
+
+        #find index
+        gene_name = []
+        for gene in geneLoc:
+            if coor>=geneLoc[gene][0] and coor<=geneLoc[gene][1]:
+                gene_name.append(gene)
+        #print(gene_name)
+
+        q = {
+                "script":{
+                    "source": "ctx._source.conserv_phastcons = params.score",
+                    "lang": "painless",
+                    "params": {"score": score}
+                },
+                "query":{
+                    "bool":{
+                        "must": [
+                            {"match":{"var_coordinate": coor}}
+                        ]
+                    }
+                }
+            }
+
+        for g in gene_name:
+            es.update_by_query(index=g.lower(), doc_type='_doc', body = q)
+            print('some doc was updated with conservation phastcons data: '+str(coor))
+
+
+
 
 
 
@@ -430,16 +573,32 @@ def test_func(es):
 def test_gzip(file):
     f = gzip.open(file, 'rt')
 
-    for n in range(1,3):
-        row = f.readline().split('\t')
+    for n in range(1,5):
+        row = f.readline()
         print(row)
+
+def test(es):
+    f = open('phylo_vars_with_haplo_final.txt','r')
+    f.readline()
+    n = 0
+    for line in f:
+        print(line)
+        n = n+1
+        if n==10: 
+            break
+ 
+
+
 
 if __name__ == '__main__':
 	es = connect_elasticsearch()
 	
 	#create_index(es)
         #populate_in_silico(es)
-        populate_disease_association(es)
+        #populate_disease_association(es)
         #populate_population_freq(es)
+        #populate_haplogroup(es)
+        populate_conserv(es)
         #test_func(es)
-        #test_gzip('variant_summary.txt.gz')
+        #test_gzip('chrM.phastCons100way.wigFix.gz')
+        #test(es)

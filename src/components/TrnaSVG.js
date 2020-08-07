@@ -24,6 +24,7 @@ import Mttr from './tRNA/MT-TR';
 import VarInput from './VarInput';
 import VarInfoTable from './VarInfoTable';
 import VarInfo from './VarInfo';
+import VisualizeOptions from './VisualizeOptions';
 
 //match each gene to its respective component
 const tRNAs = {
@@ -85,36 +86,10 @@ class TrnaSVG extends React.Component{
         saveSvgAsPng.saveSvgAsPng(document.getElementById('svg-container'), fileName, imageOptions);
     };
 
-    //second version
-    // handleClick = () => {
-    //     var svg = document.querySelector('#svg-container');
-    //     var data = (new XMLSerializer()).serializeToString(svg);
-    //     // We can just create a canvas element inline so you don't even need one on the DOM. Cool!
-    //     var canvas = document.createElement('canvas');
-    //     Canvg.canvg(canvas, data, {
-    //     renderCallback: function() {
-    //         canvas.toBlob(function(blob) {
-    //             download('MyImageName.png', blob);
-    //         });
-    //     }
-    //     });
-    // }
-
-    
-
     componentDidMount(){
         document.getElementById('svg-container').setAttribute("height","500");
         document.getElementById('svg-container').setAttribute("width","500");
         document.getElementById('svg-container').setAttribute("viewBox","0 0 400 400");
-
-        //https://jsgao0.wordpress.com/2016/06/02/export-svg-as-png-using-canvg-js-and-canvas/
-        // document.getElementById('downloadBtn').onclick = function() { // Bind click event on download button.
-        //     var element = document.getElementById('svg-container'); // Get SVG element.
-        //     SVG2PNG(element, function(canvas) { // Arguments: SVG element, callback function.
-        //       var base64 = canvas.toDataURL("image/png"); // toDataURL return DataURI as Base64 format.
-        //       generateLink('SVG2PNG-01.png', base64).click(); // Trigger the Link is made by Link Generator and download.
-        //     });
-        //   }
     }
 
     handleVarSubmit = (varSubmitted,variantCor) => {
@@ -283,7 +258,8 @@ class TrnaSVG extends React.Component{
                             <li>Lines represent Watson-Crick (WC) base pairs, and dots non-WC pairs.</li>
                             <li>Hovering over each base will display the genomic coordinate.</li>
                         </ul>
-                        <button id="download-btn" onClick={this.handleClick}>Download Image (png)</button> 
+                        <button id="download-btn" onClick={this.handleClick}>Download Image (png)</button>
+                        <VisualizeOptions /> 
                     </div>
                     <div id="right-container">
                         <VarInput handleVarSubmit={this.handleVarSubmit} gene={gene}/>

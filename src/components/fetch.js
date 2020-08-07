@@ -12,6 +12,7 @@ export const fetchVarInfo = varId => {
             var_ref,
             freq_gnomad,
             freq_mitomap,
+            count_mitomap,
             heteroplasmy,
             prediction_mitotip,
             prediction_mitotip_category,
@@ -22,7 +23,10 @@ export const fetchVarInfo = varId => {
             disease_status_clinvar,
             diseases_clinvar,
             clinvar_variant_id,
-            conservation,
+            haplogroups,
+            count_haplos,
+            conserv_phylop,
+            conserv_phastcons,
             post_transcription_modifications
        }
     }`

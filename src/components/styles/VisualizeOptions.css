@@ -1,0 +1,31 @@
+#visualize-form p {
+  margin: 0;
+}
+
+#visualize-form label{
+  display: block;
+}
+
+#visualize-form span {
+  padding-left: 25px;
+}
+
+#visualize-form input[type="checkbox"].filled-in:not(:checked)+span:not(.lever):after {
+    height: 15px;
+    width: 15px;
+    top: 5px;
+}
+
+#visualize-form input[type="checkbox"].filled-in:checked+span:not(.lever):after {
+    top: 5px;
+    width: 15px;
+    height: 15px;
+    border: 2px solid #26a69a;
+    background-color: #26a69a;
+}
+
+#visualize-form input[type="checkbox"].filled-in:checked+span:not(.lever):before {
+    top: 3px;
+    width: 6px;
+    height: 11px;
+}

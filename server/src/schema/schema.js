@@ -13,11 +13,12 @@ const VarType = new GraphQLObjectType({
     name: 'Variant',
     fields: () => ({
 	var_id: { type: GraphQLString },
-	var_coordinate: { type: GraphQLString },
+	var_coordinate: { type: GraphQLInt },
 	var_alt:{ type: GraphQLString },
 	var_ref:{ type: GraphQLString },
 	freq_gnomad:{ type: GraphQLFloat },
 	freq_mitomap:{ type: GraphQLFloat },
+	count_mitomap:{ type: GraphQLInt },
 	heteroplasmy:{ type: GraphQLFloat },
 	prediction_mitotip:{ type: GraphQLFloat },
 	prediction_mitotip_category:{ type: GraphQLString },
@@ -28,7 +29,10 @@ const VarType = new GraphQLObjectType({
 	disease_status_clinvar:{ type: GraphQLString },
 	diseases_clinvar:{ type: GraphQLString },
 	clinvar_variant_id:{ type: GraphQLString },
-	conservation:{ type: GraphQLString },
+	haplogroups:{ type: GraphQLString },
+	count_haplos: { type: GraphQLInt },
+	conserv_phylop:{ type: GraphQLFloat },
+	conserv_phastcons:{ type: GraphQLFloat },
 	post_transcription_modifications:{ type: GraphQLString },
     })
 });
