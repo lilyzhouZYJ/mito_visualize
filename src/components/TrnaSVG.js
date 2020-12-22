@@ -24,7 +24,6 @@ import Mttr from './tRNA/MT-TR';
 import VarInput from './VarInput';
 import VarInfoTable from './VarInfoTable';
 import VarInfo from './VarInfo';
-import VisualizeOptions from './VisualizeOptions';
 
 //match each gene to its respective component
 const tRNAs = {
@@ -67,11 +66,13 @@ const imageOptions = {
   width: 350
 }
 
+var breakWC = false;
+
 class TrnaSVG extends React.Component{
 
     state = {
         varSubmitted: null,
-        varCor: null
+        varCor: null,
     }
 
     handleClick = () => {
@@ -102,6 +103,8 @@ class TrnaSVG extends React.Component{
 
     //remove preexisting variant highlight
     removeVariantHighlight() {
+
+        breakWC = false;
 
         //remove variant name in svg legend
         var legExists = document.getElementById('var-legend');
@@ -229,6 +232,7 @@ class TrnaSVG extends React.Component{
                     newCircle.innerHTML=origLine.innerHTML;
                     document.getElementById('svg-container').insertBefore(newCircle, origLine);
                     origLine.remove();
+                    breakWC = true;
                 }
             }
 
@@ -245,6 +249,8 @@ class TrnaSVG extends React.Component{
     render() {
 
         var gene = this.props.gene;
+
+        console.log("trnaSvg:"+breakWC);
        
         var SvgComponent = tRNAs[gene];
             return(
@@ -259,14 +265,15 @@ class TrnaSVG extends React.Component{
                             <li>Hovering over each base will display the genomic coordinate.</li>
                         </ul>
                         <button id="download-btn" onClick={this.handleClick}>Download Image (png)</button>
-                        <VisualizeOptions /> 
                     </div>
                     <div id="right-container">
                         <VarInput handleVarSubmit={this.handleVarSubmit} gene={gene}/>
                         {this.state.varSubmitted!==null &&
+                            <VarInfo gene={gene} variant={this.state.varSubmitted} variantCor={this.state.varCor} breakWC={breakWC} rnaType="tRNA" />
+                        }
+                        {this.state.varSubmitted!==null &&
                             <VarInfoTable variant={this.state.varSubmitted} rnaType="tRNA" />
                         }
-                        <VarInfo gene={gene} variant={this.state.varSubmitted} variantCor={this.state.varCor}/>
                     </div>
                 </div>
             )

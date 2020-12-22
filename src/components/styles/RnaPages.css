@@ -1,5 +1,5 @@
 #left-container{
-    margin-left: 250px;
+    margin-left: 230px;
     margin-top: 100px;
     width: 500px;
     margin-right: 0;
@@ -14,14 +14,14 @@
 
 #right-container{
     float: right;
-    margin-right: 250px;
+    margin-right: 200px;
     margin-top:100px;
-    width: 480px;
+    width: 550px;
 }
 
 #rrna-svg #right-container{
     margin-top: 30px;
-    margin-right: 210px;
+    margin-right: 120px;
 }
 
 #var-form h5, #left-container h5 {
@@ -67,13 +67,8 @@
 }
 
 #var-info-table {
-    /* margin-right: 270px; */
-    /* float: right; */
     width: 100%;
-    margin-top: 30px;
-    /* position: relative; */
-    /* bottom: 300px; */
-    /* right: 35px; */
+    margin-bottom: 30px;
 }
 
 #var-info-table .left-col {
@@ -129,6 +124,7 @@
 
 .help-tip:hover p{
     display:block;
+    z-index: 10;
     transform-origin: 100% 0%;
 
     -webkit-animation: fadeIn 0.3s ease-in-out;
@@ -149,6 +145,14 @@
     color: #FFF;
     font-size: 13px;
     line-height: 1.4;
+}
+
+.help-tip p a{
+    color: lightgray;
+}
+
+.help-tip p a:hover{
+    text-decoration: underline;
 }
 
 .help-tip p:before{ /* The pointer of the tooltip */
@@ -198,35 +202,21 @@
 
 
 #var-info{
-    /* float: right; */
-    font-size: 18px;
-    width: 100%;
-    margin-top: 35px;
-    /* position: relative;
-    left: 365px;
-    top: -30px; */
+    font-size: 15px;
+    width: 80%;
+    margin-top: 25px;
 }
 
-/* #rrna-svg #var-info{
-    top: 230px;
-    left: -250px;
-} */
-
 #rrna-svg-container {
-    /* margin-left: 130px; */
     position: absolute;
-    /* bottom: 656px; */
-    /* margin-top: 60px; */
 }
 
 #rrna-svg-container-zoom {
-    /* margin-left: 130px; */
     position: absolute;
-    /* margin-top: 60px; */
 }
 
 
-#trna-svg li{
+#notes li{
     font-size: 14px;
     list-style-type: square;
     list-style-position: inside;

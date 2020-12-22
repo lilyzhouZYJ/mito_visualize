@@ -2,66 +2,17 @@ body {
     font-family: sans-serif;
 }
 
-.nav-wrapper {
-    background-color: #00356B;
+nav {
+    background-color: #00356B !important;
     padding: 0 10rem;
     border: 0;
-    height: 5rem;
 }
 
-.nav-wrapper .container {
-    height: 100%;
-}
-
-.nav-wrapper ul{
-    height: 100%;
-}
-
-.nav-wrapper ul li {
-    height: 100%
-}
-
-.nav-wrapper ul a {
-    height: 100%;
-    padding: 8px;
-}
-
-.nav-wrapper ul a:hover {
+nav ul li:hover {
     background-color: lightblue;
     color: #00356B;
 }
 
-/* Navbar container */
-/*
-
-
-.right {
-    float: right;
-    margin: 0;
-    padding-top: 1.6rem;
-    list-style-type: none; 
-}
-
-/* Links inside the navbar */
-/*
-.right li {
-    display: inline-block;
-    padding-left: 3rem;
-}
-
-.right li {
-    display: inline-block;
-    font-size: 16px;
-    color: dimgray;
-    text-align: center;
-    font-weight: 600;
-    padding: 14px 16px;
-    text-decoration: none;
-  }
-
-  
-
-*/
 .active {
     font-weight: bold;
 }

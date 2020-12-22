@@ -1,7 +1,14 @@
 from elasticsearch import Elasticsearch
 import gzip
 import urllib2
+import urllib3
 import pprint
+import csv
+import xlrd
+import requests
+from socket import error as SocketError
+import errno
+
 
 geneLoc = {
     'MT-TF': [577,647],
@@ -65,14 +72,27 @@ def create_index(es):
                         "var_coordinate": { "type": "integer"},
                         "var_alt": { "type": "text"},
                         "var_ref": { "type": "text"},
-                        "freq_gnomad": { "type": "float"},
-                        "freq_mitomap": { "type": "float"},
-                        "count_mitomap": { "type": "integer"},
-                        "heteroplasmy": { "type": "float"},
+                        "gene": { "type": "text"},
+                        "pair_base": { "type": "text"},
+                        "pair_coordinate": { "type": "integer"},
+                        "pop_freq_gnomad_af_hom": { "type": "float"},
+                        "pop_freq_gnomad_ac_hom": { "type": "integer"},
+                        "pop_freq_gnomad_af_het": { "type": "float"},
+                        "pop_freq_gnomad_ac_het": { "type": "integer"},
+                        "pop_freq_mitomap": { "type": "float"},
+                        "pop_count_mitomap": { "type": "integer"},
+                        "pop_freq_helix_af_hom": { "type": "float"},
+                        "pop_freq_helix_counts_hom": { "type": "integer"},
+                        "pop_freq_helix_af_het": { "type": "float"},
+                        "pop_freq_helix_counts_het": { "type": "integer"},
+                        "heteroplasmy_gnomad": { "type": "float"},
+                        "heteroplasmy_helix": { "type": "text"},
                         "prediction_mitotip": { "type": "float"},
                         "prediction_mitotip_category": { "type": "text"},
                         "prediction_pon_mt_tRNA": { "type": "float"},
                         "prediction_pon_mt_tRNA_category": { "type": "text"},
+                        "prediction_hmtvar": { "type": "float"},
+                        "prediction_hmtvar_category": { "type": "text"},
                         "disease_status_mitomap": { "type": "text"},
                         "diseases_mitomap": { "type": "text"},
                         "disease_status_clinvar": { "type": "text"},
@@ -83,7 +103,7 @@ def create_index(es):
                         "conserv_phylop": { "type": "float"},
                         "conserv_phastcons": { "type": "float"},
                         "post_transcription_modifications": { "type": "text"},
-
+                        "domain": { "type": "text"}
                     }
                 }
             }
@@ -95,10 +115,117 @@ def create_index(es):
 
 
 
+
+
+
+
+
+
+
+def populate_all_rrna_vars(es):
+
+    f = open('mt_rnr1_coor_base.tsv')
+    f.readline()
+
+    for row in f:
+
+        info = row.split("\n")[0].split("\t")
+
+        coor = info[0]
+        ref = info[1]
+        gene_name = ["MT-RNR1"]
+
+        possible_alts = [""]
+
+        if ref is 'A':
+            possible_alts = ["T","C","G"]
+        if ref is 'T':
+            possible_alts = ["A","C","G"]
+        if ref is 'C':
+            possible_alts = ["A","T","G"]
+        if ref is 'G':
+            possible_alts = ["A","T","C"]
+
+        for alt in possible_alts:
+
+            var_id = 'm.'+coor+ref+'>'+alt
+
+            data = {
+                "var_id": var_id,
+                "var_coordinate": coor,
+                "var_alt": alt,
+                "var_ref": ref,
+                "gene": gene_name
+            }
+
+            for g in gene_name:
+                if es.exists(index=g.lower(), doc_type='_doc', id=var_id):
+                    es.update(index=g.lower(), doc_type='_doc', id=var_id, body={'doc':data})
+                    print('some mt-rnr1 doc was updated: '+var_id)
+                else:
+                    es.index(index=g.lower(), doc_type='_doc', id=var_id, body={'doc':data})
+                    print('some mt-rnr1 doc was added:'+var_id)
+
+    f = open('mt_rnr2_coor_base.tsv')
+    f.readline()
+
+    for row in f:
+        info = row.split("\n")[0].split("\t")
+
+        coor = info[0]
+        ref = info[1]
+        gene_name = ["MT-RNR2"]
+
+        possible_alts = [""]
+
+        if ref is 'A':
+            possible_alts = ["T","C","G"]
+        if ref is 'T':
+            possible_alts = ["A","C","G"]
+        if ref is 'C':
+            possible_alts = ["A","T","G"]
+        if ref is 'G':
+            possible_alts = ["A","T","C"]
+
+        for alt in possible_alts:
+
+            var_id = 'm.'+coor+ref+'>'+alt
+
+            data = {
+                "var_id": var_id,
+                "var_coordinate": coor,
+                "var_alt": alt,
+                "var_ref": ref,
+                "gene": gene_name
+            }
+
+            for g in gene_name:
+                if es.exists(index=g.lower(), doc_type='_doc', id=var_id):
+                    es.update(index=g.lower(), doc_type='_doc', id=var_id, body={'doc':data})
+                    print('some mt-rnr2 doc was updated: '+var_id)
+                else:
+                    es.index(index=g.lower(), doc_type='_doc', id=var_id, body={'doc':data})
+                    print('some mt-rnr2 doc was added:'+var_id)
+
+
+
+
+
+
+
+
+
+
+
+
+
+# MitoTip in silico scores/categories and HmtVar scores/categories
 def populate_in_silico(es):
 
-    #prediction_mitotip: in silico scores from MitoTip
-    #f = open('mitotip_scores.txt','r')
+    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+    # prediction_mitotip: in silico scores from MitoTip
+    # will also use this to add HmtVar data as well
     f = urllib2.urlopen('https://mitomap.org/downloads/mitotip_scores.txt')
 
     for line in f:
@@ -119,10 +246,18 @@ def populate_in_silico(es):
                     cat = 'possibly benign'
                 else:
                     cat = 'likely benign'
-                #print(cat)
 
                 var_id = 'm.'+coor+ref+'>'+alt
-                #print(var_id)
+
+                # access HmtVar data from api
+                try:
+                    link = "https://www.hmtvar.uniba.it/api/main/mutation/"+ref+coor+alt
+                    response = requests.get(link, verify=False)
+                except:
+                    pass
+
+                hmtvar_score = response.json()["disease_score"]
+                hmtvar_cat = response.json()["pathogenicity"]
 
                 #find index
                 gene_name = []
@@ -136,17 +271,27 @@ def populate_in_silico(es):
                     "var_coordinate": coor,
                     "var_alt": alt,
                     "var_ref": ref,
+                    "gene": gene_name,
                     "prediction_mitotip": score,
-                    "prediction_mitotip_category": cat
+                    "prediction_mitotip_category": cat,
+                    "prediction_hmtvar": hmtvar_score,
+                    "prediction_hmtvar_category": hmtvar_cat,
                 }
 
                 for g in gene_name:
                     if es.exists(index=g.lower(), doc_type='_doc', id=var_id):
                         es.update(index=g.lower(), doc_type='_doc', id=var_id, body={'doc':data})
-                        print('some doc was updated with mitotip prediction data: '+var_id)
+                        print('some doc was updated with mitotip and hmtvar prediction data: '+var_id)
                     else:
-                        es.index(index=g.lower(), doc_type='_doc', id=var_id, body=data)
-                        print('some doc was added with mitotip prediction data: '+var_id)
+                        es.index(index=g.lower(), doc_type='_doc', id=var_id, body={'doc':data})
+                        print('some doc was added with mitotip and hmtvar prediction data: '+var_id)
+
+
+
+
+
+
+def populate_in_silico_ponmttrna(es):
 
     #prediction_pon_mt_trna: in silico score from PON-mt-tRNA
     f = urllib2.urlopen('http://structure.bmc.lu.se/PON-mt-tRNA/download/')
@@ -201,6 +346,7 @@ def populate_in_silico(es):
                     "var_coordinate": coor,
                     "var_alt": alt,
                     "var_ref": ref,
+                    "gene": gene_name,
                     "prediction_pon_mt_tRNA": score,
                     "prediction_pon_mt_tRNA_category": cat,
                 }
@@ -209,7 +355,7 @@ def populate_in_silico(es):
                     es.update(index=g.lower(), doc_type='_doc', id=var_id, body={'doc':data})
                     print('some doc was updated with pon-mt-trna prediction data: '+var_id)
                 else:
-                    es.index(index=g.lower(), doc_type='_doc', id=var_id, body=data)
+                    es.index(index=g.lower(), doc_type='_doc', id=var_id, body={'doc':data})
                     print('some doc was added with pon-mt-trna prediction data: '+var_id)
 
                 #if es.exists(index=g.lower(), doc_type='_doc', id=var_id):
@@ -253,6 +399,7 @@ def populate_disease_association(es):
                     "var_coordinate": coor,
                     "var_alt": alt,
                     "var_ref": ref,
+                    "gene": gene_name,
                     "diseases_mitomap": diseases,
                     "disease_status_mitomap": status,
                 }
@@ -262,7 +409,7 @@ def populate_disease_association(es):
                         es.update(index=g.lower(), doc_type='_doc', id=var_id, body={'doc':data})
                         print('some doc was updated with mitotip disease data: '+var_id)
                     else:
-                        es.index(index=g.lower(), doc_type='_doc', id=var_id, body=data)
+                        es.index(index=g.lower(), doc_type='_doc', id=var_id, body={'doc':data})
                         print('some doc was added with mitotip disease data: '+var_id)
 
     #clinvar, variant_summary.txt.gz, "ClinicalSignificance" and "PhenotypeList"
@@ -306,6 +453,7 @@ def populate_disease_association(es):
                         "var_coordinate": coor,
                         "var_alt": alt,
                         "var_ref": ref,
+                        "gene": gene_name,
                         "diseases_clinvar": diseases,
                         "disease_status_clinvar": status,
                         "clinvar_variant_id": varid
@@ -316,7 +464,7 @@ def populate_disease_association(es):
                             es.update(index=g.lower(), doc_type='_doc', id=var_id, body={'doc':data})
                             print('some doc was updated with clinvar disease data: '+var_id)
                         else:
-                            es.index(index=g.lower(), doc_type='_doc', id=var_id, body=data)
+                            es.index(index=g.lower(), doc_type='_doc', id=var_id, body={'doc':data})
                             print('some doc was added with clinvar disease data: '+var_id)
 
 
@@ -326,7 +474,7 @@ def populate_disease_association(es):
 #population frequency (mitomap)
 def populate_population_freq(es):
 
-    #part of population frequency (mitomap - disease.cgi)
+    #first part of population frequency (mitomap - disease.cgi)
     f = urllib2.urlopen('https://mitomap.org/cgi-bin/disease.cgi')
 
     for line in f:
@@ -356,8 +504,9 @@ def populate_population_freq(es):
                     "var_coordinate": coor,
                     "var_alt": alt,
                     "var_ref": ref,
-                    "freq_mitomap": freq,
-                    "count_mitomap": count
+                    "gene": gene_name,
+                    "pop_freq_mitomap": freq,
+                    "pop_count_mitomap": count
                 }
 
                 for g in gene_name:
@@ -365,7 +514,7 @@ def populate_population_freq(es):
                         es.update(index=g.lower(), doc_type='_doc', id=var_id, body={'doc':data})
                         print('some doc was updated with mitotip disease data: '+var_id)
                     else:
-                        es.index(index=g.lower(), doc_type='_doc', id=var_id, body=data)
+                        es.index(index=g.lower(), doc_type='_doc', id=var_id, body={'doc':data})
                         print('some doc was added with mitotip disease data: '+var_id)
 
     #the other part of population frequency (mitomap - polymorphisms.cgi.txt)
@@ -397,8 +546,9 @@ def populate_population_freq(es):
                     "var_coordinate": coor,
                     "var_alt": alt,
                     "var_ref": ref,
-                    "freq_mitomap": freq,
-                    "count_mitomap": count
+                    "gene": gene_name,
+                    "pop_freq_mitomap": freq,
+                    "pop_count_mitomap": count
                 }
 
                 for g in gene_name:
@@ -406,9 +556,69 @@ def populate_population_freq(es):
                         es.update(index=g.lower(), doc_type='_doc', id=var_id, body={'doc':data})
                         #print('some more doc was updated with mitotip disease data: '+var_id)
                     else:
-                        es.index(index=g.lower(), doc_type='_doc', id=var_id, body=data)
+                        es.index(index=g.lower(), doc_type='_doc', id=var_id, body={'doc':data})
                         #print('some more doc was added with mitotip disease data: '+var_id)
 
+
+
+
+
+
+#helix - population frequency + max heteroplasmy (HelixMTdb_20200327.tsv)
+def populate_helix(es):
+
+    #population frequency in helix
+    f = open('HelixMTdb_20200327.tsv')
+    read_tsv = csv.DictReader(f, delimiter="\t")
+
+    for row in read_tsv:
+        alleles = row['alleles']
+        if len(alleles)==9 and (row['feature']=='rRNA_gene' or row['feature']=='tRNA_gene'):
+            coor = row['locus'][5:]
+            ref = alleles[2]
+            alt = alleles[6]
+            var_id = 'm.'+coor+ref+'>'+alt
+
+            af_hom = float(row['AF_hom'])*100
+            counts_hom = int(row['counts_hom'])
+            af_het = float(row['AF_het'])*100
+            counts_het = int(row['counts_het'])
+
+            if counts_hom==0: 
+                het = str(float(row['max_ARF'])*100)
+            if counts_hom>0:
+                het = ">99"
+            
+            #find index
+            gene_name = []
+            for gene in geneLoc:
+                if int(coor)>=geneLoc[gene][0] and int(coor)<=geneLoc[gene][1]:
+                    gene_name.append(gene)
+            #print(gene_name)
+
+            data = {
+                "var_id": var_id,
+                "var_coordinate": coor,
+                "var_alt": alt,
+                "var_ref": ref,
+                "gene": gene_name,
+                "pop_freq_helix_af_hom": af_hom,
+                "pop_freq_helix_counts_hom": counts_hom,
+                "pop_freq_helix_af_het": af_het,
+                "pop_freq_helix_counts_het": counts_het,
+                "heteroplasmy_helix": het
+            }
+
+            for g in gene_name:
+                if es.exists(index=g.lower(), doc_type='_doc', id=var_id):
+                    es.update(index=g.lower(), doc_type='_doc', id=var_id, body={'doc':data})
+                    print('some more doc was updated with helix population freq + heteroplasmy data: '+var_id)
+                else:
+                    es.index(index=g.lower(), doc_type='_doc', id=var_id, body={'doc':data})
+                    print('some more doc was added with helix population freq + heteroplasmy data: '+var_id)
+
+        else:
+            continue
 
 
 
@@ -446,6 +656,7 @@ def populate_haplogroup(es):
                 "var_coordinate": coor,
                 "var_alt": alt,
                 "var_ref": ref,
+                "gene": gene_name,
                 "haplogroups": haplos,
                 "count_haplos": count
             }
@@ -455,7 +666,7 @@ def populate_haplogroup(es):
                     es.update(index=g.lower(), doc_type='_doc', id=var_id, body={'doc':data})
                     print('some doc was updated with haplogroup data: '+var_id)
                 else:
-                    es.index(index=g.lower(), doc_type='_doc', id=var_id, body=data)
+                    es.index(index=g.lower(), doc_type='_doc', id=var_id, body={'doc':data})
                     print('some doc was added with haplogroup data: '+var_id)
 
 
@@ -463,6 +674,181 @@ def populate_haplogroup(es):
 
 
 
+
+
+# gnomad - population frequency + max heteroplasmy 
+# (https://gnomad.broadinstitute.org/downloads#v3-mitochondrial-dna under "chrM sites TSV (reduced annotation)"))
+def populate_gnomad(es):
+
+    #population frequency in gnomad
+    f = urllib2.urlopen('https://storage.googleapis.com/gnomad-public/release/3.1/vcf/genomes/gnomad.genomes.v3.1.sites.chrM.reduced_annotations.tsv')
+    read_tsv = csv.DictReader(f, delimiter="\t")
+
+    for row in read_tsv:
+        filters = row['filters']
+        ref = row['ref']
+        alt = row['alt']
+
+        if filters=='PASS' and len(ref)==1 and len(alt)==1:
+            coor = row['position']
+            var_id = 'm.'+coor+ref+'>'+alt
+
+            af_hom = float(row['AF_hom'])*100  #show in percentage
+            ac_hom = row['AC_hom']
+            af_het = float(row['AF_het'])*100  #show in percentage
+            ac_het = row['AC_het']
+
+            het = float(row['max_observed_heteroplasmy'])*100  #show in percentage
+
+            #find index
+            gene_name = []
+            for gene in geneLoc:
+                if int(coor)>=geneLoc[gene][0] and int(coor)<=geneLoc[gene][1]:
+                    gene_name.append(gene)
+            #print(gene_name)
+
+            data = {
+                "var_id": var_id,
+                "var_coordinate": coor,
+                "var_alt": alt,
+                "var_ref": ref,
+                "gene": gene_name,
+                "heteroplasmy_gnomad": het,
+                "pop_freq_gnomad_af_hom": af_hom,
+                "pop_freq_gnomad_ac_hom": ac_hom,
+                "pop_freq_gnomad_af_het": af_het,
+                "pop_freq_gnomad_ac_het": ac_het,
+            }
+
+            for g in gene_name:
+                if es.exists(index=g.lower(), doc_type='_doc', id=var_id):
+                    es.update(index=g.lower(), doc_type='_doc', id=var_id, body={'doc':data})
+                    print('some more doc was updated with gnomad population freq + heteroplasmy data: '+var_id)
+                else:
+                    es.index(index=g.lower(), doc_type='_doc', id=var_id, body={'doc':data})
+                    print('some more doc was added with gnomad population freq + heteroplasmy data: '+var_id)
+
+        else:
+            continue
+
+
+
+
+
+
+
+
+
+
+
+
+########################
+# post-transcriptional modifications + domain must be added last since it is added to variants that already exist in the database
+########################
+
+# post-transcriptional modifications + domains (mito_RNA_modifications_final_withdomains.xlsx)
+def populate_post_transcript(es):
+
+    book = xlrd.open_workbook('mito_RNA_modifications_final_withdomains.xlsx')
+    sheet = book.sheets()[0]
+
+    for row in sheet.get_rows():
+        if row[0].value=="#CHROM":
+            continue
+        else:            
+            coor = int(row[1].value)
+
+            if row[5].value=="YES":
+                modification = row[6].value
+            else:
+                modification = None
+
+            if not row[7].value=="":
+                domain = row[7].value
+            else:
+                domain = None
+            
+            #find index
+            gene_name = []
+            for gene in geneLoc:
+                if coor>=geneLoc[gene][0] and coor<=geneLoc[gene][1]:
+                    gene_name.append(gene)
+            #print(gene_name)
+
+            q = {
+                "script":{
+                    "source": "ctx._source.post_transcription_modifications = params.modi; ctx._source.domain = params.dom;",
+                    "lang": "painless",
+                    "params": {"modi": modification, "dom": domain}
+                },
+                "query":{
+                    "bool":{
+                        "must": [
+                            {"match":{"var_coordinate": coor}}
+                        ]
+                    }
+                }
+            }
+
+            for g in gene_name:
+                es.update_by_query(index=g.lower(), doc_type='_doc', body = q)
+                print('some doc was updated with post-transcription modifications and domain: '+str(coor))
+
+
+
+
+# ignore this; this is the same as above but in csv format
+def populate_post_trans(es):
+
+    f = open('mito_RNA_modifications_final.csv')
+    read_tsv = csv.DictReader(f, delimiter=",")
+
+    for row in read_tsv:
+
+        isModified = row['MODIFIED?']
+
+        if isModified:
+            coor = int(row['POS'])
+            modification = row['MODIFICATION']
+
+            #find index
+            gene_name = []
+            for gene in geneLoc:
+                if coor>=geneLoc[gene][0] and coor<=geneLoc[gene][1]:
+                    gene_name.append(gene)
+            #print(gene_name)
+
+            q = {
+                "script":{
+                    "source": "ctx._source.post_transcription_modifications = params.modi",
+                    "lang": "painless",
+                    "params": {"modi": modification}
+                },
+                "query":{
+                    "bool":{
+                        "must": [
+                            {"match":{"var_coordinate": coor}}
+                        ]
+                    }
+                }
+            }
+
+            for g in gene_name:
+                es.update_by_query(index=g.lower(), doc_type='_doc', body = q)
+                print('some doc was updated with post-transcription modifications: '+str(coor))
+
+
+
+
+
+
+
+
+
+
+##############
+# conserv metrics must be added last since it is added to variants that already exist in the database
+##############
 
 #conservation metrics (phyloP + PhastCons)
 def populate_conserv(es):
@@ -549,6 +935,11 @@ def populate_conserv(es):
 
 
 
+
+
+
+
+
     
 def test_func(es):
 
@@ -557,7 +948,7 @@ def test_func(es):
                 "bool":{
                     "must_not":{
                         "exists": {
-                            "field": "freq_mitomap"
+                            "field": "pop_freq_mitomap"
                         }
                     }
                 }
@@ -578,27 +969,52 @@ def test_gzip(file):
         print(row)
 
 def test(es):
-    f = open('phylo_vars_with_haplo_final.txt','r')
+
+    f = open('mt_rnr1_coor_base.tsv')
     f.readline()
+
+    #for n in range(0,10):
+     #   print(sheet.row(n).value)
+        #for m in range(0, sheet.row_len(0)):
+            #print(sheet.cell(n,m).value)
+
     n = 0
-    for line in f:
-        print(line)
-        n = n+1
-        if n==10: 
+
+    for row in f:
+        if n<5:
+            row = row.split("\n")
+            info = row[0].split("\t")
+            ref = info[1]
+            print(ref+"is ref")
+            print(ref=="A")
+
+            n = n+1
+        else:
             break
- 
+
+def testapi(es):
+    response = requests.get("https://www.hmtvar.uniba.it/api/main/mutation/A8344G", verify=False)
+    print(response.json()["pathogenicity"])
+
 
 
 
 if __name__ == '__main__':
 	es = connect_elasticsearch()
+
+        #testapi(es)
 	
 	#create_index(es)
-        #populate_in_silico(es)
+        #populate_all_rrna_vars(es)
+        populate_in_silico(es)
+        #populate_in_silico_ponmttrna(es)
         #populate_disease_association(es)
         #populate_population_freq(es)
+        #populate_helix(es)
         #populate_haplogroup(es)
-        populate_conserv(es)
+        #populate_gnomad(es)
+        #populate_post_transcript(es)
+        #populate_conserv(es)
         #test_func(es)
         #test_gzip('chrM.phastCons100way.wigFix.gz')
         #test(es)

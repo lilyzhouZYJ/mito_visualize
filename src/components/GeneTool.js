@@ -112,11 +112,11 @@ class GeneTool extends React.Component{
         };
 
         var colors = {
-            mRNA: "turquoise",
-            tRNA: "lightgreen",
-            rRNA: "bisque",
+            mRNA: "steelblue",
+            tRNA: "mediumseagreen",
+            rRNA: "sandybrown",
             overlap: "deepskyblue",
-            noncoding: "lightpink"
+            noncoding: "brown"
         }
 
         //mRNA overlap
@@ -284,20 +284,20 @@ class GeneTool extends React.Component{
         }
     }
 
-    handleSubmitGene = (e) => {
-        e.preventDefault();
-        var newGene = document.getElementById('gene-name').value;
-        var newPos = dict[newGene];
 
+
+
+
+    removeHighlights = () => {
         //remove preexisting variant highlight
-        elementExists = document.getElementById('highlight-var');
+        var elementExists = document.getElementById('highlight-var');
         if(elementExists!==null){
             elementExists.remove();
             document.getElementById('varLabel').remove();
         }
 
         //remove preexisting gene highlight
-        var elementExists = document.getElementById('highlight');
+        elementExists = document.getElementById('highlight');
         if(elementExists!==null){
             elementExists.remove();
             var labels = document.getElementsByClassName('label');
@@ -313,6 +313,19 @@ class GeneTool extends React.Component{
             elementExists.remove();
             document.getElementById('circle-del').remove();
         }
+    }
+
+
+
+
+
+
+    handleSubmitGene = (e) => {
+        e.preventDefault();
+        var newGene = document.getElementById('gene-name').value;
+        var newPos = dict[newGene];
+
+        this.removeHighlights();
 
         if (newPos!==null){
             var opts = {
@@ -333,7 +346,7 @@ class GeneTool extends React.Component{
             ].join(" ");
             var highlight = document.createElementNS('http://www.w3.org/2000/svg','path');
             highlight.setAttribute("d",d);
-            highlight.setAttribute("fill","crimson");
+            highlight.setAttribute("fill","#9966ff");
             highlight.setAttribute("id","highlight");
             var svgnode = document.getElementById("circle");
             svgnode.insertBefore(highlight, document.getElementsByTagName('circle')[0]);
@@ -354,33 +367,10 @@ class GeneTool extends React.Component{
         
         e.preventDefault();
         
-        //remove preexisting gene highlight
-        var elementExists = document.getElementById('highlight');
-        if(elementExists!==null){
-            elementExists.remove();
-            var labels = document.getElementsByClassName('label');
-            for (var i=0;i<labels.length;i++) {
-                labels[i].setAttribute('font-weight','normal');
-                labels[i].setAttribute('fill','black');
-            }
-        }
-
-        //remove preexisting variant highlight
-        elementExists = document.getElementById('highlight-var');
-        if(elementExists!==null){
-            elementExists.remove();
-            document.getElementById('varLabel').remove();
-        }
-
-        //remove preexisting deletions
-        elementExists = document.getElementById('highlight-del');
-        if(elementExists!==null){
-            elementExists.remove();
-            document.getElementById('circle-del').remove();
-        }
+        this.removeHighlights();
 
         var varName = document.getElementById('var-pos').value;
-        var varPos = varName.split("-")[1];
+        var varPos = varName.split(".")[1];
 
         if(varPos<=16569){
             
@@ -431,34 +421,10 @@ class GeneTool extends React.Component{
     handleSubmitDel = (e) => {
         e.preventDefault();
         
-        //remove preexisting gene highlight
-        var elementExists = document.getElementById('highlight');
-        if(elementExists!==null){
-            elementExists.remove();
-            var labels = document.getElementsByClassName('label');
-            for (var i=0;i<labels.length;i++) {
-                labels[i].setAttribute('font-weight','normal');
-                labels[i].setAttribute('fill','black');
-            }
-        }
-
-        //remove preexisting variant highlight
-        elementExists = document.getElementById('highlight-var');
-        if(elementExists!==null){
-            elementExists.remove();
-            document.getElementById('varLabel').remove();
-        }
-
-        //remove preexisting deletions
-        elementExists = document.getElementById('highlight-del');
-        if(elementExists!==null){
-            elementExists.remove();
-            document.getElementById('circle-del').remove();
-        }
-
+        this.removeHighlights();
         
-        var start = document.getElementById("del-start").value;
-        var end = document.getElementById("del-end").value;
+        var start = document.getElementById("del-input").value.split("-")[0].split(".")[1];
+        var end = document.getElementById("del-input").value.split("-")[1];
 
         if(start>=0 && end<=16569 && start-end<0){
             var opts = {
@@ -480,7 +446,7 @@ class GeneTool extends React.Component{
             
             var highlight = document.createElementNS('http://www.w3.org/2000/svg','path');
             highlight.setAttribute("d",d);
-            highlight.setAttribute("fill","slateblue");
+            highlight.setAttribute("fill","black");
             highlight.setAttribute("id","highlight-del");
             var svgnode = document.getElementById("circle");
             svgnode.insertBefore(highlight,svgnode[svgnode.childNodes.length-1]);
@@ -506,33 +472,31 @@ class GeneTool extends React.Component{
                     <circle cx="350" cy="350" r="220" stroke="#8b4513c0" strokeWidth="1" fill="white" />
                     
                     <filter id="blurMe">
-                        <feGaussianBlur in="SourceGraphic" stdDeviation="4" />
+                        <feGaussianBlur in="SourceGraphic" stdDeviation="2" />
                     </filter>
                 </svg>
 
                 <div id="submit-form">
-                    <p>Highlighting Gene</p>
+                    <p>Show gene position</p>
                     <form onSubmit={this.handleSubmitGene}>
-                        <label htmlFor="gene-name">Input gene name</label>
-                        <input type="text" id="gene-name"></input>
+                        <label htmlFor="gene-name">Format example: MT-ND1</label>
+                        <input type="text" id="gene-name" />
                         <button type="submit">Submit</button>
                     </form>
                     <br></br>
 
-                    <p>Highlighting Variant</p>
+                    <p>Show variant position</p>
                     <form onSubmit={this.handleSubmitVar}>
-                        <label htmlFor="var-pos">Input variant ID</label>
-                        <input type="text" id="var-pos"></input>
+                        <label htmlFor="var-pos">Format example: m.555 (single nucleotide variants only)</label>
+                        <input type="text" id="var-pos" />
                         <button type="submit">Submit</button>
                     </form>
                     <br></br>
 
-                    <p>Highlighting a region of deletion</p>
+                    <p>Show region of deletion or duplication</p>
                     <form onSubmit={this.handleSubmitDel}>
-                        <label htmlFor="del-start">Input deletion start</label>
-                        <input type="text" id='del-start'></input>
-                        <label htmlFor="del-end">Input deletion end</label>
-                        <input type="text" id='del-end'></input>
+                        <label htmlFor="del-input">Format example: m.5618-7319</label>
+                        <input type="text" id='del-input' />
                         <button type="submit">Submit</button>
                     </form>
                 </div>

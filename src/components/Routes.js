@@ -7,6 +7,8 @@ import GeneTool from './GeneTool';
 import TrnaSVG from './TrnaSVG';
 import RrnaSVG from './RrnaSVG';
 import GeneDropDown from './GeneDropDown';
+import VisualizationPage from './VisualizationPage';
+import VisualizationSVG from './VisualizationSVG';
 
 export default function Routes() {
   return (
@@ -14,8 +16,8 @@ export default function Routes() {
         <Route exact path='/' component={About} />
         <Route path='/trna-page' component={TrnaPage} />
         <Route path='/rrna-page' component={RrnaPage} />
-        <Route path='/gene-tool' component={GeneTool} />
-        <Route path='/dropdowntest' component={GeneDropDown} />
+        <Route path='/mt-dna' component={GeneTool} />
+        <Route exact path='/rna-visualization' component={VisualizationPage} />
 
         <Route
             exact
@@ -51,7 +53,22 @@ export default function Routes() {
               )
             }}
           />
-          */}        
+          */} 
+
+        <Route
+            exact
+            path="/rna-visualization/:gene"
+            render={({ match }) => {
+                return (
+                  <VisualizationSVG
+                    gene={match.params.gene}
+                  />
+                )
+            }}
+         />
+
+
+       
     </Switch>
   );
 }

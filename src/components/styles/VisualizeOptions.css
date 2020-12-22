@@ -1,31 +1,63 @@
 #visualize-form p {
-  margin: 0;
+    margin: 0;
 }
 
-#visualize-form label{
-  display: block;
+#visualize-form h5 {
+    font-size: 20px;
+    margin-top: 0;
+    margin-bottom: 10px;
 }
 
-#visualize-form span {
-  padding-left: 25px;
+#visualize-form h6 {
+    font-weight: bold;
 }
 
-#visualize-form input[type="checkbox"].filled-in:not(:checked)+span:not(.lever):after {
-    height: 15px;
-    width: 15px;
-    top: 5px;
+#visualize-form .help-tip p {
+    font-weight: normal;
 }
 
-#visualize-form input[type="checkbox"].filled-in:checked+span:not(.lever):after {
-    top: 5px;
-    width: 15px;
-    height: 15px;
-    border: 2px solid #26a69a;
-    background-color: #26a69a;
+#visualize-form button {
+    margin: 5px 15px 0 0;
+    background-color: #00356B;
+    color: white;
+    border: none;
+    padding: 15px 30px;
 }
 
-#visualize-form input[type="checkbox"].filled-in:checked+span:not(.lever):before {
-    top: 3px;
-    width: 6px;
-    height: 11px;
+#visualize-form button:hover{
+    background-color: lightblue;
+    cursor: pointer;
+    color: #00356B;
 }
+
+
+.highlight {
+    font-weight: bold !important;
+    fill: red !important;
+}
+
+.disease-mitomap-confirmed {
+    font-weight: bold !important;
+    fill: red !important;
+}
+
+.disease-mitomap-reported {
+    font-weight: bold !important;
+    fill: red !important;
+}
+
+.disease-clinvar-patho {
+    font-weight: bold !important;
+    fill: red !important;
+}
+
+.disease-clinvar-uncertain {
+    font-weight: bold !important;
+    fill: red !important;
+}
+
+.disease-clinvar-benign {
+    font-weight: bold !important;
+    fill: red !important;
+}
+

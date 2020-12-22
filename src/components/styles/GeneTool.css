@@ -1,38 +1,42 @@
-#gene-tool form {
-    width: 60%;
-    margin: 0 20%;
+#circle{
+    float: left;
+    margin-left: 60px;
 }
 
-#gene-tool input {
-    display: inline-block;
+#submit-form{
+    float: right;
+    margin-right: 220px;
+    margin-top: 90px;
+    width: 400px;
 }
 
-#gene-tool label {
-    font-size: 15px;
-    color: slateblue;
-    display: inline;
-}
-
-#gene-tool p {
-    font-size: 20px;
-    color: black;
+#submit-form p{
+    font-size: 17px;
+    margin: 0;
     font-weight: bold;
-    margin: 0 20%;
 }
 
-#gene-tool button{
-    background-color: slateblue;
+#submit-form button {
+    margin: 5px 15px 0 0;
+    background-color: #00356B;
     color: white;
     border: none;
     padding: 15px 30px;
 }
 
-#gene-tool button:hover{
-    background-color: skyblue;
+#submit-form button:hover{
+    background-color: lightblue;
     cursor: pointer;
-    color: slateblue;
+    color: #00356B;
 }
 
-#submit-form {
+#submit-form input {
     display: inline-block;
+    width: 100%;
+}
+
+#submit-form label {
+    font-size: 13px;
+    color: grey;
+    font-weight: normal;
 }

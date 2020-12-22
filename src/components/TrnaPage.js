@@ -3,7 +3,6 @@ import { Redirect } from 'react-router-dom';
 import GeneDropDown from './GeneDropDown';
 import './styles/RnaPages.css';
 
-//can delete this??
 //list of all valid gene names
 const components = [
     'MT-TA',
