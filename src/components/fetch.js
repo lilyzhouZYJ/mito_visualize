@@ -1,5 +1,5 @@
 //import fetch from 'graphql-fetch'
-var fetch = require('graphql-fetch')('http://35.215.159.153:4000/graphql')
+var fetch = require('graphql-fetch')('http://www.mitovisualize.org/api')
 
 
 
