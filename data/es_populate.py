@@ -6,8 +6,7 @@ import pprint
 import csv
 import xlrd
 import requests
-from socket import error as SocketError
-import errno
+import time
 
 
 geneLoc = {
@@ -222,7 +221,7 @@ def populate_all_rrna_vars(es):
 # MitoTip in silico scores/categories and HmtVar scores/categories
 def populate_in_silico(es):
 
-    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+    urllib3.disable_warnings() 
 
     # prediction_mitotip: in silico scores from MitoTip
     # will also use this to add HmtVar data as well
@@ -250,12 +249,11 @@ def populate_in_silico(es):
                 var_id = 'm.'+coor+ref+'>'+alt
 
                 # access HmtVar data from api
-                try:
-                    link = "https://www.hmtvar.uniba.it/api/main/mutation/"+ref+coor+alt
-                    response = requests.get(link, verify=False)
-                except:
-                    pass
+                link = "https://www.hmtvar.uniba.it/api/main/mutation/"+ref+coor+alt
+                response = requests.get(link, verify=False)
 
+                time.sleep(5)
+                
                 hmtvar_score = response.json()["disease_score"]
                 hmtvar_cat = response.json()["pathogenicity"]
 
