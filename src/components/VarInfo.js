@@ -4,20 +4,48 @@ import { fetchVarInfo } from './fetch.js'
 //tRNA-coding genes on the reverse strand
 const reverseStrand = ["MT-TQ","MT-TA","MT-TN","MT-TC","MT-TY","MT-TS1","MT-TE","MT-TP"];
 
+const pairs = {"A":"T", "T":"A", "C":"G", "G":"C"};
+
+var formWC, breakWC, pairCoor;
+
 class VarInfo extends React.Component{
 
     state = {
         varData: null,
         loadError: null,
+        initLetter: null,
+        newLetter: null,
+        formWC: false,
+        breakWC: false,
     }
 
     loadData(){
         this.setState({loadError:null, varData:null});
-        fetchVarInfo(this.props.variant).then(response => {
+
+        var variant = this.props.variant
+        fetchVarInfo(variant).then(response => {
             //console.log(response)
             var varData = response.data.variant;
             if(!varData) {this.setState({loadError: "Variant not found"});}
-            else {this.setState({loadError:null, varData:varData});}
+            else {
+                var initLetter = variant[variant.length-3];
+                var newLetter = variant[variant.length-1];
+                //if the gene is on the reverse strand
+                if(reverseStrand.includes(this.props.gene)){ 
+                    initLetter = pairs[initLetter];
+                    newLetter = pairs[newLetter];
+                }
+
+                var pairBase = varData.pair_base;
+                var pairCoor = varData.pair_coordinate;
+                var formWC = false;
+                var breakWC = false;
+                if(pairs[newLetter]==pairBase) { formWC = true }
+                if(pairs[initLetter]==pairBase && pairs[newLetter]!==pairBase) { breakWC = true }
+                this.props.getWCStatus(formWC, breakWC, varData.pair_coordinate);
+
+                this.setState({loadError:null, varData:varData, initLetter:initLetter, newLetter:newLetter, formWC:formWC, breakWC:breakWC});
+            }
             //console.log(this.state.varData);
         })
     }
@@ -37,47 +65,26 @@ class VarInfo extends React.Component{
     render() {
 
         var variant = this.props.variant;
-        var variantCor = this.props.variantCor;
 
-        const { varData, loadError } = this.state;
-
-        var breakWC = this.props.breakWC;
-
-        var initLetter = variant[variant.length-3];
-        var newLetter = variant[variant.length-1];
-      
-        //if the gene is on the reverse strand
-        if(reverseStrand.includes(this.props.gene)){
-               
-            if(initLetter=="A"){initLetter="T";}
-            else if(initLetter=="T"){initLetter="A";}
-            else if(initLetter=="C"){initLetter="G";}
-            else{initLetter="C";}
-
-            if(newLetter=="A"){newLetter="T";}
-            else if(newLetter=="T"){newLetter="A";}
-            else if(newLetter=="C"){newLetter="G";}
-            else{newLetter="C";}
-                
-        }
+        const { varData, loadError, initLetter, newLetter, formWC, breakWC } = this.state;
 
         if(varData){
-
             var dom = varData.domain;
-            console.log(breakWC);
- 
+            var wc = formWC ? ', creating a Watson-Crick base pairing' :
+                     breakWC ? ', disrupting a Watson-Crick base pairing' :
+                     '';
+
             return(
                 <div id='var-info'>
-                    {dom!==null && !breakWC && 
+                    {dom!==null ?
                        <div>
-                           This variant in the {this.props.gene} gene results in a {initLetter}>{newLetter} change in the {dom} domain of the {this.props.rnaType}.
+                           This variant in the {this.props.gene} gene results in a {initLetter}>{newLetter} change in the {dom} domain of the {this.props.rnaType}{wc}.
                            <div className="help-tip">
                                <p>Structural domains are per <a href="https://pubmed.ncbi.nlm.nih.gov/17585048/">Putz et al 2007</a>, following the tRNA numbering conversion table on <a href="http://mamit-trna.u-strasbg.fr/Summary.asp">Mamit-tRNA</a>.</p>
                            </div>
                        </div>
+                       : <p>This variant in the {this.props.gene} gene results in a {initLetter}>{newLetter} change in the {this.props.rnaType}{wc}.</p>
                     }
-                    {dom!==null && breakWC && <p>This variant in the {this.props.gene} gene results in a {initLetter}>{newLetter} change in the {dom} domain of the {this.props.rnaType}, disrupting a Watson-Crick base pairing.</p>}
-                    {dom==null && <p>This variant in the {this.props.gene} gene results in a {initLetter}>{newLetter} change in the {this.props.rnaType}.</p>}
                 </div>
             ) 
          } else if(loadError) {

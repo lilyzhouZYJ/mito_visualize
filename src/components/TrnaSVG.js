@@ -24,6 +24,7 @@ import Mttr from './tRNA/MT-TR';
 import VarInput from './VarInput';
 import VarInfoTable from './VarInfoTable';
 import VarInfo from './VarInfo';
+import "./styles/VariantHighlight.css";
 
 //match each gene to its respective component
 const tRNAs = {
@@ -51,6 +52,8 @@ const tRNAs = {
     'MT-TR':Mttr
 };
 
+const pairs = {"A":"T", "T":"A", "G":"C", "C":"G"};
+
 //tRNA-coding genes on the reverse strand
 const reverseStrand = ["MT-TQ","MT-TA","MT-TN","MT-TC","MT-TY","MT-TS1","MT-TE","MT-TP"];
 
@@ -66,26 +69,35 @@ const imageOptions = {
   width: 350
 }
 
-var breakWC = false;
-
 class TrnaSVG extends React.Component{
 
     state = {
         varSubmitted: null,
         varCor: null,
+        breakWC: false,
+        formWC: false,
+        pairCoor: null,
     }
 
     handleClick = () => {
-
         var fileName;
         if(this.state.varSubmitted==null){
             fileName = this.props.gene;
         } else {
             fileName = this.state.varSubmitted + " [" + this.props.gene + "].png";
         }
-
         saveSvgAsPng.saveSvgAsPng(document.getElementById('svg-container'), fileName, imageOptions);
     };
+
+
+
+
+    getWCStatus = (formWC, breakWC, pairCoor) => {
+        this.setState({formWC:formWC,breakWC:breakWC,pairCoor:pairCoor});
+    }
+
+
+
 
     componentDidMount(){
         document.getElementById('svg-container').setAttribute("height","500");
@@ -93,18 +105,25 @@ class TrnaSVG extends React.Component{
         document.getElementById('svg-container').setAttribute("viewBox","0 0 400 400");
     }
 
+
+
+
+
     handleVarSubmit = (varSubmitted,variantCor) => {
         if(varSubmitted==''&&variantCor==''){
-            this.setState({varSubmitted:null,varCor:null})
+            this.setState({varSubmitted:null,varCor:null});
         } else {
             this.setState({varSubmitted:varSubmitted,varCor:variantCor});  
         }
     }
 
+
+
+
     //remove preexisting variant highlight
     removeVariantHighlight() {
 
-        breakWC = false;
+        console.log("removing all variant highlights");
 
         //remove variant name in svg legend
         var legExists = document.getElementById('var-legend');
@@ -112,28 +131,21 @@ class TrnaSVG extends React.Component{
             legExists.remove();
         }
 
-        //remove preeixsting highlighted letter
+        //remove highlighted letter
         var elementExists = document.getElementById('highlight');
         if(elementExists!==null){
-            elementExists.setAttribute('font-weight',"normal");
-            elementExists.setAttribute('font-size', '12');
-            elementExists.setAttribute('fill', '#000000');
-            var origX = parseFloat(elementExists.getAttribute('x'));
-            var origY = parseFloat(elementExists.getAttribute('y'));
-            elementExists.setAttribute('x',origX);
-            elementExists.setAttribute('y',origY);
-            elementExists.setAttribute('id','');
+            elementExists.removeAttribute('id');
             elementExists.innerHTML = elementExists.getAttribute('class')+elementExists.innerHTML.substring(1);
-            elementExists.setAttribute('class','');
+            elementExists.removeAttribute('class');
         }
 
-        //remove preeixsting highlighted background
+        //remove highlighted background
         var elementExists = document.getElementById('highlight-background');
         if(elementExists!==null){
             elementExists.remove();
         }
 
-        //remove preexisting highlighted circle
+        //remove highlighted pairing circle
         var elementExists = document.getElementById('highlight-circle');
         if(elementExists!==null){
             var newLine = document.createElementNS('http://www.w3.org/2000/svg','line');
@@ -150,6 +162,22 @@ class TrnaSVG extends React.Component{
             elementExists.remove();
         }
 
+        //remove highlighted pairing line
+        var elementExists = document.getElementById('highlight-line');
+        if(elementExists!==null){
+            var newCircle = document.createElementNS('http://www.w3.org/2000/svg','circle');
+            var x1 = parseFloat(elementExists.getAttribute('x1'));
+            var x2 = parseFloat(elementExists.getAttribute('x2'));
+            var y1 = parseFloat(elementExists.getAttribute('y1'));
+            var y2 = parseFloat(elementExists.getAttribute('y2'));
+            newCircle.setAttribute('cx',(x1+x2)/2);
+            newCircle.setAttribute('cy',(y1+y2)/2);
+            newCircle.setAttribute('r','2');
+            newCircle.innerHTML=elementExists.innerHTML;
+            document.getElementById('svg-container').insertBefore(newCircle, elementExists);
+            elementExists.remove();
+        }
+
         //remove note on variant highlight
         var noteExists = document.getElementById('varNote');
         if(noteExists!==null){
@@ -157,6 +185,10 @@ class TrnaSVG extends React.Component{
         }
 
     }
+
+
+
+
 
     componentDidUpdate(){
         var variant = this.state.varSubmitted;
@@ -172,10 +204,6 @@ class TrnaSVG extends React.Component{
             var varLegend = document.createElementNS('http://www.w3.org/2000/svg','text');
             varLegend.setAttribute('x','35');
             varLegend.setAttribute('y','55');
-            varLegend.setAttribute('font-size','12');
-            varLegend.setAttribute('font-weight','bold');
-            varLegend.setAttribute('font-family','sans-serif');
-            varLegend.setAttribute('text-anchor','start');
             varLegend.setAttribute('id','var-legend');
             varLegend.innerHTML = variant;
             document.getElementById('svg-container').appendChild(varLegend);
@@ -184,56 +212,76 @@ class TrnaSVG extends React.Component{
             if(reverseStrand.includes(this.props.gene)){
                 var initLetter = variant[variant.length-3];
                 var newLetter = variant[variant.length-1];
-                if(initLetter=="A"){initLetter="T";}
-                else if(initLetter=="T"){initLetter="A";}
-                else if(initLetter=="C"){initLetter="G";}
-                else{initLetter="C";}
-
-                if(newLetter=="A"){newLetter="T";}
-                else if(newLetter=="T"){newLetter="A";}
-                else if(newLetter=="C"){newLetter="G";}
-                else{newLetter="C";}
-                
-                variant = "m."+variantCor+initLetter+">"+newLetter;
+                initLetter = pairs[initLetter];
+                newLetter = pairs[newLetter];                
             }
 
             var allTitle = document.getElementById('svg-container').getElementsByTagName('title');
             for(var title of allTitle){
-                //changing letter
+                //get the variant and find its coordinates
                 if(title.innerHTML==variantCor){
                     var textNode = title.parentElement;
-                    textNode.setAttribute('font-weight',"bold");
-                    textNode.setAttribute('font-size',"15");
-                    textNode.setAttribute('fill',"crimson");
                     textNode.setAttribute('id', 'highlight');
                     textNode.setAttribute('class',textNode.innerHTML[0]);
-                    textNode.innerHTML = variant.slice(-1)+textNode.innerHTML.substring(1); 
+                    textNode.innerHTML = newLetter+textNode.innerHTML.substring(1); 
+                    var textx = parseFloat(textNode.getAttribute('x'));
+                    var texty = parseFloat(textNode.getAttribute('y'));
 
                     //add circle for background color of highlight
                     var circle = document.createElementNS('http://www.w3.org/2000/svg','circle');
-                    circle.setAttribute('cx',textNode.getAttribute('x'));
-                    circle.setAttribute('cy',textNode.getAttribute('y'));
+                    circle.setAttribute('cx',textx);
+                    circle.setAttribute('cy',texty);
                     circle.setAttribute('r','9px');
-                    circle.setAttribute('fill','yellow');
                     circle.setAttribute('id','highlight-background')
                     document.getElementById('svg-container').insertBefore(circle,document.getElementById('svg-container').childNodes[0]);
                 }
-                //changing circle (dot) 
-                else if((title.innerHTML.split(',')[0]==variantCor||title.innerHTML.split(',')[1]==variantCor) && title.parentElement.tagName=='line'){
-                    var origLine = title.parentElement;
-                    origLine.setAttribute('id','key');
-                    var newCircle = document.createElementNS('http://www.w3.org/2000/svg','circle');
-                    newCircle.setAttribute('cx',(parseFloat(origLine.getAttribute('x1'))+parseFloat(origLine.getAttribute('x2')))/2);
-                    newCircle.setAttribute('cy',(parseFloat(origLine.getAttribute('y1'))+parseFloat(origLine.getAttribute('y2')))/2);
-                    newCircle.setAttribute('r','2');
-                    newCircle.setAttribute('fill','crimson');
-                    newCircle.setAttribute('class',origLine.getAttribute('x1')+","+origLine.getAttribute('y1')+","+origLine.getAttribute('x2')+","+origLine.getAttribute('y2'));
-                    newCircle.setAttribute('id','highlight-circle')
-                    newCircle.innerHTML=origLine.innerHTML;
-                    document.getElementById('svg-container').insertBefore(newCircle, origLine);
-                    origLine.remove();
-                    breakWC = true;
+
+                //find the pairing
+                if((title.innerHTML.split(',')[0]==variantCor||title.innerHTML.split(',')[1]==variantCor)){
+                    var origPairing = title.parentElement;
                 }
+
+                //get coordinates of the pair
+                if(title.innerHTML==this.state.pairCoor){
+                    var pairNode = title.parentElement;
+                    var pairx = parseFloat(pairNode.getAttribute('x'));
+                    var pairy = parseFloat(pairNode.getAttribute('y'));
+                }
+            }
+
+            if(this.state.breakWC){
+                var newCircle = document.createElementNS('http://www.w3.org/2000/svg','circle');
+                newCircle.setAttribute('cx',(textx+pairx)/2);
+                newCircle.setAttribute('cy',(texty+pairy)/2);
+                newCircle.setAttribute('r','2');
+                newCircle.setAttribute('id','highlight-circle');
+                //stores original line coordinates
+                newCircle.setAttribute('class',origPairing.getAttribute('x1')+","+origPairing.getAttribute('y1')+","+origPairing.getAttribute('x2')+","+origPairing.getAttribute('y2'));
+                newCircle.innerHTML = origPairing.innerHTML;
+                document.getElementById('svg-container').insertBefore(newCircle, origPairing);
+                origPairing.remove();
+            }
+
+            if(this.state.formWC){
+                var newLine = document.createElementNS('http://www.w3.org/2000/svg','line');
+                if(textx==pairx){
+                    var x1, x2 = textx;
+                    var y1 = (texty+pairy)/2 - 4;
+                    var y2 = (texty+pairy)/2 + 4;
+                }
+                if(texty==pairy){
+                    var y1, y2 = texty;
+                    var x1 = (textx+pairx)/2 - 4;
+                    var x2 = (textx+pairx)/2 + 4;
+                }
+                newLine.setAttribute('x1',x1);
+                newLine.setAttribute('x2',x2);
+                newLine.setAttribute('y1',y1);
+                newLine.setAttribute('y2',y2);
+                newLine.setAttribute('id','highlight-line')
+                newLine.innerHTML = origPairing.innerHTML;
+                document.getElementById('svg-container').insertBefore(newLine, origPairing);
+                origPairing.remove();
             }
 
             //add note on the variant highlight
@@ -249,8 +297,6 @@ class TrnaSVG extends React.Component{
     render() {
 
         var gene = this.props.gene;
-
-        console.log("trnaSvg:"+breakWC);
        
         var SvgComponent = tRNAs[gene];
             return(
@@ -269,7 +315,7 @@ class TrnaSVG extends React.Component{
                     <div id="right-container">
                         <VarInput handleVarSubmit={this.handleVarSubmit} gene={gene}/>
                         {this.state.varSubmitted!==null &&
-                            <VarInfo gene={gene} variant={this.state.varSubmitted} variantCor={this.state.varCor} breakWC={breakWC} rnaType="tRNA" />
+                            <VarInfo gene={gene} variant={this.state.varSubmitted} variantCor={this.state.varCor} getWCStatus={this.getWCStatus} removeVariantHighlight={this.removeVariantHighlight} rnaType="tRNA" />
                         }
                         {this.state.varSubmitted!==null &&
                             <VarInfoTable variant={this.state.varSubmitted} rnaType="tRNA" />

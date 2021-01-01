@@ -166,6 +166,7 @@ class VarInfoTable extends React.Component{
                 </table>
             )
         } else if(loadError){
+            //the error message is displayed by the component VarInfo
             return <p></p>
         } else {
             return <p></p>;

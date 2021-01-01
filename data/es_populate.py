@@ -214,17 +214,9 @@ def populate_all_rrna_vars(es):
 
 
 
+# MitoTip in silico scores/categories
+def populate_in_silico_mitotip(es):
 
-
-
-
-# MitoTip in silico scores/categories and HmtVar scores/categories
-def populate_in_silico(es):
-
-    urllib3.disable_warnings() 
-
-    # prediction_mitotip: in silico scores from MitoTip
-    # will also use this to add HmtVar data as well
     f = urllib2.urlopen('https://mitomap.org/downloads/mitotip_scores.txt')
 
     for line in f:
@@ -248,10 +240,68 @@ def populate_in_silico(es):
 
                 var_id = 'm.'+coor+ref+'>'+alt
 
+                #find index
+                gene_name = []
+                for gene in geneLoc:
+                    if int(coor)>=geneLoc[gene][0] and int(coor)<=geneLoc[gene][1]:
+                        gene_name.append(gene)
+                #print(gene_name)
+ 
+                data = {
+                    "var_id": var_id,
+                    "var_coordinate": coor,
+                    "var_alt": alt,
+                    "var_ref": ref,
+                    "gene": gene_name,
+                    "prediction_mitotip": score,
+                    "prediction_mitotip_category": cat,
+                }
+
+                for g in gene_name:
+                    if es.exists(index=g.lower(), doc_type='_doc', id=var_id):
+                        es.update(index=g.lower(), doc_type='_doc', id=var_id, body={'doc':data})
+                        print('some doc was updated with mitotip prediction data: '+var_id)
+                    else:
+                        es.index(index=g.lower(), doc_type='_doc', id=var_id, body={'doc':data})
+                        print('some doc was added with mitotip prediction data: '+var_id)
+
+
+
+
+
+
+
+
+
+# HmtVar in silico scores/categories (first batch)
+def populate_in_silico_hmtvar1(es):
+
+    urllib3.disable_warnings() 
+
+    # use MitoTip file to add HmtVar data
+    f = urllib2.urlopen('https://mitomap.org/downloads/mitotip_scores.txt')
+
+    count = 0
+
+    for line in f:
+
+        if count > 2400:
+            break
+
+        if line[0].isdigit():
+            info = line.split('\t')
+
+            if info[2] is not ':':
+                coor = info[0]
+                ref = info[1]
+                alt = info[2]
+                var_id = 'm.'+coor+ref+'>'+alt
+
                 # access HmtVar data from api
                 link = "https://www.hmtvar.uniba.it/api/main/mutation/"+ref+coor+alt
                 response = requests.get(link, verify=False)
 
+                count = count + 1
                 time.sleep(5)
                 
                 hmtvar_score = response.json()["disease_score"]
@@ -270,8 +320,6 @@ def populate_in_silico(es):
                     "var_alt": alt,
                     "var_ref": ref,
                     "gene": gene_name,
-                    "prediction_mitotip": score,
-                    "prediction_mitotip_category": cat,
                     "prediction_hmtvar": hmtvar_score,
                     "prediction_hmtvar_category": hmtvar_cat,
                 }
@@ -279,10 +327,82 @@ def populate_in_silico(es):
                 for g in gene_name:
                     if es.exists(index=g.lower(), doc_type='_doc', id=var_id):
                         es.update(index=g.lower(), doc_type='_doc', id=var_id, body={'doc':data})
-                        print('some doc was updated with mitotip and hmtvar prediction data: '+var_id)
+                        print('some doc was updated with hmtvar prediction data: '+var_id+'; count: '+str(count))
                     else:
                         es.index(index=g.lower(), doc_type='_doc', id=var_id, body={'doc':data})
-                        print('some doc was added with mitotip and hmtvar prediction data: '+var_id)
+                        print('some doc was added with hmtvar prediction data: '+var_id+'; count: '+str(count))
+
+
+
+
+
+
+
+
+# HmtVar in silico scores/categories (second batch)
+def populate_in_silico_hmtvar2(es):
+
+    urllib3.disable_warnings() 
+
+    # use MitoTip file to add HmtVar data
+    f = urllib2.urlopen('https://mitomap.org/downloads/mitotip_scores.txt')
+
+    count = 0
+
+    for line in f:
+
+        if line[0].isdigit():
+            info = line.split('\t')
+
+            if info[2] is not ':':
+                
+                count = count + 1
+                if count <= 2400: 
+                    continue
+                
+                coor = info[0]
+                ref = info[1]
+                alt = info[2]
+                var_id = 'm.'+coor+ref+'>'+alt
+
+                # access HmtVar data from api
+                link = "https://www.hmtvar.uniba.it/api/main/mutation/"+ref+coor+alt
+                response = requests.get(link, verify=False)
+                time.sleep(5)
+                
+                hmtvar_score = response.json()["disease_score"]
+                hmtvar_cat = response.json()["pathogenicity"]
+
+                #find index
+                gene_name = []
+                for gene in geneLoc:
+                    if int(coor)>=geneLoc[gene][0] and int(coor)<=geneLoc[gene][1]:
+                        gene_name.append(gene)
+                #print(gene_name)
+ 
+                data = {
+                    "var_id": var_id,
+                    "var_coordinate": coor,
+                    "var_alt": alt,
+                    "var_ref": ref,
+                    "gene": gene_name,
+                    "prediction_hmtvar": hmtvar_score,
+                    "prediction_hmtvar_category": hmtvar_cat,
+                }
+
+                for g in gene_name:
+                    if es.exists(index=g.lower(), doc_type='_doc', id=var_id):
+                        es.update(index=g.lower(), doc_type='_doc', id=var_id, body={'doc':data})
+                        print('some doc was updated with hmtvar prediction data: '+var_id+'; count: '+str(count))
+                    else:
+                        es.index(index=g.lower(), doc_type='_doc', id=var_id, body={'doc':data})
+                        print('some doc was added with hmtvar prediction data: '+var_id+'; count: '+str(count))
+
+
+
+
+
+
 
 
 
@@ -740,9 +860,6 @@ def populate_gnomad(es):
 
 
 
-########################
-# post-transcriptional modifications + domain must be added last since it is added to variants that already exist in the database
-########################
 
 # post-transcriptional modifications + domains (mito_RNA_modifications_final_withdomains.xlsx)
 def populate_post_transcript(es):
@@ -795,58 +912,11 @@ def populate_post_transcript(es):
 
 
 
-# ignore this; this is the same as above but in csv format
-def populate_post_trans(es):
-
-    f = open('mito_RNA_modifications_final.csv')
-    read_tsv = csv.DictReader(f, delimiter=",")
-
-    for row in read_tsv:
-
-        isModified = row['MODIFIED?']
-
-        if isModified:
-            coor = int(row['POS'])
-            modification = row['MODIFICATION']
-
-            #find index
-            gene_name = []
-            for gene in geneLoc:
-                if coor>=geneLoc[gene][0] and coor<=geneLoc[gene][1]:
-                    gene_name.append(gene)
-            #print(gene_name)
-
-            q = {
-                "script":{
-                    "source": "ctx._source.post_transcription_modifications = params.modi",
-                    "lang": "painless",
-                    "params": {"modi": modification}
-                },
-                "query":{
-                    "bool":{
-                        "must": [
-                            {"match":{"var_coordinate": coor}}
-                        ]
-                    }
-                }
-            }
-
-            for g in gene_name:
-                es.update_by_query(index=g.lower(), doc_type='_doc', body = q)
-                print('some doc was updated with post-transcription modifications: '+str(coor))
 
 
 
 
 
-
-
-
-
-
-##############
-# conserv metrics must be added last since it is added to variants that already exist in the database
-##############
 
 #conservation metrics (phyloP + PhastCons)
 def populate_conserv(es):
@@ -933,6 +1003,55 @@ def populate_conserv(es):
 
 
 
+# populates information on coordinate and base of the pair
+def populate_base_pair(es):
+
+    f = open('base_with_pair.tsv')
+    read_tsv = csv.DictReader(f, delimiter="\t")
+
+    for row in read_tsv:
+        coor = row['coordinate']
+        pair_coor = row['pair_coordinate']
+        pair_base = row['pair_base']
+
+        if coor=="" or pair_coor=="":
+            continue
+
+        coor = int(coor)
+        pair_coor = int(pair_coor)
+
+        #find index
+        gene_name = []
+        for gene in geneLoc:
+            if coor>=geneLoc[gene][0] and coor<=geneLoc[gene][1]:
+                gene_name.append(gene)
+        #print(gene_name)
+
+        q = {
+                "script":{
+                    "source": "ctx._source.pair_coordinate = params.pair_coor; ctx._source.pair_base = params.pair_base",
+                    "lang": "painless",
+                    "params": {"pair_coor": pair_coor, "pair_base": pair_base}
+                },
+                "query":{
+                    "bool":{
+                        "must": [
+                            {"match":{"var_coordinate": coor}}
+                        ]
+                    }
+                }
+            }
+
+        for g in gene_name:
+            es.update_by_query(index=g.lower(), doc_type='_doc', body = q)
+            print('some doc was updated with pair information: '+str(coor))
+
+
+
+
+
+
+
 
 
 
@@ -1004,7 +1123,9 @@ if __name__ == '__main__':
 	
 	#create_index(es)
         #populate_all_rrna_vars(es)
-        populate_in_silico(es)
+        #populate_in_silico_mitotip(es)
+        #populate_in_silico_hmtvar1(es)
+        #populate_in_silico_hmtvar2(es)
         #populate_in_silico_ponmttrna(es)
         #populate_disease_association(es)
         #populate_population_freq(es)
@@ -1013,6 +1134,9 @@ if __name__ == '__main__':
         #populate_gnomad(es)
         #populate_post_transcript(es)
         #populate_conserv(es)
+        populate_base_pair(es)
+
+
         #test_func(es)
         #test_gzip('chrM.phastCons100way.wigFix.gz')
         #test(es)
