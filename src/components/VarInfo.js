@@ -21,7 +21,6 @@ class VarInfo extends React.Component{
 
     loadData(){
         this.setState({loadError:null, varData:null});
-
         var variant = this.props.variant
         fetchVarInfo(variant).then(response => {
             //console.log(response)
@@ -90,6 +89,7 @@ class VarInfo extends React.Component{
          } else if(loadError) {
              return <p>{loadError}</p>
          } else {
+             this.props.isLoading();
              return <p>Loading...</p>
          }
     }

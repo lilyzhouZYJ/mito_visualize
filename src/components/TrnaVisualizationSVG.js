@@ -22,11 +22,6 @@ import Mttn from './tRNA/MT-TN';
 import Mttm from './tRNA/MT-TM';
 import Mttr from './tRNA/MT-TR';
 
-import Mtrnr1 from './rRNA/MT-RNR1';
-import Mtrnr1Zoom from './rRNA/MT-RNR1-zoom';
-import Mtrnr2 from './rRNA/MT-RNR2';
-import Mtrnr2Zoom from './rRNA/MT-RNR2-zoom';
-
 import VisualizeOptions from './VisualizeOptions';
 import './styles/VisualizeOptions.css';
 
@@ -54,14 +49,12 @@ const RNAs = {
     'MT-TN':Mttn,
     'MT-TM':Mttm,
     'MT-TR':Mttr,
-    'MT-RNR1': Mtrnr1,
-    'MT-RNR2': Mtrnr2
 };
 
 //genes on the reverse strand
 const reverseStrand = ["MT-TQ","MT-TA","MT-TN","MT-TC","MT-TY","MT-TS1","MT-TE","MT-TP"];
 
-class VisualizationSVG extends React.Component{
+class TrnaVisualizationSVG extends React.Component{
 
     state = {
         varSubmitted: null,
@@ -144,7 +137,7 @@ class VisualizationSVG extends React.Component{
         var SvgComponent = RNAs[gene];
 
         return(
-            <div id="visualization-svg">
+            <div id="trna-visualization-svg">
                 <div id="left-container">
                     <SvgComponent gene={gene} />
                     <ul id="notes">
@@ -164,5 +157,5 @@ class VisualizationSVG extends React.Component{
     
 }
 
-export default VisualizationSVG;
+export default TrnaVisualizationSVG;
 

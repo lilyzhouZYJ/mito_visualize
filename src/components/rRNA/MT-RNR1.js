@@ -7,50 +7,11 @@ class Mtrnr1 extends React.Component{
     }
 
     componentDidMount(){
-
-        //this is for removing repeated lines (will be needed with rrna2 again)
-        // var allTitle = document.getElementById('rrna-svg-container').getElementsByTagName('title');
-        // for(var a of allTitle){
-        //     if(a.parentElement.tagName=="line"||a.parentElement.tagName=="circle"){
-        //         for(var b of allTitle){
-        //             if(b.parentElement.tagName=="line"||b.parentElement.tagName=="circle"){
-        //                 if(a.innerHTML.split(',')[0]==b.innerHTML.split(',')[1]&&a.innerHTML.split(',')[1]==b.innerHTML.split(',')[0]){
-        //                     console.log(a.innerHTML+" "+b.innerHTML);
-        //                     b.parentElement.remove();
-        //                 }
-        //             }
-        //         }
-        //         // if(a.innerHTML.split(',')[0]>a.innerHTML.split(',')[1]){
-        //         //     a.parentElement.remove();
-        //         // }
-        //     }
-        // }
-
         //set styles
-        var allLines = document.getElementById('rrna-svg-container').getElementsByTagName('line');
-        for(var t of allLines){
-            t.setAttribute('stroke',"#000000");
-            t.setAttribute('stroke-width',"1");
-            t.setAttribute('stroke-linecap',"round");
-        }
-        var allCircles = document.getElementById('rrna-svg-container').getElementsByTagName('circle');
-        for(var t of allCircles){
-            t.setAttribute('fill', '#000000');
-        }
         var allText = document.getElementById('rrna-svg-container').getElementsByTagName('text');
         for(var t of allText){
             t.setAttribute('font-size', '9');
-            t.setAttribute('fill', '#000000');
-            t.setAttribute('font-family', 'monospace');
-            t.setAttribute('text-anchor','middle');
-            t.setAttribute('alignment-baseline','middle');
         }
-        var allPath = document.getElementById('rrna-svg-container').getElementsByTagName('path');
-        for(var t of allPath){
-            t.setAttribute('stroke','black');
-            t.setAttribute('fill','transparent');
-        }
-
     }
 
     render() {

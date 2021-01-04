@@ -8,7 +8,8 @@ import TrnaSVG from './TrnaSVG';
 import RrnaSVG from './RrnaSVG';
 import GeneDropDown from './GeneDropDown';
 import VisualizationPage from './VisualizationPage';
-import VisualizationSVG from './VisualizationSVG';
+import TrnaVisualizationSVG from './TrnaVisualizationSVG';
+import RrnaVisualizationSVG from './RrnaVisualizationSVG';
 
 export default function Routes() {
   return (
@@ -59,11 +60,20 @@ export default function Routes() {
             exact
             path="/rna-visualization/:gene"
             render={({ match }) => {
-                return (
-                  <VisualizationSVG
-                    gene={match.params.gene}
-                  />
-                )
+                if(match.params.gene[3]=='T'){
+                    return (
+                      <TrnaVisualizationSVG
+                        gene={match.params.gene}
+                      />
+                    )
+                }
+                else {
+                    return (
+                      <RrnaVisualizationSVG
+                        gene={match.params.gene}
+                      />
+                    )
+                }
             }}
          />
 

@@ -7,21 +7,28 @@ import Mtrnr2Zoom from './rRNA/MT-RNR2-zoom';
 import VarInput from './VarInput';
 import VarInfo from './VarInfo';
 import VarInfoTable from './VarInfoTable';
+import "./styles/VariantHighlight.css";
 
 const saveSvgAsPng = require('save-svg-as-png');
 
 var varX = null;
 var varY = null;
 
+const pairs = {"A":"T", "T":"A", "G":"C", "C":"G"};
+
 class RrnaSVG extends React.Component{
 
     state = {
         varSubmitted: null,
-        varCor: null
+        varCor: null,
+        breakWC: false,
+        formWC: false,
+        pairCoor: null,
     }
 
-    handleClick = () => {
 
+    //download svg
+    handleClick = () => {
         var fileName = "";
 
         if(this.props.gene=="MT-RNR1"){
@@ -77,36 +84,31 @@ class RrnaSVG extends React.Component{
         }
         
         if(this.state.varSubmitted==null){
-            // var geneLegend = document.createElementNS('http://www.w3.org/2000/svg','text');
-            // if(this.props.gene=="MT-RNR1"){
-            //     geneLegend.setAttribute('x','50');
-            //     geneLegend.setAttribute('y','30');
-            //     geneLegend.setAttribute('font-size','23');
-            // } else {
-            //     geneLegend.setAttribute('x','100');
-            //     geneLegend.setAttribute('y','130');
-            //     geneLegend.setAttribute('font-size','50');
-            // }
-            // geneLegend.setAttribute('font-weight','bold');
-            // geneLegend.setAttribute('font-family','sans-serif');
-            // geneLegend.setAttribute('text-anchor','start');
-            // geneLegend.setAttribute('id','gene-legend');
-            // geneLegend.innerHTML = this.props.gene;
-            // document.getElementById('rrna-svg-container').appendChild(geneLegend);
-
             fileName = this.props.gene;
             saveSvgAsPng.saveSvgAsPng(document.getElementById('rrna-svg-container'), fileName, imageOptions);
-            
         } else {
             fileName = this.state.varSubmitted + " [" + this.props.gene + "]" + fileName + '.png';
             saveSvgAsPng.saveSvgAsPng(document.getElementById('rrna-svg-container-zoom'), fileName, imageOptions);
         }
 
-        
         // document.getElementById('gene-legend').remove();
-
     };
 
+
+
+    //determine whether WC pairing is formed or disrupted
+    getWCStatus = (formWC, breakWC, pairCoor) => {
+        this.setState({formWC:formWC,breakWC:breakWC,pairCoor:pairCoor});
+    }
+
+    //if new variant information is loading, remove all variant highlights and the zoomed in image
+    isLoading = () => {
+        this.removeVariantHighlight();
+    }
+
+
+
+    //if a variant is submitted
     handleVarSubmit = (varSubmitted,variantCor) => {
         if(varSubmitted==''&&variantCor==''){
             this.setState({varSubmitted:null,varCor:null})
@@ -114,6 +116,8 @@ class RrnaSVG extends React.Component{
             this.setState({varSubmitted:varSubmitted,varCor:variantCor});  
         }
     }
+
+
 
     //remove preexisting variant highlight
     removeVariantHighlight() {
@@ -124,32 +128,26 @@ class RrnaSVG extends React.Component{
             legExists.remove();
         }
 
-        //remove preeixsting highlighted letter
+        //remove highlighted letter
         var elementExists = document.getElementById('highlight');
         if(elementExists!==null){
-            elementExists.setAttribute('font-weight',"normal");
+            elementExists.removeAttribute('id');
             if(this.props.gene=="MT-RNR1"){
                 elementExists.setAttribute('font-size', '9');
             } else {
                 elementExists.setAttribute('font-size', '15');
             }
-            elementExists.setAttribute('fill', '#000000');
-            var origX = parseFloat(elementExists.getAttribute('x'));
-            var origY = parseFloat(elementExists.getAttribute('y'));
-            elementExists.setAttribute('x',origX);
-            elementExists.setAttribute('y',origY);
-            elementExists.setAttribute('id','');
             elementExists.innerHTML = elementExists.getAttribute('class')+elementExists.innerHTML.substring(1);
-            elementExists.setAttribute('class','');
+            elementExists.removeAttribute('class');
         }
 
-        //remove preeixsting highlighted background (yellow circle)
+        //remove highlighted background (yellow circle)
         var elementExists = document.getElementById('highlight-background');
         if(elementExists!==null){
             elementExists.remove();
         }
 
-        //remove preexisting rectangle that highlights the region being zoomed in on rrna-svg
+        //remove rectangle that highlights the region being zoomed in on rrna-svg
         var elementExists = document.getElementById('highlight-rect');
         if(elementExists!==null){
             elementExists.remove();
@@ -168,13 +166,13 @@ class RrnaSVG extends React.Component{
             elementExists.remove();
         }
 
-        //remove outside rectangle around rrna-zoom (the rect has to update based on variant)
+        //remove outside rectangle around rrna-zoom
         var elementExists = document.getElementById('outside-rect');
         if(elementExists!==null){
             elementExists.remove();
         }
 
-        //remove preexisting highlighted circle (change dots back to lines again)
+        //remove highlighted pairing circle (change dots back to lines again)
         var elementExists = document.getElementById('highlight-circle');
         if(elementExists!==null){
             var newLine = document.createElementNS('http://www.w3.org/2000/svg','line');
@@ -183,11 +181,25 @@ class RrnaSVG extends React.Component{
             newLine.setAttribute('y1',location[1]);
             newLine.setAttribute('x2',location[2]);
             newLine.setAttribute('y2',location[3]);
-            newLine.setAttribute('stroke',"#000000");
-            newLine.setAttribute('stroke-width',"1");
-            newLine.setAttribute('stroke-linecap',"round");
             newLine.innerHTML=elementExists.innerHTML;
             document.getElementById('rrna-svg-container-zoom').insertBefore(newLine, elementExists);
+            elementExists.remove();
+        }
+
+        //remove highlighted pairing line (change line back to dot)
+        var elementExists = document.getElementById('highlight-line');
+        if(elementExists!==null){
+            var newCircle = document.createElementNS('http://www.w3.org/2000/svg','circle');
+            var x1 = parseFloat(elementExists.getAttribute('x1'));
+            var x2 = parseFloat(elementExists.getAttribute('x2'));
+            var y1 = parseFloat(elementExists.getAttribute('y1'));
+            var y2 = parseFloat(elementExists.getAttribute('y2'));
+            newCircle.setAttribute('cx',(x1+x2)/2);
+            newCircle.setAttribute('cy',(y1+y2)/2);
+            if(this.props.gene=="MT-RNR1"){ newCircle.setAttribute('r','1.3'); }
+            else { newCircle.setAttribute('r','2'); }
+            newCircle.innerHTML=elementExists.innerHTML;
+            document.getElementById('rrna-svg-container-zoom').insertBefore(newCircle, elementExists);
             elementExists.remove();
         }
 
@@ -209,43 +221,132 @@ class RrnaSVG extends React.Component{
         //make new highlight (only on zoom)
         if(variant!==null){
 
-            // //add variant name to svg legend
-            // var varLegend = document.createElementNS('http://www.w3.org/2000/svg','text');
-            // if(this.props.gene=="MT-RNR1"){
-            //     varLegend.setAttribute('x','0');
-            //     varLegend.setAttribute('y','70');
-            //     varLegend.setAttribute('font-size','27');
-            // }
-            // varLegend.setAttribute('font-weight','bold');
-            // varLegend.setAttribute('font-family','sans-serif');
-            // varLegend.setAttribute('text-anchor','start');
-            // varLegend.setAttribute('id','var-legend');
-            // varLegend.innerHTML = variant;
-            // document.getElementById('rrna-svg-container').appendChild(varLegend);
+            var initLetter = variant[variant.length-3];
+            var newLetter = variant[variant.length-1];
 
+            var origPairing;
             var allTitle = document.getElementById('rrna-svg-container-zoom').getElementsByTagName('title');
             for(var title of allTitle){
-                //changing letter
+
+                //get the variant and find its coordinates
                 if(title.innerHTML==variantCor){
                     var textNode = title.parentElement;
-                    textNode.setAttribute('font-weight',"bold");
-                    if(this.props.gene=="MT-RNR1"){textNode.setAttribute('font-size',"15");}
-                    else {textNode.setAttribute('font-size','19');}
-                    textNode.setAttribute('fill',"crimson");
                     textNode.setAttribute('id', 'highlight');
+                    if(this.props.gene=="MT-RNR1"){ textNode.setAttribute('font-size',"15"); }
+                    else { textNode.setAttribute('font-size','19'); }
                     textNode.setAttribute('class',textNode.innerHTML[0]);
-                    textNode.innerHTML = variant.slice(-1)+textNode.innerHTML.substring(1); 
+                    textNode.innerHTML = newLetter+textNode.innerHTML.substring(1); 
+                    var textx = parseFloat(textNode.getAttribute('x'));
+                    var texty = parseFloat(textNode.getAttribute('y'));
 
                     //add circle for background color of highlight
                     var circle = document.createElementNS('http://www.w3.org/2000/svg','circle');
-                    circle.setAttribute('cx',textNode.getAttribute('x'));
-                    circle.setAttribute('cy',textNode.getAttribute('y'));
-                    if(this.props.gene=="MT-RNR1"){circle.setAttribute('r','9px');}
-                    else {circle.setAttribute('r','11px');}
-                    circle.setAttribute('fill','yellow');
+                    circle.setAttribute('cx',textx);
+                    circle.setAttribute('cy',texty);
+                    if(this.props.gene=="MT-RNR1"){ circle.setAttribute('r','9px'); }
+                    else { circle.setAttribute('r','11px'); }
                     circle.setAttribute('id','highlight-background')
                     document.getElementById('rrna-svg-container-zoom').insertBefore(circle,document.getElementById('rrna-svg-container-zoom').childNodes[0]);
                 }
+
+                //find the pairing
+                if((title.innerHTML.split(',')[0]==variantCor||title.innerHTML.split(',')[1]==variantCor)){
+                    if(title.parentElement) {origPairing = title.parentElement; }
+                }
+
+                //get coordinates of the pair
+                if(title.innerHTML==this.state.pairCoor){
+                    var pairNode = title.parentElement;
+                    var pairx = parseFloat(pairNode.getAttribute('x'));
+                    var pairy = parseFloat(pairNode.getAttribute('y'));
+                }
+            }
+
+            if(this.state.breakWC){
+                var newCircle = document.createElementNS('http://www.w3.org/2000/svg','circle');
+                newCircle.setAttribute('cx',(textx+pairx)/2);
+                newCircle.setAttribute('cy',(texty+pairy)/2);
+                if(this.props.gene=="MT-RNR1"){ newCircle.setAttribute('r','1.3'); }
+                else { newCircle.setAttribute('r','2'); }
+                newCircle.setAttribute('id','highlight-circle');
+                //stores original line coordinates
+                newCircle.setAttribute('class',origPairing.getAttribute('x1')+","+origPairing.getAttribute('y1')+","+origPairing.getAttribute('x2')+","+origPairing.getAttribute('y2'));
+                newCircle.innerHTML = origPairing.innerHTML;
+                document.getElementById('rrna-svg-container-zoom').insertBefore(newCircle, origPairing);
+                origPairing.remove();
+            }
+
+            if(this.state.formWC){
+                var newLine = document.createElementNS('http://www.w3.org/2000/svg','line');
+                var x1, x2, y1, y2;
+                if(textx==pairx){
+                    x1 = textx, x2 = textx;
+                    y1 = (texty+pairy)/2 - 4;
+                    y2 = (texty+pairy)/2 + 4;
+                }
+                else if(texty==pairy){
+                    y1 = texty, y2 = texty;
+                    x1 = (textx+pairx)/2 - 4;
+                    x2 = (textx+pairx)/2 + 4;
+                } 
+                else{ //for diagonal pairs (in rRNAs)
+                    var middle_x = parseFloat((textx+pairx)/2);
+                    var length_x = abs(parseFloat((textx+pairx)/3));
+
+                    var middle_y = parseFloat((texty+pairy)/2);
+                    var length_y = abs(parseFloat((texty+pairy)/3));
+
+                    if(textx > pairx && texty < pairy){
+                        x1 = textx - length_x;
+                        y1 = texty + length_y;
+
+                        x2 = textx + length_x; 
+                        y2 = texty - length_y;
+                    }
+
+                    else if (textx < pairx && texty < pairy){
+                        x1 = textx + length_x;
+                        y1 = texty + length_y;
+
+                        x2 = pairx - length_x; 
+                        y2 = pairy - length_y;
+                    } 
+
+                    else if (textx > pairx && texty > pairy){
+                        x1 = textx - length_x;
+                        y1 = texty - length_y;
+
+                        x2 = pairx + length_x; 
+                        y2 = pairy + length_y;
+                    }
+
+                    else if (textx < pairx && texty > pairy){
+                        x1 = textx + length_x; 
+                        y1 = texty - length_y;
+
+                        x2 = pairx - length_x; 
+                        y2 = pairy + length_y;
+                    }
+
+                }
+
+                newLine.setAttribute('x1',x1);
+                newLine.setAttribute('x2',x2);
+                newLine.setAttribute('y1',y1);
+                newLine.setAttribute('y2',y2);
+                newLine.setAttribute('id','highlight-line')
+                newLine.innerHTML = origPairing.innerHTML;
+                document.getElementById('rrna-svg-container-zoom').insertBefore(newLine, origPairing);
+                origPairing.remove();
+            }
+
+            //add note on the variant highlight
+            var varNote = document.createElement('li');
+            varNote.innerHTML = "The base and pair type change (if applicable) is shown in red.";
+            varNote.setAttribute('id','varNote');
+            document.getElementById('notes').appendChild(varNote);
+
+            /*
                 //changing circle (dot) 
                 else if((title.innerHTML.split(',')[0]==variantCor||title.innerHTML.split(',')[1]==variantCor) && title.parentElement.tagName=='line'){
                     var pair = title.innerHTML.split(',');
@@ -275,6 +376,7 @@ class RrnaSVG extends React.Component{
                     }
                 }
             }
+            */
 
             //make rrna-svg smaller and add rectangle around it
             if(this.props.gene=="MT-RNR1"){
@@ -301,15 +403,13 @@ class RrnaSVG extends React.Component{
             rect.setAttribute('id','small-rect');
             document.getElementById('rrna-svg-container').appendChild(rect);
 
-            //x and y coordinates of the variant letter
-            varX = parseFloat(textNode.getAttribute('x'));
-            varY = parseFloat(textNode.getAttribute('y'));
+            /* textx and texty are defined above as the x and y coordinates of the variant letter */
             
             //add rectangle to mt-rnr to show which part is being zoomed on
             var zoomRect = document.createElementNS('http://www.w3.org/2000/svg','rect');
             if(this.props.gene=="MT-RNR1"){
-                zoomRect.setAttribute('x',varX-190);
-                zoomRect.setAttribute('y',varY-190);
+                zoomRect.setAttribute('x',textx-190);
+                zoomRect.setAttribute('y',texty-190);
                 zoomRect.setAttribute('width','380');
                 zoomRect.setAttribute('height','380');
                 zoomRect.setAttribute('stroke-width','1px');
@@ -330,8 +430,8 @@ class RrnaSVG extends React.Component{
                 //     zoomRect.setAttribute('y',varY-380);
                 // }
 
-                zoomRect.setAttribute('x',varX-380);
-                zoomRect.setAttribute('y',varY-380);
+                zoomRect.setAttribute('x',textx-380);
+                zoomRect.setAttribute('y',texty-380);
                 zoomRect.setAttribute('width','760');
                 zoomRect.setAttribute('height','760');
                 zoomRect.setAttribute('stroke-width','2px');
@@ -384,14 +484,14 @@ class RrnaSVG extends React.Component{
             //add outside rectangle for mt-rnr-zoom
             var rect = document.createElementNS('http://www.w3.org/2000/svg','rect');
             if(this.props.gene=="MT-RNR1"){
-                rect.setAttribute('x',varX-190);
-                rect.setAttribute('y',varY-190);
+                rect.setAttribute('x',textx-190);
+                rect.setAttribute('y',texty-190);
                 rect.setAttribute('height','380');
                 rect.setAttribute('width','380');
                 rect.setAttribute('stroke-width','1px');
             } else {
-                rect.setAttribute('x',varX-380);
-                rect.setAttribute('y',varY-380);
+                rect.setAttribute('x',textx-380);
+                rect.setAttribute('y',texty-380);
                 rect.setAttribute('height','760');
                 rect.setAttribute('width','760');
                 rect.setAttribute('stroke-width','2px');
@@ -402,8 +502,8 @@ class RrnaSVG extends React.Component{
             document.getElementById('rrna-svg-container-zoom').appendChild(rect);
             
             //set viewBox for mt-rnr-zoom
-            if(this.props.gene=="MT-RNR1"){var zoom = (varX-190)+" "+(varY-190)+" 380 380";}
-            else {var zoom = (varX-380)+" "+(varY-380)+" 760 760";}
+            if(this.props.gene=="MT-RNR1"){var zoom = (textx-190)+" "+(texty-190)+" 380 380";}
+            else {var zoom = (textx-380)+" "+(texty-380)+" 760 760";}
             document.getElementById('rrna-svg-container-zoom').setAttribute('viewBox',zoom);
 
             //add note on the variant highlight
@@ -469,7 +569,7 @@ class RrnaSVG extends React.Component{
                 <div id="right-container">
                     <VarInput handleVarSubmit={this.handleVarSubmit} gene={gene}/>
                     {this.state.varSubmitted!==null && 
-                        <VarInfo gene={gene} variant={this.state.varSubmitted} variantCor={this.state.varCor} rnaType="rRNA" />
+                        <VarInfo gene={gene} variant={this.state.varSubmitted} variantCor={this.state.varCor} getWCStatus={this.getWCStatus} isLoading={this.isLoading} rnaType="rRNA" />
                     }
                     {this.state.varSubmitted!==null && 
                         <VarInfoTable variant={this.state.varSubmitted} rnaType="rRNA" />

@@ -57,8 +57,8 @@ const pairs = {"A":"T", "T":"A", "G":"C", "C":"G"};
 //tRNA-coding genes on the reverse strand
 const reverseStrand = ["MT-TQ","MT-TA","MT-TN","MT-TC","MT-TY","MT-TS1","MT-TE","MT-TP"];
 
+//download SVG button setup
 const saveSvgAsPng = require('save-svg-as-png')
-
 const imageOptions = {
   scale: 5,
   encoderOptions: 1,
@@ -79,6 +79,7 @@ class TrnaSVG extends React.Component{
         pairCoor: null,
     }
 
+    //download svg
     handleClick = () => {
         var fileName;
         if(this.state.varSubmitted==null){
@@ -89,15 +90,15 @@ class TrnaSVG extends React.Component{
         saveSvgAsPng.saveSvgAsPng(document.getElementById('svg-container'), fileName, imageOptions);
     };
 
-
-
-
+    //determine whether WC pairing is formed or disrupted
     getWCStatus = (formWC, breakWC, pairCoor) => {
         this.setState({formWC:formWC,breakWC:breakWC,pairCoor:pairCoor});
     }
 
-
-
+    //if new variant information is loading, remove all variant highlights
+    isLoading = () => {
+        this.removeVariantHighlight();
+    }
 
     componentDidMount(){
         document.getElementById('svg-container').setAttribute("height","500");
@@ -105,10 +106,7 @@ class TrnaSVG extends React.Component{
         document.getElementById('svg-container').setAttribute("viewBox","0 0 400 400");
     }
 
-
-
-
-
+    //if a variant is submitted
     handleVarSubmit = (varSubmitted,variantCor) => {
         if(varSubmitted==''&&variantCor==''){
             this.setState({varSubmitted:null,varCor:null});
@@ -119,11 +117,8 @@ class TrnaSVG extends React.Component{
 
 
 
-
     //remove preexisting variant highlight
     removeVariantHighlight() {
-
-        console.log("removing all variant highlights");
 
         //remove variant name in svg legend
         var legExists = document.getElementById('var-legend');
@@ -154,9 +149,6 @@ class TrnaSVG extends React.Component{
             newLine.setAttribute('y1',location[1]);
             newLine.setAttribute('x2',location[2]);
             newLine.setAttribute('y2',location[3]);
-            newLine.setAttribute('stroke',"#000000");
-            newLine.setAttribute('stroke-width',"1");
-            newLine.setAttribute('stroke-linecap',"round");
             newLine.innerHTML=elementExists.innerHTML;
             document.getElementById('svg-container').insertBefore(newLine, elementExists);
             elementExists.remove();
@@ -208,16 +200,19 @@ class TrnaSVG extends React.Component{
             varLegend.innerHTML = variant;
             document.getElementById('svg-container').appendChild(varLegend);
 
+            var initLetter = variant[variant.length-3];
+            var newLetter = variant[variant.length-1];
+
             //if the gene is on the reverse strand
             if(reverseStrand.includes(this.props.gene)){
-                var initLetter = variant[variant.length-3];
-                var newLetter = variant[variant.length-1];
                 initLetter = pairs[initLetter];
                 newLetter = pairs[newLetter];                
             }
 
+            var origPairing;
             var allTitle = document.getElementById('svg-container').getElementsByTagName('title');
             for(var title of allTitle){
+
                 //get the variant and find its coordinates
                 if(title.innerHTML==variantCor){
                     var textNode = title.parentElement;
@@ -238,7 +233,7 @@ class TrnaSVG extends React.Component{
 
                 //find the pairing
                 if((title.innerHTML.split(',')[0]==variantCor||title.innerHTML.split(',')[1]==variantCor)){
-                    var origPairing = title.parentElement;
+                    if(title.parentElement) {origPairing = title.parentElement}
                 }
 
                 //get coordinates of the pair
@@ -248,6 +243,8 @@ class TrnaSVG extends React.Component{
                     var pairy = parseFloat(pairNode.getAttribute('y'));
                 }
             }
+
+            //console.log(origPairing);
 
             if(this.state.breakWC){
                 var newCircle = document.createElementNS('http://www.w3.org/2000/svg','circle');
@@ -315,7 +312,7 @@ class TrnaSVG extends React.Component{
                     <div id="right-container">
                         <VarInput handleVarSubmit={this.handleVarSubmit} gene={gene}/>
                         {this.state.varSubmitted!==null &&
-                            <VarInfo gene={gene} variant={this.state.varSubmitted} variantCor={this.state.varCor} getWCStatus={this.getWCStatus} removeVariantHighlight={this.removeVariantHighlight} rnaType="tRNA" />
+                            <VarInfo gene={gene} variant={this.state.varSubmitted} variantCor={this.state.varCor} getWCStatus={this.getWCStatus} isLoading={this.isLoading} rnaType="tRNA" />
                         }
                         {this.state.varSubmitted!==null &&
                             <VarInfoTable variant={this.state.varSubmitted} rnaType="tRNA" />

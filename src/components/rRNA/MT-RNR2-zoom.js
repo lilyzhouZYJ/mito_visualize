@@ -3,32 +3,11 @@ import React from 'react';
 class Mtrnr2Zoom extends React.Component{
 
     componentDidMount(){
-
         //set styles
-        var allLines = document.getElementById('rrna-svg-container-zoom').getElementsByTagName('line');
-        for(var t of allLines){
-            t.setAttribute('stroke',"#000000");
-            t.setAttribute('stroke-width',"1");
-            t.setAttribute('stroke-linecap',"round");
-        }
-        var allCircles = document.getElementById('rrna-svg-container-zoom').getElementsByTagName('circle');
-        for(var t of allCircles){
-            t.setAttribute('fill', '#000000');
-        }
         var allText = document.getElementById('rrna-svg-container-zoom').getElementsByTagName('text');
         for(var t of allText){
             t.setAttribute('font-size', '15');
-            t.setAttribute('fill', '#000000');
-            t.setAttribute('font-family', 'monospace');
-            t.setAttribute('text-anchor','middle');
-            t.setAttribute('alignment-baseline','middle');
         }
-        var allPath = document.getElementById('rrna-svg-container-zoom').getElementsByTagName('path');
-        for(var t of allPath){
-            t.setAttribute('stroke','black');
-            t.setAttribute('fill','transparent');
-        }
-
     }
 
     render() {
