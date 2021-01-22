@@ -1,5 +1,5 @@
 
-/* general formatting */
+/* general formatting RnaPages.css */
 
 #left-container{
     margin-left: 230px;
@@ -47,6 +47,10 @@
     position: absolute;
 }
 
+#notes {
+    margin-bottom: 10px;
+}
+
 #notes li{
     font-size: 14px;
     list-style-type: square;
@@ -54,14 +58,17 @@
     width: 100%;
 }
 
-#rrna-svg li{
-    font-size: 14px;
-    list-style-type: square;
-    list-style-position: inside;
+#bottom-section{ /* notes and download button for rrna */
     position: relative;
+    margin: 0;
     top: 650px;
-    width: 100%;
 }
+
+#citation-note {
+    font-size: 14px;
+    margin-top: 5px;
+}
+
 
 
 
@@ -89,28 +96,31 @@
 
 /* svg formatting for rRNA */
 
-#rrna-svg-container line {
+#rrna-svg-container line, #rrna-svg-container-zoom line {
     stroke: #000000;
     stroke-width: 1;
     stroke-linecap: round
 }
 
-#rrna-svg-container circle {
+#rrna-svg-container circle, #rrna-svg-container-zoom circle {
     fill: #000000;
 }
 
-#rrna-svg-container text{
+#rrna-svg-container text, #rrna-svg-container-zoom text{
     fill: #000000;
     font-family: monospace;
     font-weight: normal;
     text-anchor: middle;
     alignment-baseline: middle;
+    /* font-size is different depending on the rRNA */
 }
 
-#rrna-svg-container path{
+#rrna-svg-container path, #rrna-svg-container-zoom path{
     stroke: black;
     fill: transparent;
 }
+
+
 
 
 
@@ -196,6 +206,72 @@
 
 
 
+
+
+/* tRNA svg after variant is submitted */
+/* NOTE: all selectors in this section need to be the svg container or inside the svg container, in order for save-svg-as-png to work as expected*/
+
+#svg-container #highlight { /* letter highlight on svg */
+    font-weight: bold;
+    font-size: 15px;
+    fill: crimson;
+}
+
+#svg-container #highlight-background{ /* circle highlight on svg */
+    fill: yellow;
+}
+
+#svg-container #highlight-circle{ /* new circle when a WC pair is disrupted */
+    fill: crimson;
+}
+
+#svg-container #highlight-line{ /* new line when a WC pair is created */
+    stroke: crimson;
+    stroke-width: 1;
+    stroke-linecap:;
+}
+
+/* the legend of variant id added to the RNA svg */
+#svg-container #var-legend {
+    font-size: 12px ;
+    font-weight: bold;
+    text-anchor: start;
+    font-family: sans-serif;
+}
+
+/* rRNA svg after variant is submitted */
+
+/* letter highlight on svg */
+#rrna-svg-container-zoom #highlight {
+    font-weight: bold;
+    fill: crimson;
+}
+
+/* circle highlight on svg */
+#rrna-svg-container-zoom #highlight-background{
+    fill: yellow;
+}
+
+/* new circle when a WC pair is disrupted */
+#rrna-svg-container-zoom #highlight-circle{
+    fill: crimson;
+}
+
+/* new line when a WC pair is created */
+#rrna-svg-container-zoom #highlight-line{
+    stroke: crimson;
+    stroke-width: 1;
+    stroke-linecap:;
+}
+
+
+
+
+
+
+
+/* download svg as png button */
+
 #download-btn {
     width: 200px;
     height: 45px;
@@ -211,15 +287,11 @@
     color: #00356B;
 }
 
-#rrna-svg #download-btn{
-    position: relative;
-    top: 645px;
-}
-
 #select-download{
     position: relative;
-    top: 597px;
-    left: 210px;
+    left: 20px;
+    top: 10px;
+    display:inline-block;
 }
 
 #select-download span{
@@ -275,7 +347,7 @@
     text-align: left;
     background-color: cornflowerblue;
     padding: 20px;
-    width: 300px;
+    width: 300px !important;
     position: absolute;
     border-radius: 3px;
     box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);

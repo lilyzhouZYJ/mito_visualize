@@ -2,36 +2,13 @@ import React from 'react';
 
 class Mttl2 extends React.Component{
     
-    componentDidMount(){
-        //set styles
-        var allLines = document.getElementById('svg-container').getElementsByTagName('line');
-        for(var t of allLines){
-            t.setAttribute('stroke',"#000000");
-            t.setAttribute('stroke-width',"1");
-            t.setAttribute('stroke-linecap',"round");
-        }
-        var allCircles = document.getElementById('svg-container').getElementsByTagName('circle');
-        for(var t of allCircles){
-            t.setAttribute('fill', '#000000');
-        }
-        var allText = document.getElementById('svg-container').getElementsByTagName('text');
-        for(var t of allText){
-            t.setAttribute('font-size', '12');
-            t.setAttribute('fill', '#000000');
-            t.setAttribute('font-family', 'monospace');
-            t.setAttribute('text-anchor','middle');
-            t.setAttribute('alignment-baseline','middle');
-        }
-
-    }
-
     render() {
         
         return(
             <svg id="svg-container" height="390" width="350" xmlns="http://www.w3.org/2000/svg">
                 <text x='35' y='10' style={{fontSize:'17', fontFamily:"sans-serif",textAnchor:'start',fontWeight:'bold'}}>MT-TL2</text>
                 <text x='35' y='35' style={{fontSize:'12', fontFamily:"sans-serif",textAnchor:'start',fontWeight:'bold'}}>mt-tRNA
-                    <tspan style={{fontSize:'9'}} baselineShift="super">Leu</tspan>
+                    <tspan style={{fontSize:'9'}} baselineShift="super">Leu (CUN)</tspan>
                 </text>
                 <text x="205" y="10" >A<title></title> </text>
                 <text x="205" y="25" >C<title></title> </text>

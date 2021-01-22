@@ -16,3 +16,10 @@ nav ul li:hover {
 .active {
     font-weight: bold;
 }
+
+/* logo on navbar */
+nav img{
+    width: 200px;
+    height: auto;
+    vertical-align: middle;
+}

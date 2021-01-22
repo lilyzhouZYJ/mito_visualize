@@ -2,29 +2,6 @@ import React from 'react';
 
 class Mttr extends React.Component{
     
-    componentDidMount(){
-        //set styles
-        var allLines = document.getElementById('svg-container').getElementsByTagName('line');
-        for(var t of allLines){
-            t.setAttribute('stroke',"#000000");
-            t.setAttribute('stroke-width',"1");
-            t.setAttribute('stroke-linecap',"round");
-        }
-        var allCircles = document.getElementById('svg-container').getElementsByTagName('circle');
-        for(var t of allCircles){
-            t.setAttribute('fill', '#000000');
-        }
-        var allText = document.getElementById('svg-container').getElementsByTagName('text');
-        for(var t of allText){
-            t.setAttribute('font-size', '12');
-            t.setAttribute('fill', '#000000');
-            t.setAttribute('font-family', 'monospace');
-            t.setAttribute('text-anchor','middle');
-            t.setAttribute('alignment-baseline','middle');
-        }
-
-    }
-
     render() {
         
         return(

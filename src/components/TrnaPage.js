@@ -1,6 +1,7 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom';
 import GeneDropDown from './GeneDropDown';
+
 import './styles/RnaPages.css';
 
 //list of all valid gene names

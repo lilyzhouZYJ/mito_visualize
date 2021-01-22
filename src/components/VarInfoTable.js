@@ -1,34 +1,6 @@
 import React from 'react';
-import { fetchVarInfo } from './fetch.js'
 
 class VarInfoTable extends React.Component{
-
-    state = {
-        varData: null,
-        loadError: null,
-    }
-
-    loadData(){
-        this.setState({loadError:null, varData:null});
-        fetchVarInfo(this.props.variant).then(response => {
-            //console.log(response)
-            var varData = response.data.variant;
-            if(!varData) {this.setState({loadError: "Variant not found"});}
-            else {this.setState({loadError:null, varData:varData});}
-            //console.log(this.state.varData);
-        })
-    }
-
-    componentDidMount() {
-        this.loadData();
-    }
-
-    componentDidUpdate(prevProps) {
-        var newVar = this.props.variant;
-        if(newVar !== prevProps.variant){
-            this.loadData();
-        }
-    }
 
     checkboxChanged = () => {
         if(document.getElementById('expanded').checked){
@@ -41,12 +13,12 @@ class VarInfoTable extends React.Component{
     render() {   
     
         var variant = this.props.variant;  
-        var data = this.state.varData;
-        var loadError = this.state.loadError; 
+        var data = this.props.varData;
 
         if(data){
 
-            var haplo = data.haplogroups==null? "None" : data.haplogroups;
+            var haplo = data.haplogroups==null ? "None" : data.haplogroups;
+            var count_haplos = data.count_haplos==null ? 0 : data.count_haplos;
            
             var posttrans = data.post_transcription_modifications;
             var posttransLink = this.props.rnaType=="tRNA" ? "https://pubmed.ncbi.nlm.nih.gov/32859890/" : "https://pubmed.ncbi.nlm.nih.gov/30529456/"
@@ -75,10 +47,10 @@ class VarInfoTable extends React.Component{
                                              data.pop_freq_mitomap+"% ("+data.pop_count_mitomap+")"
                                              : "0% (0)"
                                          }</a><br/>
-                                <a href='https://www.helix.com/pages/mitochondrial-variant-database' target="_blank">HelixMTdb</a>: {data.pop_freq_helix_af_hom!==null ? 
+                                HelixMTdb: <a href='https://www.helix.com/pages/mitochondrial-variant-database' target="_blank">{data.pop_freq_helix_af_hom!==null ? 
                                             'hom - '+data.pop_freq_helix_af_hom.toPrecision(3)+'% ('+data.pop_freq_helix_counts_hom+') / het - '+data.pop_freq_helix_af_het.toPrecision(3)+'% ('+data.pop_freq_helix_counts_het+')'
                                              : "0% (0)"
-                                         }
+                                         }</a>
                             </td>
                         </tr>
                         <tr>
@@ -90,17 +62,23 @@ class VarInfoTable extends React.Component{
                             <td>gnomAD: <a href={gnomadLink} target="_blank">{data.heteroplasmy_gnomad!==null ?
                                             data.heteroplasmy_gnomad.toPrecision(3)+"%"
                                             : "0%"
-                                        }</a><br/>
-                                <a href='https://www.helix.com/pages/mitochondrial-variant-database' target="_blank">HelixMTdb</a>: 
+                                        }
+                                </a> / HelixMTdb: <a href='https://www.helix.com/pages/mitochondrial-variant-database' target="_blank">
                                          {data.heteroplasmy_helix==null && " 0%"}
                                          {data.heteroplasmy_helix!==null && data.heteroplasmy_helix!==">99" && " "+parseFloat(data.heteroplasmy_helix).toPrecision(3)+"%"}
-                                         {data.heteroplasmy_helix==">99" && " "+data.heteroplasmy_helix+"%"}
+                                         {data.heteroplasmy_helix==">99" && " "+data.heteroplasmy_helix+"%"}</a>
                             </td>
                         </tr>
                         {this.props.rnaType=="tRNA" &&
                             <tr>
                                 <td class='left-col'>In silico predictions<br/>(score & interpretation)</td>
-                                <td><a href='https://www.mitomap.org/MITOMAP/MitoTipScores' target="_blank">MitoTip</a>{': '+(Math.round(data.prediction_mitotip*10)/10).toFixed(1)+" - "+data.prediction_mitotip_category}<br/><a href='http://structure.bmc.lu.se/PON-mt-tRNA/about.html/' target="_blank">PON-mt-tRNA</a>{': '+(Math.round(data.prediction_pon_mt_tRNA*10)/10).toFixed(1)+" - "+data.prediction_pon_mt_tRNA_category}</td>
+                                <td>MitoTip: <a href='https://www.mitomap.org/MITOMAP/MitoTipScores' target="_blank">{(Math.round(data.prediction_mitotip*10)/10).toFixed(1)+" - "+data.prediction_mitotip_category}</a><br/>
+                                    PON-mt-tRNA: <a href='http://structure.bmc.lu.se/PON-mt-tRNA/about.html/' target="_blank">{(Math.round(data.prediction_pon_mt_tRNA*10)/10).toFixed(1)+" - "+data.prediction_pon_mt_tRNA_category}</a><br/>
+                                    HmtVar: <a href='https://www.hmtvar.uniba.it/' target="_blank">{data.prediction_hmtvar_category!==null ?
+                                                                                                         data.prediction_hmtvar+ " - " + data.prediction_hmtvar_category.replace("_", " ")
+                                                                                                         : "Not available"
+                                                                                                        }</a>
+                                </td>
                             </tr>
                         }
                         <tr>
@@ -109,12 +87,11 @@ class VarInfoTable extends React.Component{
                                 : <td class='left-col'>Disease association</td>
                             }
                             <td>
-                                MitoMap: <a href={mitomapLink} target="_blank">
+                                MITOMAP: <a href={mitomapLink} target="_blank">
                                              {data.disease_status_mitomap==null && "None"}
                                              {data.disease_status_mitomap!==null && data.disease_status_mitomap=="Cfrm" && "Confirmed"}
                                              {data.disease_status_mitomap!== null && data.disease_status_mitomap!=="Cfrm" && data.disease_status_mitomap}
-                                         </a>
-                                {' / ClinVar: '}{data.disease_status_clinvar!==null ?
+                                </a> / ClinVar: {data.disease_status_clinvar!==null ?
                                                     <a href={clinvarLink} target="_blank">{data.disease_status_clinvar}</a>
                                                     : "None"
                                                 }
@@ -136,7 +113,7 @@ class VarInfoTable extends React.Component{
                                          <p><span><a href='https://www.phylotree.org/' target="_blank">Phylotree</a>: {haplo}</span> ({data.count_haplos})</p>
                                          <label id="expanded-label" for="expanded" role="button" onClick={this.checkboxChanged}>Show more</label>
                                       </div>
-                                    : <p><a href='https://www.phylotree.org/' target="_blank">Phylotree</a>: {haplo+' ('+data.count_haplos+')'}</p>
+                                    : <p><a href='https://www.phylotree.org/' target="_blank">Phylotree</a>: {haplo+' ('+count_haplos+')'}</p>
                                 }
                             </td>
                         </tr>
@@ -146,46 +123,38 @@ class VarInfoTable extends React.Component{
                                     <p>Measures of nucleotide conservation in 100 vertebrate species. <a href="http://compgen.cshl.edu/phast/resources.php" target="_blank">PhyloP scores</a> evaluate conservation at each base, and do not incorporate conservation at neighboring sites. <a href="http://compgen.cshl.edu/phast/resources.php" target="_blank">PhastCons scores</a> are the probability that the base belongs to a conserved multibase element.</p>
                                 </div>
                             </td>
-                            <td><a href='https://genome.ucsc.edu/cgi-bin/hgTrackUi?db=hg19&g=cons100way#TRACK_HTML' target="_blank">PhyloP</a> (basewise): {(Math.round(data.conserv_phylop*100)/100).toFixed(2)} / <a href='https://genome.ucsc.edu/cgi-bin/hgTrackUi?db=hg19&g=cons100way#TRACK_HTML' target="_blank">PhastCons</a> (element): {(Math.round(data.conserv_phastcons*100)/100).toFixed(2)}<br/>
+                            <td>PhyloP (basewise): <a href='https://genome.ucsc.edu/cgi-bin/hgTrackUi?db=hg38&g=cons100way#TRACK_HTML' target="_blank">{(Math.round(data.conserv_phylop*100)/100).toFixed(2)}</a> / PhastCons (element): <a href='https://genome.ucsc.edu/cgi-bin/hgTrackUi?db=hg38&g=cons100way#TRACK_HTML' target="_blank">{(Math.round(data.conserv_phastcons*100)/100).toFixed(2)}</a><br/>
                                 <i style={{fontSize: "13px", color:'gray'}}>PhyloP: &gt; 0 conserved, &lt; 0 fast-evolving; range -20-10</i><br/>
                                 <i style={{fontSize: "13px", color:'gray'}}>PhastCons: probability of negative selection; range 0-1</i></td>
                         </tr>
                         <tr>
-                            <td class='left-col'>Post-transcriptionally modified position?
+                            <td class='left-col'>Other</td>
+                            <td>Modified:&nbsp;
+                                {posttrans==null && "No"}
+                                {posttrans!==null && posttrans.indexOf("N")>=0 && <a href={posttransLink}>Yes ({posttrans.substring(0,posttrans.indexOf("N")+1)}<sup>{posttrans.charAt(posttrans.indexOf("N")+1)}</sup>{posttrans.substring(posttrans.indexOf("N")+2)})</a>}
+                                {posttrans!==null && posttrans.indexOf("N")==-1 && <a href={posttransLink}>Yes ({posttrans})</a>}
                                 <div class="help-tip">
                                     <p>Post-transcriptional modifications can impact mitochondrial RNA function and abundance. Listed tRNA and rRNA modified sites are per <a href='https://pubmed.ncbi.nlm.nih.gov/32859890/' target="_blank">Suzuki et al 2020</a> and <a href='https://pubmed.ncbi.nlm.nih.gov/30529456/' target="_blank">Rebelo-Guiomar et al 2019</a>, respectively.</p>
                                 </div>
-                            </td>
-                            <td>
-                                {posttrans==null && "No"}
-                                {posttrans!==null && posttrans.indexOf("N")>=0 && <p><a href={posttransLink}>Yes ({posttrans.substring(0,posttrans.indexOf("N")+1)}<sup>{posttrans.charAt(posttrans.indexOf("N")+1)}</sup>{posttrans.substring(posttrans.indexOf("N")+2)})</a></p>}
-                                {posttrans!==null && posttrans.indexOf("N")==-1 && <p><a href={posttransLink}>Yes ({posttrans})</a></p>}
+                                <br/>
+                                {this.props.rnaType=="tRNA" &&
+                                    <div>
+                                        Involved in tRNA folding (HmtVar): <a href="https://www.hmtvar.uniba.it/trna_models" target="_blank">
+                                            {data.structural_interaction_hmtvar!=="N/A" ?
+                                            data.structural_interaction_hmtvar : "Not available"}</a>
+                                        <div class="help-tip">
+                                            <p>Base interactions enable folding and formation of the tertiary (3D) tRNA structure; annotations from <a href="https://www.hmtvar.uniba.it/" target="_blank">HmtVar</a>.</p>
+                                        </div>
+                                    </div>
+                                 }
                             </td>
                         </tr>
                     </tbody>
                 </table>
             )
-        } else if(loadError){
-            //the error message is displayed by the component VarInfo
-            return <p></p>
-        } else {
-            return <p></p>;
         }
     }
     
 }
 
 export default VarInfoTable;
-
-/* apollo
-export default graphql(getVarInfoQuery, {
-    options: (props) => {
-        return {
-            variables: {
-                id: props.variant
-            }
-        }
-    }
-})(VarInfoTable);
-*/
-

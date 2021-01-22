@@ -102,6 +102,7 @@ def create_index(es):
                         "conserv_phylop": { "type": "float"},
                         "conserv_phastcons": { "type": "float"},
                         "post_transcription_modifications": { "type": "text"},
+                        "structural_interaction_hmtvar": { "type": "text"},
                         "domain": { "type": "text"}
                     }
                 }
@@ -110,7 +111,6 @@ def create_index(es):
 
         if not es.indices.exists(index=index_name):
             es.indices.create(index=index_name, body=settings)
-
 
 
 
@@ -273,8 +273,8 @@ def populate_in_silico_mitotip(es):
 
 
 
-# HmtVar in silico scores/categories (first batch)
-def populate_in_silico_hmtvar1(es):
+# HmtVar in silico scores/categories and structural interaction result (first batch)
+def populate_hmtvar1(es):
 
     urllib3.disable_warnings() 
 
@@ -306,6 +306,10 @@ def populate_in_silico_hmtvar1(es):
                 
                 hmtvar_score = response.json()["disease_score"]
                 hmtvar_cat = response.json()["pathogenicity"]
+                hmtvar_struct = response.json()["Annot"]["strutt_3"]
+                if hmtvar_struct=="N": hmtvar_struct = "No"
+                elif hmtvar_struct=="Y": hmtvar_struct = "Yes"
+                else: hmtvar_struct = "N/A"
 
                 #find index
                 gene_name = []
@@ -322,15 +326,16 @@ def populate_in_silico_hmtvar1(es):
                     "gene": gene_name,
                     "prediction_hmtvar": hmtvar_score,
                     "prediction_hmtvar_category": hmtvar_cat,
+                    "structural_interaction_hmtvar": hmtvar_struct,
                 }
 
                 for g in gene_name:
                     if es.exists(index=g.lower(), doc_type='_doc', id=var_id):
                         es.update(index=g.lower(), doc_type='_doc', id=var_id, body={'doc':data})
-                        print('some doc was updated with hmtvar prediction data: '+var_id+'; count: '+str(count))
+                        print('some doc was updated with hmtvar data: '+var_id+'; count: '+str(count))
                     else:
                         es.index(index=g.lower(), doc_type='_doc', id=var_id, body={'doc':data})
-                        print('some doc was added with hmtvar prediction data: '+var_id+'; count: '+str(count))
+                        print('some doc was added with hmtvar data: '+var_id+'; count: '+str(count))
 
 
 
@@ -339,8 +344,8 @@ def populate_in_silico_hmtvar1(es):
 
 
 
-# HmtVar in silico scores/categories (second batch)
-def populate_in_silico_hmtvar2(es):
+# HmtVar in silico scores/categories and structural interaction result (second batch)
+def populate_hmtvar2(es):
 
     urllib3.disable_warnings() 
 
@@ -372,6 +377,10 @@ def populate_in_silico_hmtvar2(es):
                 
                 hmtvar_score = response.json()["disease_score"]
                 hmtvar_cat = response.json()["pathogenicity"]
+                hmtvar_struct = response.json()["Annot"]["strutt_3"]
+                if hmtvar_struct=="N": hmtvar_struct = "No"
+                elif hmtvar_struct=="Y": hmtvar_struct = "Yes"
+                else: hmtvar_struct = "N/A"
 
                 #find index
                 gene_name = []
@@ -388,15 +397,16 @@ def populate_in_silico_hmtvar2(es):
                     "gene": gene_name,
                     "prediction_hmtvar": hmtvar_score,
                     "prediction_hmtvar_category": hmtvar_cat,
+                    "structural_interaction_hmtvar": hmtvar_struct,
                 }
 
                 for g in gene_name:
                     if es.exists(index=g.lower(), doc_type='_doc', id=var_id):
                         es.update(index=g.lower(), doc_type='_doc', id=var_id, body={'doc':data})
-                        print('some doc was updated with hmtvar prediction data: '+var_id+'; count: '+str(count))
+                        print('some doc was updated with hmtvar data: '+var_id+'; count: '+str(count))
                     else:
                         es.index(index=g.lower(), doc_type='_doc', id=var_id, body={'doc':data})
-                        print('some doc was added with hmtvar prediction data: '+var_id+'; count: '+str(count))
+                        print('some doc was added with hmtvar data: '+var_id+'; count: '+str(count))
 
 
 
@@ -1124,8 +1134,8 @@ if __name__ == '__main__':
 	#create_index(es)
         #populate_all_rrna_vars(es)
         #populate_in_silico_mitotip(es)
-        #populate_in_silico_hmtvar1(es)
-        #populate_in_silico_hmtvar2(es)
+        #populate_hmtvar1(es)
+        #populate_hmtvar2(es)
         #populate_in_silico_ponmttrna(es)
         #populate_disease_association(es)
         #populate_population_freq(es)
@@ -1134,7 +1144,7 @@ if __name__ == '__main__':
         #populate_gnomad(es)
         #populate_post_transcript(es)
         #populate_conserv(es)
-        populate_base_pair(es)
+        #populate_base_pair(es)
 
 
         #test_func(es)

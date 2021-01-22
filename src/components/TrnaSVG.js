@@ -1,4 +1,6 @@
 import React from 'react';
+import { fetchVarInfo } from './fetch.js'
+
 import Mtta from './tRNA/MT-TA';
 import Mttt from './tRNA/MT-TT';
 import Mtty from './tRNA/MT-TY';
@@ -24,7 +26,6 @@ import Mttr from './tRNA/MT-TR';
 import VarInput from './VarInput';
 import VarInfoTable from './VarInfoTable';
 import VarInfo from './VarInfo';
-import "./styles/VariantHighlight.css";
 
 //match each gene to its respective component
 const tRNAs = {
@@ -65,15 +66,21 @@ const imageOptions = {
   backgroundColor: 'white',
   left: 5,
   top: -20,
-  height: 390,
+  height: 380,
   width: 350
 }
+
+var formWC, breakWC, pairCoor;
 
 class TrnaSVG extends React.Component{
 
     state = {
         varSubmitted: null,
         varCor: null,
+        varData: null,
+        loadError: null,
+        initLetter: null,
+        newLetter: null,
         breakWC: false,
         formWC: false,
         pairCoor: null,
@@ -90,15 +97,42 @@ class TrnaSVG extends React.Component{
         saveSvgAsPng.saveSvgAsPng(document.getElementById('svg-container'), fileName, imageOptions);
     };
 
-    //determine whether WC pairing is formed or disrupted
-    getWCStatus = (formWC, breakWC, pairCoor) => {
-        this.setState({formWC:formWC,breakWC:breakWC,pairCoor:pairCoor});
+
+
+
+
+    loadData = (variant) => {
+        this.setState({loadError:null, varData:null});
+        fetchVarInfo(variant).then(response => {
+            //console.log(response)
+            var varData = response.data.variant;
+            if(!varData) {this.setState({loadError: "Variant not found"});}
+            else {
+                var initLetter = variant[variant.length-3];
+                var newLetter = variant[variant.length-1];
+                //if the gene is on the reverse strand
+                if(reverseStrand.includes(this.props.gene)){ 
+                    initLetter = pairs[initLetter];
+                    newLetter = pairs[newLetter];
+                }
+
+                var pairBase = varData.pair_base;
+                var pairCoor = varData.pair_coordinate;
+                var formWC = false;
+                var breakWC = false;
+                if(pairs[newLetter]==pairBase) { formWC = true }
+                if(pairs[initLetter]==pairBase && pairs[newLetter]!==pairBase) { breakWC = true }
+
+                this.setState({loadError:null, varData:varData, initLetter:initLetter, newLetter:newLetter, formWC:formWC, breakWC:breakWC, pairCoor:pairCoor});
+            }
+            //console.log(this.state.varData);
+        })
     }
 
-    //if new variant information is loading, remove all variant highlights
-    isLoading = () => {
-        this.removeVariantHighlight();
-    }
+
+
+
+
 
     componentDidMount(){
         document.getElementById('svg-container').setAttribute("height","500");
@@ -109,9 +143,12 @@ class TrnaSVG extends React.Component{
     //if a variant is submitted
     handleVarSubmit = (varSubmitted,variantCor) => {
         if(varSubmitted==''&&variantCor==''){
-            this.setState({varSubmitted:null,varCor:null});
+            this.setState({varSubmitted:null,varCor:null, varData:null, loadError:null});
         } else {
-            this.setState({varSubmitted:varSubmitted,varCor:variantCor});  
+            if(varSubmitted !== this.state.varSubmitted){
+                this.setState({varSubmitted:varSubmitted,varCor:variantCor}); 
+                this.loadData(varSubmitted, variantCor); 
+            }
         }
     }
 
@@ -190,7 +227,7 @@ class TrnaSVG extends React.Component{
         this.removeVariantHighlight();
         
         //make new highlight
-        if(variant!==null){
+        if(this.state.varData){
 
             //add variant name to svg legend
             var varLegend = document.createElementNS('http://www.w3.org/2000/svg','text');
@@ -200,14 +237,8 @@ class TrnaSVG extends React.Component{
             varLegend.innerHTML = variant;
             document.getElementById('svg-container').appendChild(varLegend);
 
-            var initLetter = variant[variant.length-3];
-            var newLetter = variant[variant.length-1];
-
-            //if the gene is on the reverse strand
-            if(reverseStrand.includes(this.props.gene)){
-                initLetter = pairs[initLetter];
-                newLetter = pairs[newLetter];                
-            }
+            var initLetter = this.state.initLetter;
+            var newLetter = this.state.newLetter;
 
             var origPairing;
             var allTitle = document.getElementById('svg-container').getElementsByTagName('title');
@@ -262,12 +293,12 @@ class TrnaSVG extends React.Component{
             if(this.state.formWC){
                 var newLine = document.createElementNS('http://www.w3.org/2000/svg','line');
                 if(textx==pairx){
-                    var x1, x2 = textx;
+                    var x1 = textx, x2 = textx;
                     var y1 = (texty+pairy)/2 - 4;
                     var y2 = (texty+pairy)/2 + 4;
                 }
                 if(texty==pairy){
-                    var y1, y2 = texty;
+                    var y1 = texty, y2 = texty;
                     var x1 = (textx+pairx)/2 - 4;
                     var x2 = (textx+pairx)/2 + 4;
                 }
@@ -294,34 +325,83 @@ class TrnaSVG extends React.Component{
     render() {
 
         var gene = this.props.gene;
+
+        const { varSubmitted, varCor, varData, loadError, initLetter, newLetter, breakWC, formWC, pairCoor } = this.state;
        
         var SvgComponent = tRNAs[gene];
+
+        if(varData){
             return(
                 <div id="trna-svg">
                     <div id="left-container">
-                        <SvgComponent gene={gene} variant={this.state.varSubmitted} />
+                        <SvgComponent />
                         <ul id="notes">
                             {reverseStrand.includes(gene) &&
                                     <li>Note: {gene} is on the reverse strand.</li>
                             }
                             <li>Lines represent Watson-Crick (WC) base pairs, and dots non-WC pairs.</li>
                             <li>Hovering over each base will display the genomic coordinate.</li>
+                            <li>2D cloverleaf tRNA structures are per <a href="https://pubmed.ncbi.nlm.nih.gov/17585048/" target="_blank">Putz et al</a> as shown on <a href="http://mamit-trna.u-strasbg.fr/human.asp" target="_blank">Mamit-tRNA</a>.</li>
                         </ul>
                         <button id="download-btn" onClick={this.handleClick}>Download Image (png)</button>
+                        <p id="citation-note">If you use MitoVisualize in your paper please cite XXX</p>
+                    </div>
+                    <div id="right-container">
+                        <VarInput handleVarSubmit={this.handleVarSubmit} gene={gene}/>
+                        <VarInfo variant={varSubmitted} gene={gene} dom={varData.domain} rnaType="tRNA" initLetter={initLetter} newLetter={newLetter} breakWC={breakWC} formWC={formWC} />
+                        <VarInfoTable variant={varSubmitted} varData={varData} rnaType="tRNA" />
+                    </div>
+                </div>
+            )
+        } else if (loadError) {
+            return(
+                <div id="trna-svg">
+                    <div id="left-container">
+                        <SvgComponent />
+                        <ul id="notes">
+                            {reverseStrand.includes(gene) &&
+                                    <li>Note: {gene} is on the reverse strand.</li>
+                            }
+                            <li>Lines represent Watson-Crick (WC) base pairs, and dots non-WC pairs.</li>
+                            <li>Hovering over each base will display the genomic coordinate.</li>
+                            <li>2D cloverleaf tRNA structures are per <a href="https://pubmed.ncbi.nlm.nih.gov/17585048/" target="_blank">Putz et al</a> as shown on <a href="http://mamit-trna.u-strasbg.fr/human.asp" target="_blank">Mamit-tRNA</a>.</li>
+                        </ul>
+                        <button id="download-btn" onClick={this.handleClick}>Download Image (png)</button>
+                        <p id="citation-note">If you use MitoVisualize in your paper please cite XXX</p>
+                    </div>
+                    <div id="right-container">
+                        <VarInput handleVarSubmit={this.handleVarSubmit} gene={gene}/>
+                        <VarInfo loadError={loadError} />
+                    </div>
+                </div>
+            )
+        } else {
+            return(
+                <div id="trna-svg">
+                    <div id="left-container">
+                        <SvgComponent />
+                        <ul id="notes">
+                            {reverseStrand.includes(gene) &&
+                                    <li>Note: {gene} is on the reverse strand.</li>
+                            }
+                            <li>Lines represent Watson-Crick (WC) base pairs, and dots non-WC pairs.</li>
+                            <li>Hovering over each base will display the genomic coordinate.</li>
+                            <li>2D cloverleaf tRNA structures are per <a href="https://pubmed.ncbi.nlm.nih.gov/17585048/" target="_blank">Putz et al</a> as shown on <a href="http://mamit-trna.u-strasbg.fr/human.asp" target="_blank">Mamit-tRNA</a>.</li>
+                        </ul>
+                        <button id="download-btn" onClick={this.handleClick}>Download Image (png)</button>
+                        <p id="citation-note">If you use MitoVisualize in your paper please cite XXX</p>
                     </div>
                     <div id="right-container">
                         <VarInput handleVarSubmit={this.handleVarSubmit} gene={gene}/>
                         {this.state.varSubmitted!==null &&
-                            <VarInfo gene={gene} variant={this.state.varSubmitted} variantCor={this.state.varCor} getWCStatus={this.getWCStatus} isLoading={this.isLoading} rnaType="tRNA" />
-                        }
-                        {this.state.varSubmitted!==null &&
-                            <VarInfoTable variant={this.state.varSubmitted} rnaType="tRNA" />
+                            <VarInfo loading="Loading..."/>
                         }
                     </div>
                 </div>
             )
+        }
     }
-    
+
 }
 
 export default TrnaSVG;

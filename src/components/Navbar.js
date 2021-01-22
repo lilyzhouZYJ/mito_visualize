@@ -1,6 +1,7 @@
 import React from 'react';
 import {Link, NavLink} from "react-router-dom";
 import './styles/Navbar.css'
+import logo from './images/mitovisualize_logo_white.jpg';
 
 // Import Materialize
 import M from "materialize-css";
@@ -30,13 +31,13 @@ class Navbar extends React.Component{
 
           <nav>
               <div className="nav-wrapper">
-                  <a href="#!" className="brand-logo">Logo</a>
+                  <Link to="/" className="brand-logo"><img src={logo} alt="logo" /></Link>
                   <ul className="right hide-on-med-and-down">
                       <li><Link to="/">About</Link></li>
                       <li><a class='dropdown-trigger' href='#!' data-target='dropdown1'>Drop Me!</a></li>
                       <li><NavLink to="/trna-page">tRNA Page</NavLink></li>
                       <li><NavLink to="/rrna-page">rRNA Page</NavLink></li>
-                      <li><NavLink to="/mt-dna">mt-DNA</NavLink></li>
+                      <li><NavLink to="/mtdna">mtDNA</NavLink></li>
                       <li><NavLink to="/rna-visualization">RNA Visualization</NavLink></li>
                   </ul>
               </div>

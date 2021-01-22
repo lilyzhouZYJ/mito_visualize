@@ -1,5 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { fetchVarInfo } from './fetch.js'
+
 import Mtrnr1 from './rRNA/MT-RNR1';
 import Mtrnr1Zoom from './rRNA/MT-RNR1-zoom';
 import Mtrnr2 from './rRNA/MT-RNR2';
@@ -7,6 +9,7 @@ import Mtrnr2Zoom from './rRNA/MT-RNR2-zoom';
 import VarInput from './VarInput';
 import VarInfo from './VarInfo';
 import VarInfoTable from './VarInfoTable';
+
 import "./styles/VariantHighlight.css";
 
 const saveSvgAsPng = require('save-svg-as-png');
@@ -21,6 +24,10 @@ class RrnaSVG extends React.Component{
     state = {
         varSubmitted: null,
         varCor: null,
+        varData: null,
+        loadError: null,
+        initLetter: null,
+        newLetetr: null,
         breakWC: false,
         formWC: false,
         pairCoor: null,
@@ -96,24 +103,39 @@ class RrnaSVG extends React.Component{
 
 
 
-    //determine whether WC pairing is formed or disrupted
-    getWCStatus = (formWC, breakWC, pairCoor) => {
-        this.setState({formWC:formWC,breakWC:breakWC,pairCoor:pairCoor});
-    }
+    loadData = (variant) => {
+        this.setState({loadError:null, varData:null});
+        fetchVarInfo(variant).then(response => {
+            //console.log(response)
+            var varData = response.data.variant;
+            if(!varData) {this.setState({loadError: "Variant not found"});}
+            else {
+                var initLetter = variant[variant.length-3];
+                var newLetter = variant[variant.length-1];
 
-    //if new variant information is loading, remove all variant highlights and the zoomed in image
-    isLoading = () => {
-        this.removeVariantHighlight();
-    }
+                var pairBase = varData.pair_base;
+                var pairCoor = varData.pair_coordinate;
+                var formWC = false;
+                var breakWC = false;
+                if(pairs[newLetter]==pairBase) { formWC = true }
+                if(pairs[initLetter]==pairBase && pairs[newLetter]!==pairBase) { breakWC = true }
 
+                this.setState({loadError:null, varData:varData, initLetter:initLetter, newLetter:newLetter, formWC:formWC, breakWC:breakWC, pairCoor:pairCoor});
+            }
+            //console.log(this.state.varData);
+        })
+    }
 
 
     //if a variant is submitted
     handleVarSubmit = (varSubmitted,variantCor) => {
         if(varSubmitted==''&&variantCor==''){
-            this.setState({varSubmitted:null,varCor:null})
+            this.setState({varSubmitted:null,varCor:null, varData:null, loadError:null})
         } else {
-            this.setState({varSubmitted:varSubmitted,varCor:variantCor});  
+            if(varSubmitted !== this.state.varSubmitted){
+                this.setState({varSubmitted:varSubmitted,varCor:variantCor});  
+                this.loadData(varSubmitted, variantCor);
+            }
         }
     }
 
@@ -219,10 +241,10 @@ class RrnaSVG extends React.Component{
         this.removeVariantHighlight();
         
         //make new highlight (only on zoom)
-        if(variant!==null){
+        if(this.state.varData){
 
-            var initLetter = variant[variant.length-3];
-            var newLetter = variant[variant.length-1];
+            var initLetter = this.state.initLetter;
+            var newLetter = this.state.newLetter;
 
             var origPairing;
             var allTitle = document.getElementById('rrna-svg-container-zoom').getElementsByTagName('title');
@@ -238,6 +260,7 @@ class RrnaSVG extends React.Component{
                     textNode.innerHTML = newLetter+textNode.innerHTML.substring(1); 
                     var textx = parseFloat(textNode.getAttribute('x'));
                     var texty = parseFloat(textNode.getAttribute('y'));
+                    varX = textx, varY = texty;
 
                     //add circle for background color of highlight
                     var circle = document.createElementNS('http://www.w3.org/2000/svg','circle');
@@ -340,44 +363,6 @@ class RrnaSVG extends React.Component{
                 origPairing.remove();
             }
 
-            //add note on the variant highlight
-            var varNote = document.createElement('li');
-            varNote.innerHTML = "The base and pair type change (if applicable) is shown in red.";
-            varNote.setAttribute('id','varNote');
-            document.getElementById('notes').appendChild(varNote);
-
-            /*
-                //changing circle (dot) 
-                else if((title.innerHTML.split(',')[0]==variantCor||title.innerHTML.split(',')[1]==variantCor) && title.parentElement.tagName=='line'){
-                    var pair = title.innerHTML.split(',');
-                    //take out non-Watson Crick pair lines 
-                    if(this.props.gene=="MT-RNR1"&&pair.includes('1137')&&pair.includes('1138')){}
-                    else if(this.props.gene=="MT-RNR1"&&pair.includes('657')&&pair.includes('658')){}
-                    else if(this.props.gene=="MT-RNR1"&&pair.includes('656')&&pair.includes('657')){}
-                    else if(this.props.gene=="MT-RNR1"&&pair.includes('687')&&pair.includes('688')){}
-                    else if(this.props.gene=="MT-RNR1"&&pair.includes('688')&&pair.includes('689')){}
-                    else if(this.props.gene=="MT-RNR1"&&pair.includes('802')&&pair.includes('801')){}
-                    else if(this.props.gene=="MT-RNR1"&&pair.includes('801')&&pair.includes('800')){}
-                    else if(this.props.gene=="MT-RNR1"&&pair.includes('2452')&&pair.includes('2453')){}
-                    else{
-                        var origLine = title.parentElement;
-                        origLine.setAttribute('id','key');
-                        var newCircle = document.createElementNS('http://www.w3.org/2000/svg','circle');
-                        newCircle.setAttribute('cx',(parseFloat(origLine.getAttribute('x1'))+parseFloat(origLine.getAttribute('x2')))/2);
-                        newCircle.setAttribute('cy',(parseFloat(origLine.getAttribute('y1'))+parseFloat(origLine.getAttribute('y2')))/2);
-                        if(this.props.gene=="MT-RNR1"){newCircle.setAttribute('r','1.3');}
-                        else {newCircle.setAttribute('r','2');}
-                        newCircle.setAttribute('fill','crimson');
-                        newCircle.setAttribute('class',origLine.getAttribute('x1')+","+origLine.getAttribute('y1')+","+origLine.getAttribute('x2')+","+origLine.getAttribute('y2'));
-                        newCircle.setAttribute('id','highlight-circle')
-                        newCircle.innerHTML=origLine.innerHTML;
-                        document.getElementById('rrna-svg-container-zoom').insertBefore(newCircle, origLine);
-                        origLine.remove();
-                    }
-                }
-            }
-            */
-
             //make rrna-svg smaller and add rectangle around it
             if(this.props.gene=="MT-RNR1"){
                 document.getElementById('rrna-svg-container').setAttribute('height','200');
@@ -441,46 +426,6 @@ class RrnaSVG extends React.Component{
             zoomRect.setAttribute('id','highlight-rect');
             document.getElementById('rrna-svg-container').appendChild(zoomRect);
 
-            // //add legend to mt-rnr-zoom
-            // var legRect = document.createElementNS('http://www.w3.org/2000/svg','rect');
-            // if(this.props.gene=="MT-RNR1"){
-            //     legRect.setAttribute('x',varX+180);
-            //     legRect.setAttribute('y',varY-220);
-            //     legRect.setAttribute('height','40');
-            //     legRect.setAttribute('width','70');
-            // } else {
-            //     legRect.setAttribute('x',varX+680);
-            //     legRect.setAttribute('y',varY-400);
-            //     legRect.setAttribute('height','60');
-            //     legRect.setAttribute('width','80');
-            // }
-            // legRect.setAttribute('fill','white');
-            // document.getElementById('rrna-svg-container-zoom').appendChild(legRect);
-
-            // var legGene = document.createElementNS('http://www.w3.org/2000/svg','text');
-            // legGene.innerHTML = this.props.gene;
-            // if(this.props.gene=="MT-RNR1"){
-            //     legGene.setAttribute('x',varX+183);
-            //     legGene.setAttribute('y',varY-175);
-            //     legGene.setAttribute('font-size', '12px');
-            // }
-            // legGene.setAttribute('font-weight','bold');
-            // legGene.setAttribute('font','sans-serif');
-            // legGene.setAttribute('text-anchor','end');
-            // document.getElementById('rrna-svg-container-zoom').appendChild(legGene);
-
-            // if(this.state.varSubmitted!==null){
-            //     legGene = document.createElementNS('http://www.w3.org/2000/svg','text');
-            //     legGene.innerHTML = this.state.varSubmitted;
-            //     legGene.setAttribute('x',varX+183);
-            //     legGene.setAttribute('y',varY-163);
-            //     legGene.setAttribute('font-size', '9px');
-            //     legGene.setAttribute('font-weight','bold');
-            //     legGene.setAttribute('font','sans-serif');
-            //     legGene.setAttribute('text-anchor','end');
-            //     document.getElementById('rrna-svg-container-zoom').appendChild(legGene);
-            // }
-
             //add outside rectangle for mt-rnr-zoom
             var rect = document.createElementNS('http://www.w3.org/2000/svg','rect');
             if(this.props.gene=="MT-RNR1"){
@@ -518,6 +463,8 @@ class RrnaSVG extends React.Component{
 
     render(){
         
+        const { varSubmitted, varCor, varData, loadError, initLetter, newLetter, breakWC, formWC, pairCoor } = this.state;
+
         var gene = this.props.gene;
 
         var SvgComponent;
@@ -531,54 +478,102 @@ class RrnaSVG extends React.Component{
             SvgComponentZoom = Mtrnr2Zoom;
         }
     
-        return(
-            <div id="rrna-svg">
-                
-                <div id="left-container">
-                    <h5>{gene}</h5>
-                    {this.state.varSubmitted!==null && 
+        if(varData){
+            return(
+                <div id="rrna-svg">   
+                    <div id="left-container">
+                        <h5>{gene}</h5>
                         <h6>{this.state.varSubmitted}</h6>
-                    }    
-                    {this.state.varSubmitted!==null && 
                         <SvgComponentZoom gene={gene} variant={this.state.varSubmitted} variantCor={this.state.varCor} />
-                    }    
-                    <SvgComponent gene={gene} variant={this.state.varSubmitted} variantCor={this.state.varCor}/>
-                    <ul id="notes">
-                        <li>Note: Thin lines represent Watson-Crick base pairs; dots represent non-Watson-Crick base pairs. Thick lines represent other types of structural interactions.</li>
-                        <li>Hovering over each base will display the genomic coordinate.</li>
-                    </ul>
-                    <button id='download-btn' onClick={this.handleClick}>Download Image (png)</button>
-                    {this.state.varSubmitted!==null &&
-                        <div id="select-download">
-                            <p>
-                                <label>
-                                    <input type='radio' name="download" id="zoomed-out" class="with-gap" checked/>
-                                    <span>Download full image</span>
-                                </label>
-                            </p>
-                            <p>
-                                <label>
-                                    <input type='radio' name="download" id="zoomed-in" class="with-gap"/>
-                                    <span>Download zoomed-in image</span>
-                                </label>
-                            </p>
-                        </div>   
-                    }
+                        <SvgComponent gene={gene} variant={this.state.varSubmitted} variantCor={this.state.varCor}/>
+                        <div id="bottom-section">
+                            <ul id="notes">
+                                <li>Note: Thin lines represent Watson-Crick base pairs; dots represent non-Watson-Crick base pairs. Thick lines represent other types of structural interactions.</li>
+                                <li>Hovering over each base will display the genomic coordinate.</li>
+                                {gene=="MT-RNR1" ? 
+                                    <li>2D rRNA structure is per <a href="https://pubmed.ncbi.nlm.nih.gov/25838379/" target="_blank">Amunts, Brown et al 2015</a>.</li>
+                                    : <li>2D rRNA structure is per <a href="https://pubmed.ncbi.nlm.nih.gov/25278503/" target="_blank">Brown, Amunts et al 2014</a>.</li>
+                                }
+                            </ul>
+                            <button id='download-btn' onClick={this.handleClick}>Download Image (png)</button>
+                            <div id="select-download">
+                                <p>
+                                    <label>
+                                        <input type='radio' name="download" id="zoomed-out" class="with-gap" checked/>
+                                        <span>Download full image</span>
+                                    </label>
+                                </p>
+                                <p>
+                                    <label>
+                                        <input type='radio' name="download" id="zoomed-in" class="with-gap"/>
+                                        <span>Download zoomed-in image</span>
+                                    </label>
+                                </p>
+                            </div>   
+                            <p id="citation-note">If you use MitoVisualize in your paper please cite XXX</p>
+                        </div>
+                    </div>    
+                    <div id="right-container">
+                        <VarInput handleVarSubmit={this.handleVarSubmit} gene={gene}/>
+                        <VarInfo variant={varSubmitted} gene={gene} dom={varData.dom} rnaType="rRNA" initLetter={initLetter} newLetter={newLetter} breakWC={breakWC} formWC={formWC} />
+                        <VarInfoTable variant={varSubmitted} varData={varData} rnaType="rRNA" />
+                    </div>
                 </div>
-                
-                <div id="right-container">
-                    <VarInput handleVarSubmit={this.handleVarSubmit} gene={gene}/>
-                    {this.state.varSubmitted!==null && 
-                        <VarInfo gene={gene} variant={this.state.varSubmitted} variantCor={this.state.varCor} getWCStatus={this.getWCStatus} isLoading={this.isLoading} rnaType="rRNA" />
-                    }
-                    {this.state.varSubmitted!==null && 
-                        <VarInfoTable variant={this.state.varSubmitted} rnaType="rRNA" />
-                    }                      
+            )
+        } else if (loadError){
+            return(
+                <div id="rrna-svg">   
+                    <div id="left-container">
+                        <h5>{gene}</h5>
+                        <SvgComponent gene={gene} variant={this.state.varSubmitted} variantCor={this.state.varCor}/>
+                        <div id="bottom-section">
+                            <ul id="notes">
+                                <li>Note: Thin lines represent Watson-Crick base pairs; dots represent non-Watson-Crick base pairs. Thick lines represent other types of structural interactions.</li>
+                                <li>Hovering over each base will display the genomic coordinate.</li>
+                                {gene=="MT-RNR1" ? 
+                                    <li>2D rRNA structure is per <a href="https://pubmed.ncbi.nlm.nih.gov/25838379/" target="_blank">Amunts, Brown et al 2015</a>.</li>
+                                    : <li>2D rRNA structure is per <a href="https://pubmed.ncbi.nlm.nih.gov/25278503/" target="_blank">Brown, Amunts et al 2014</a>.</li>
+                                }
+                            </ul>
+                            <button id='download-btn' onClick={this.handleClick}>Download Image (png)</button>
+                            <p id="citation-note">If you use MitoVisualize in your paper please cite XXX</p>
+                        </div>
+                    </div>    
+                    <div id="right-container">
+                        <VarInput handleVarSubmit={this.handleVarSubmit} gene={gene}/>
+                        <VarInfo loadError={loadError} />
+                    </div>
                 </div>
+            )
+        } else {
+            return(
+                <div id="rrna-svg">   
+                    <div id="left-container">
+                        <h5>{gene}</h5>
+                        <SvgComponent gene={gene} variant={this.state.varSubmitted} variantCor={this.state.varCor}/>
+                        <div id="bottom-section">
+                            <ul id="notes">
+                                <li>Note: Thin lines represent Watson-Crick base pairs; dots represent non-Watson-Crick base pairs. Thick lines represent other types of structural interactions.</li>
+                                <li>Hovering over each base will display the genomic coordinate.</li>
+                                {gene=="MT-RNR1" ? 
+                                    <li>2D rRNA structure is per <a href="https://pubmed.ncbi.nlm.nih.gov/25838379/" target="_blank">Amunts, Brown et al 2015</a>.</li>
+                                    : <li>2D rRNA structure is per <a href="https://pubmed.ncbi.nlm.nih.gov/25278503/" target="_blank">Brown, Amunts et al 2014</a>.</li>
+                                }
+                            </ul>
+                            <button id='download-btn' onClick={this.handleClick}>Download Image (png)</button>
+                            <p id="citation-note">If you use MitoVisualize in your paper please cite XXX</p>
+                        </div>    
+                    </div>
+                    <div id="right-container">
+                        <VarInput handleVarSubmit={this.handleVarSubmit} gene={gene}/>
+                        {this.state.varSubmitted!==null &&
+                            <VarInfo loading="Loading..." />
+                        }
+                    </div>
+                </div>
+            )
 
-            </div>
-        )
-       
+        }
     }
 }
 

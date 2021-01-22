@@ -54,6 +54,7 @@ const VarType = new GraphQLObjectType({
 	conserv_phylop:{ type: GraphQLFloat },
 	conserv_phastcons:{ type: GraphQLFloat },
 	post_transcription_modifications:{ type: GraphQLString },
+        structural_interaction_hmtvar:{ type: GraphQLString },
 	domain:{ type: GraphQLString },
     })
 });

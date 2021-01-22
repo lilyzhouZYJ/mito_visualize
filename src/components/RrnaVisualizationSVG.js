@@ -5,6 +5,8 @@ import Mtrnr2 from './rRNA/MT-RNR2';
 import VisualizeOptions from './VisualizeOptions';
 import './styles/VisualizeOptions.css';
 
+const saveSvgAsPng = require('save-svg-as-png');
+
 //match each gene to its respective component
 const RNAs = {
     'MT-RNR1': Mtrnr1,
@@ -13,91 +15,71 @@ const RNAs = {
 
 class RrnaVisualizationSVG extends React.Component{
 
-    state = {
-        varSubmitted: null,
-        varCor: null
+    componentDidMount(){
+        if(this.props.gene=="MT-RNR2"){
+            document.getElementById('rrna-svg-container').setAttribute("height","650");
+            document.getElementById('rrna-svg-container').setAttribute("width","800");
+        }
     }
 
-    handleVarSubmit = (varSubmitted,variantCor) => {
-        if(varSubmitted==''&&variantCor==''){
-            this.setState({varSubmitted:null,varCor:null})
+
+    //download svg
+    handleClick = () => {
+        var fileName = "";
+
+        if(this.props.gene=="MT-RNR1"){
+            var imageOptions = {
+                scale: 9,
+                encoderOptions: 1,
+                backgroundColor: 'white',
+                left: 5,
+                top: 10,
+                width: 950,
+                height: 1000
+            }
         } else {
-            this.setState({varSubmitted:varSubmitted,varCor:variantCor});  
+            var imageOptions = {
+                scale: 4,
+                encoderOptions: 1,
+                backgroundColor: 'white',
+                left: 100,
+                top: 30,
+                width: 2880,
+                height: 1974
+            }
         }
-    }
-
-    //remove preexisting variant highlight
-    removeVariantHighlight() {
-
-        //remove variant name in svg legend
-        var legExists = document.getElementById('var-legend');
-        if(legExists!==null){
-            legExists.remove();
-        }
-
-        //remove preeixsting highlighted letter
-        var elementExists = document.getElementById('highlight');
-        if(elementExists!==null){
-            elementExists.setAttribute('font-weight',"normal");
-            elementExists.setAttribute('font-size', '12');
-            elementExists.setAttribute('fill', '#000000');
-            var origX = parseFloat(elementExists.getAttribute('x'));
-            var origY = parseFloat(elementExists.getAttribute('y'));
-            elementExists.setAttribute('x',origX);
-            elementExists.setAttribute('y',origY);
-            elementExists.setAttribute('id','');
-            elementExists.innerHTML = elementExists.getAttribute('class')+elementExists.innerHTML.substring(1);
-            elementExists.setAttribute('class','');
-        }
-
-        //remove preeixsting highlighted background
-        var elementExists = document.getElementById('highlight-background');
-        if(elementExists!==null){
-            elementExists.remove();
-        }
-
-        //remove preexisting highlighted circle
-        var elementExists = document.getElementById('highlight-circle');
-        if(elementExists!==null){
-            var newLine = document.createElementNS('http://www.w3.org/2000/svg','line');
-            var location = elementExists.getAttribute('class').split(',');
-            newLine.setAttribute('x1',location[0]);
-            newLine.setAttribute('y1',location[1]);
-            newLine.setAttribute('x2',location[2]);
-            newLine.setAttribute('y2',location[3]);
-            newLine.setAttribute('stroke',"#000000");
-            newLine.setAttribute('stroke-width',"1");
-            newLine.setAttribute('stroke-linecap',"round");
-            newLine.innerHTML=elementExists.innerHTML;
-            document.getElementById('svg-container').insertBefore(newLine, elementExists);
-            elementExists.remove();
-        }
-
-        //remove note on variant highlight
-        var noteExists = document.getElementById('varNote');
-        if(noteExists!==null){
-            noteExists.remove();
-        }
-
-    }
+        
+        fileName = this.props.gene;
+        saveSvgAsPng.saveSvgAsPng(document.getElementById('rrna-svg-container'), fileName, imageOptions);
+    };
 
     render() {
 
         var gene = this.props.gene;
+        var rnaType = this.props.rnaType;
        
         var SvgComponent = RNAs[gene];
 
         return(
             <div id="rrna-visualization-svg">
                 <div id="left-container">
+                    <h5>{gene}</h5>
                     <SvgComponent gene={gene} />
-                    <ul id="notes">
-                        <li>Lines represent Watson-Crick (WC) base pairs, and dots non-WC pairs.</li>
-                        <li>Hovering over each base will display the genomic coordinate.</li>
-                    </ul>
+                    <div id="bottom-section">
+                        <ul id="notes">
+                            <li>Lines represent Watson-Crick (WC) base pairs, and dots non-WC pairs.</li>
+                            <li>Hovering over each base will display the genomic coordinate.</li>
+                            {gene=="MT-RNR1" ? 
+                                <li>2D rRNA structure is per <a href="https://pubmed.ncbi.nlm.nih.gov/25838379/" target="_blank">Amunts, Brown et al 2015</a>.</li>
+                                : <li>2D rRNA structure is per <a href="https://pubmed.ncbi.nlm.nih.gov/25278503/" target="_blank">Brown, Amunts et al 2014</a>.</li>
+                            }
+                        </ul>
+                        <button id='download-btn' onClick={this.handleClick}>Download Image (png)</button>
+                        <p id="citation-note">If you use MitoVisualize in your paper please cite XXX</p>
+                    </div>
                 </div>
                 <div id="right-container">
-                    <VisualizeOptions gene={gene} />
+                    <VisualizeOptions gene={gene} rnaType={rnaType} />
                 </div>
             </div>
         )

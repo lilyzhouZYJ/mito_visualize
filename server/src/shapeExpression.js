@@ -43,6 +43,7 @@ const shapeExpression = () => {
             conserv_phylop: geneData.conserv_phylop,
             conserv_phastcons: geneData.conserv_phastcons,
             post_transcription_modifications: geneData.post_transcription_modifications,
+            structural_interaction_hmtvar: geneData.structural_interaction_hmtvar,
             domain: geneData.domain
 	}
     }

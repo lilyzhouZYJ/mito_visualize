@@ -54,12 +54,26 @@ const RNAs = {
 //genes on the reverse strand
 const reverseStrand = ["MT-TQ","MT-TA","MT-TN","MT-TC","MT-TY","MT-TS1","MT-TE","MT-TP"];
 
+//download SVG button setup
+const saveSvgAsPng = require('save-svg-as-png')
+const imageOptions = {
+  scale: 5,
+  encoderOptions: 1,
+  backgroundColor: 'white',
+  left: 5,
+  top: -20,
+  height: 380,
+  width: 350
+}
+
 class TrnaVisualizationSVG extends React.Component{
 
-    state = {
-        varSubmitted: null,
-        varCor: null
-    }
+    //download svg
+    handleClick = () => {
+        var fileName;
+        fileName = this.props.gene;
+        saveSvgAsPng.saveSvgAsPng(document.getElementById('svg-container'), fileName, imageOptions);
+    };
 
     componentDidMount(){
         document.getElementById('svg-container').setAttribute("height","500");
@@ -67,72 +81,10 @@ class TrnaVisualizationSVG extends React.Component{
         document.getElementById('svg-container').setAttribute("viewBox","0 0 400 400");
     }
 
-    handleVarSubmit = (varSubmitted,variantCor) => {
-        if(varSubmitted==''&&variantCor==''){
-            this.setState({varSubmitted:null,varCor:null})
-        } else {
-            this.setState({varSubmitted:varSubmitted,varCor:variantCor});  
-        }
-    }
-
-    //remove preexisting variant highlight
-    removeVariantHighlight() {
-
-        //remove variant name in svg legend
-        var legExists = document.getElementById('var-legend');
-        if(legExists!==null){
-            legExists.remove();
-        }
-
-        //remove preeixsting highlighted letter
-        var elementExists = document.getElementById('highlight');
-        if(elementExists!==null){
-            elementExists.setAttribute('font-weight',"normal");
-            elementExists.setAttribute('font-size', '12');
-            elementExists.setAttribute('fill', '#000000');
-            var origX = parseFloat(elementExists.getAttribute('x'));
-            var origY = parseFloat(elementExists.getAttribute('y'));
-            elementExists.setAttribute('x',origX);
-            elementExists.setAttribute('y',origY);
-            elementExists.setAttribute('id','');
-            elementExists.innerHTML = elementExists.getAttribute('class')+elementExists.innerHTML.substring(1);
-            elementExists.setAttribute('class','');
-        }
-
-        //remove preeixsting highlighted background
-        var elementExists = document.getElementById('highlight-background');
-        if(elementExists!==null){
-            elementExists.remove();
-        }
-
-        //remove preexisting highlighted circle
-        var elementExists = document.getElementById('highlight-circle');
-        if(elementExists!==null){
-            var newLine = document.createElementNS('http://www.w3.org/2000/svg','line');
-            var location = elementExists.getAttribute('class').split(',');
-            newLine.setAttribute('x1',location[0]);
-            newLine.setAttribute('y1',location[1]);
-            newLine.setAttribute('x2',location[2]);
-            newLine.setAttribute('y2',location[3]);
-            newLine.setAttribute('stroke',"#000000");
-            newLine.setAttribute('stroke-width',"1");
-            newLine.setAttribute('stroke-linecap',"round");
-            newLine.innerHTML=elementExists.innerHTML;
-            document.getElementById('svg-container').insertBefore(newLine, elementExists);
-            elementExists.remove();
-        }
-
-        //remove note on variant highlight
-        var noteExists = document.getElementById('varNote');
-        if(noteExists!==null){
-            noteExists.remove();
-        }
-
-    }
-
     render() {
 
         var gene = this.props.gene;
+        var rnaType = this.props.rnaType;
        
         var SvgComponent = RNAs[gene];
 
@@ -146,10 +98,13 @@ class TrnaVisualizationSVG extends React.Component{
                         }
                         <li>Lines represent Watson-Crick (WC) base pairs, and dots non-WC pairs.</li>
                         <li>Hovering over each base will display the genomic coordinate.</li>
+                        <li>2D cloverleaf tRNA structures are per <a href="https://pubmed.ncbi.nlm.nih.gov/17585048/" target="_blank">Putz et al</a> as shown on <a href="http://mamit-trna.u-strasbg.fr/human.asp" target="_blank">Mamit-tRNA</a>.</li>
                     </ul>
+                    <button id="download-btn" onClick={this.handleClick}>Download Image (png)</button>
+                    <p id="citation-note">If you use MitoVisualize in your paper please cite XXX</p>
                 </div>
                 <div id="right-container">
-                    <VisualizeOptions gene={gene} />
+                    <VisualizeOptions gene={gene} rnaType={rnaType} />
                 </div>
             </div>
         )

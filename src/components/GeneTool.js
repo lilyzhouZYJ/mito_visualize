@@ -1,6 +1,8 @@
 import React from 'react';
 import './styles/GeneTool.css';
 
+const saveSvgAsPng = require('save-svg-as-png');
+
 //match each gene to its respective region
 var dict = {
     'MT-TF': [577,647],
@@ -51,7 +53,26 @@ class GeneTool extends React.Component{
         radius: 250,
         innerRadius: 220,
         dist: 30,
+        regionSubmitted: false, //region of deletion or duplication
+        regionInput: "", //the region that has been inputed
+        regionGenes: [], //genes in the region of deletion or duplication
     }
+
+    //download svg
+    handleClick = () => {
+        var imageOptions = {
+            scale: 5,
+            encoderOptions: 1,
+            backgroundColor: 'white',
+            left: 5,
+            top: 10,
+            width: 750,
+            height: 750
+        }
+        var fileName = "mtDNA";
+        saveSvgAsPng.saveSvgAsPng(document.getElementById('circle'), fileName, imageOptions);
+    };
+
     
     //converts from polar system to cartesian coordinates
     polarToCartesian(centerX, centerY, radius, angleInDegrees) {
@@ -313,8 +334,8 @@ class GeneTool extends React.Component{
             elementExists.remove();
             document.getElementById('circle-del').remove();
         }
+        this.setState({regionSubmitted: false, regionGenes: []});
     }
-
 
 
 
@@ -386,7 +407,7 @@ class GeneTool extends React.Component{
             line.setAttribute("y1",pt1y);
             line.setAttribute("x2",pt2x);
             line.setAttribute("y2",pt2y);
-            line.setAttribute("stroke","crimson");
+            line.setAttribute("stroke","black");
             line.setAttribute("stroke-width","3");
             line.setAttribute("id","highlight-var");
             var svgnode = document.getElementById("circle"); 
@@ -408,7 +429,7 @@ class GeneTool extends React.Component{
                 textNode.setAttribute('y',pt2y);
                 textNode.setAttribute("text-anchor","end");
             }
-            textNode.setAttribute("fill","crimson");
+            textNode.setAttribute("fill","black");
             textNode.setAttribute("font-size","14");
             textNode.setAttribute("alignment-baseline","central");
             textNode.setAttribute("id","varLabel");
@@ -422,17 +443,20 @@ class GeneTool extends React.Component{
         e.preventDefault();
         
         this.removeHighlights();
-        
-        var start = document.getElementById("del-input").value.split("-")[0].split(".")[1];
-        var end = document.getElementById("del-input").value.split("-")[1];
 
-        if(start>=0 && end<=16569 && start-end<0){
+        var input = document.getElementById("del-input").value;
+        
+        //get start and end coordinates from user input
+        var startCoor = input.split("-")[0].split(".")[1];
+        var endCoor = input.split("-")[1];
+
+        if(startCoor>=0 && endCoor<=16569 && startCoor-endCoor<0){
             var opts = {
                 cx: this.state.cx,
                 cy: this.state.cy,
                 radius: this.state.innerRadius - 10,
-                start_angle: (start/16569*2*Math.PI)*180/Math.PI,
-                end_angle: (end/16569*2*Math.PI)*180/Math.PI,
+                start_angle: (startCoor/16569*2*Math.PI)*180/Math.PI,
+                end_angle: (endCoor/16569*2*Math.PI)*180/Math.PI,
             };
             var start = this.polarToCartesian(opts.cx, opts.cy, opts.radius, opts.end_angle),
                 end = this.polarToCartesian(opts.cx, opts.cy, opts.radius, opts.start_angle),
@@ -458,23 +482,51 @@ class GeneTool extends React.Component{
             circleCover.setAttribute('fill','white');
             circleCover.setAttribute('id','circle-del');
             svgnode.insertBefore(circleCover,svgnode[svgnode.childNodes.length-1]);
+
+            //get genes within the inputed region
+            var genes = [];
+            for (var g in dict){
+                if(startCoor<=dict[g][0] && endCoor>=dict[g][1]){ genes.push(g) }
+                else if(startCoor>=dict[g][0] && startCoor<=dict[g][1]) { genes.push(g) }
+                else if(endCoor>=dict[g][0] && endCoor<=dict[g][1]) { genes.push(g) }
+            }
+
+            //set regionSubmitted to true would print the helptexts under the svg
+            this.setState({regionSubmitted: true, regionInput: input, regionGenes: genes});
+
         }
 
     }
 
     render() {
+
         return(
             <div id="gene-tool">
-                <svg id="circle" width="700" height="700">
-                    <circle cx="350" cy="350" r="250" stroke="saddlebrown" strokeWidth="1" fill="transparent" />
-                    <circle cx="350" cy="350" r="240" stroke="none" fill="#ffffff90" filter="url(#blurMe)" />
-                    <circle cx="350" cy="350" r="225" stroke="none" fill="#ffffffd0" filter="url(#blurMe)" />
-                    <circle cx="350" cy="350" r="220" stroke="#8b4513c0" strokeWidth="1" fill="white" />
+                <div id="left-container">
+                    <svg id="circle" width="700" height="700">
+                        <circle cx="350" cy="350" r="250" stroke="saddlebrown" strokeWidth="1" fill="transparent" />
+                        <circle cx="350" cy="350" r="240" stroke="none" fill="#ffffff90" filter="url(#blurMe)" />
+                        <circle cx="350" cy="350" r="225" stroke="none" fill="#ffffffd0" filter="url(#blurMe)" />
+                        <circle cx="350" cy="350" r="220" stroke="#8b4513c0" strokeWidth="1" fill="white" />
                     
-                    <filter id="blurMe">
-                        <feGaussianBlur in="SourceGraphic" stdDeviation="2" />
-                    </filter>
-                </svg>
+                        <filter id="blurMe">
+                            <feGaussianBlur in="SourceGraphic" stdDeviation="2" />
+                        </filter>
+
+                        {this.state.regionSubmitted && <text x="350" y="350" fontSize="18px" fontWeight="bold" text-anchor="middle">{this.state.regionInput}</text>}
+                    </svg>
+
+                    {this.state.regionSubmitted &&
+                        <div id="notes">
+                            <p>Genes within this region: <i color="black">{ this.state.regionGenes.join(', ') }</i>.</p>
+                            <i>For more information on reported mtDNA deletions and duplications, see the <a href="http://mitobreak.portugene.com/cgi-bin/Mitobreak_home.cgi" target="_blank">MitoBreak database</a>.</i>
+                        </div>
+                    }
+
+                    <button id="download-btn" onClick={this.handleClick}>Download Image (png)</button>
+                    <p id="citation-note">If you use MitoVisualize in your paper please cite XXX</p>
+
+                </div>
 
                 <div id="submit-form">
                     <p>Show gene position</p>
@@ -482,6 +534,7 @@ class GeneTool extends React.Component{
                         <label htmlFor="gene-name">Format example: MT-ND1</label>
                         <input type="text" id="gene-name" />
                         <button type="submit">Submit</button>
+                        <button type="reset" onClick={this.removeHighlights}>Clear</button>
                     </form>
                     <br></br>
 
@@ -490,6 +543,7 @@ class GeneTool extends React.Component{
                         <label htmlFor="var-pos">Format example: m.555 (single nucleotide variants only)</label>
                         <input type="text" id="var-pos" />
                         <button type="submit">Submit</button>
+                        <button type="reset" onClick={this.removeHighlights}>Clear</button>
                     </form>
                     <br></br>
 
@@ -498,6 +552,7 @@ class GeneTool extends React.Component{
                         <label htmlFor="del-input">Format example: m.5618-7319</label>
                         <input type="text" id='del-input' />
                         <button type="submit">Submit</button>
+                        <button type="reset" onClick={this.removeHighlights}>Clear</button>
                     </form>
                 </div>
             </div>

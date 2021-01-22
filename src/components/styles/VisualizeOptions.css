@@ -8,7 +8,7 @@
 }
 
 #rrna-visualization-svg #left-container{
-    margin-left: 130px;
+    margin-left: 80px;
     margin-top: 80px;
     width: 650px;
 }
@@ -22,7 +22,7 @@
 
 #rrna-visualization-svg #right-container{
     margin-top: 100px;
-    margin-right: 120px;
+    margin-right: 40px;
 }
 
 
@@ -34,6 +34,8 @@
 
 #visualize-form p {
     margin: 0;
+    font-size: 15px;
+    width: 80%;
 }
 
 #visualize-form h5 {
@@ -46,12 +48,17 @@
     font-weight: bold;
 }
 
+#visualize-form label{
+    color: black;
+    font-size: 15px;
+}
+
 #visualize-form .help-tip p {
     font-weight: normal;
 }
 
 #visualize-form button {
-    margin: 5px 15px 0 0;
+    margin: 5px 15px 10px 0;
     background-color: #00356B;
     color: white;
     border: none;
@@ -65,7 +72,20 @@
 }
 
 
-.highlight {
+
+/* various highlights */
+
+.hgroup {
+    font-weight: bold !important;
+    fill: red !important;
+}
+
+.other-modified{
+    font-weight: bold !important;
+    fill: red !important;
+}
+
+.other-folding{
     font-weight: bold !important;
     fill: red !important;
 }
@@ -94,4 +114,15 @@
     font-weight: bold !important;
     fill: red !important;
 }
+
+.het-gnomad {
+    font-weight: bold !important;
+    /*fill: red !important;*/
+}
+
+.het-helix {
+    font-weight: bold !important;
+    /*fill: red !important;*/
+}
+
 

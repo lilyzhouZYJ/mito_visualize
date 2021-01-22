@@ -1,0 +1,14 @@
+/* formatting for about page (landing page) */
+
+#about-page{
+    margin-top: 150px;
+}
+
+/* logo on about page */
+
+#about-page img{
+    width: 650px;
+    height: auto;
+    display: block;
+    margin: auto;
+}

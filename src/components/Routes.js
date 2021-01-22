@@ -17,7 +17,7 @@ export default function Routes() {
         <Route exact path='/' component={About} />
         <Route path='/trna-page' component={TrnaPage} />
         <Route path='/rrna-page' component={RrnaPage} />
-        <Route path='/mt-dna' component={GeneTool} />
+        <Route path='/mtdna' component={GeneTool} />
         <Route exact path='/rna-visualization' component={VisualizationPage} />
 
         <Route
@@ -64,6 +64,7 @@ export default function Routes() {
                     return (
                       <TrnaVisualizationSVG
                         gene={match.params.gene}
+                        rnaType="tRNA"
                       />
                     )
                 }
@@ -71,6 +72,7 @@ export default function Routes() {
                     return (
                       <RrnaVisualizationSVG
                         gene={match.params.gene}
+                        rnaType="rRNA"
                       />
                     )
                 }

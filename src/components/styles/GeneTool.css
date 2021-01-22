@@ -1,12 +1,39 @@
-#circle{
-    float: left;
-    margin-left: 60px;
+/* formatting for mt-DNA (gene tool) */
+
+#circle text{
+    font-family: sans-serif;
 }
+
+/* left-hand side */
+
+#gene-tool #left-container{
+    margin-left: 90px;
+    margin-top: 20px;
+    width: 50%
+}
+
+#gene-tool #notes {
+    margin-left: 0px;
+    margin-bottom: 10px;
+    width: 90%;
+}
+
+#gene-tool #notes>i{
+    color: gray;
+}
+
+#gene-tool #notes p{
+    margin: 0;
+}
+
+
+
+/* the input form on the right */ 
 
 #submit-form{
     float: right;
     margin-right: 220px;
-    margin-top: 90px;
+    margin-top: 110px;
     width: 400px;
 }
 

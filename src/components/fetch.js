@@ -44,6 +44,7 @@ export const fetchVarInfo = varId => {
             conserv_phylop,
             conserv_phastcons,
             post_transcription_modifications,
+            structural_interaction_hmtvar,
             domain
        }
     }`
@@ -100,6 +101,7 @@ export const fetchGeneInfo = geneName => {
             conserv_phylop,
             conserv_phastcons,
             post_transcription_modifications,
+            structural_interaction_hmtvar
             domain
        }
     }`
@@ -152,6 +154,7 @@ export const fetchCoorInfo = varCoor => {
             conserv_phylop,
             conserv_phastcons,
             post_transcription_modifications,
+            structural_interaction_hmtvar
             domain
        }
     }`
