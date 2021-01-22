@@ -15,13 +15,16 @@ See http://mitovisualize.org/.
 ## Run
 
 Elasticsearch:
+
     cd elasticsearch-6.4.0
     ./start_elasticsearch.sh
 
 Server:
+    
     cd mito_visualize/server
     ./start.sh
 
 React App:
+    
     cd mito_visualize
     npm start
