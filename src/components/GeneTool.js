@@ -115,8 +115,6 @@ class GeneTool extends React.Component{
             line.setAttribute("stroke","black");
             line.setAttribute("stroke-width","1");
             var svgnode = document.getElementById("circle"); 
-        var svgnode = document.getElementById("circle"); 
-            var svgnode = document.getElementById("circle"); 
             svgnode.insertBefore(line, svgnode.childNodes[svgnode.childNodes.length-1]);
         }
 

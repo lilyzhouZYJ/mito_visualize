@@ -14,6 +14,13 @@ var diseaseClinvarUncertain = [];
 var diseaseClinvarBenign = [];
 var hetGnomad = {}; //maximum heteroplasmy (GnomAD)
 var hetHelix = {}; //maximum heteroplasmy (HelixMTdb)
+var popGnomadHom = {}; //population frequency (gnomAD Hom)
+var popGnomadHet = {}; //population frequency (gnomAD Het)
+var popMitomap = {}; //population frequency (MITOMAP)
+var popHelixHom = {}; //population frequency (HelixMTdb Hom)
+var popHelixHet = {}; //population frequency (HelixMTdb Het)
+var conservPhyloP = {};  //conservation metrics (PhyloP)
+var conservPhastCons = {};  //conservation metrics (PhastCons)
 
 class VisualizeOptions extends React.Component{
 
@@ -34,6 +41,13 @@ class VisualizeOptions extends React.Component{
         diseaseClinvarBenign = [];
         hetGnomad = {};
         hetHelix = {};
+        popGnomadHom = {};
+        popGnomadHet = {};
+        popMitomap = {};
+        popHelixHom = {};
+        popHelixHet = {};
+        conservPhyloP = {};
+        conservPhastCons = {};
 
         fetchGeneInfo(this.props.gene).then(response => {
             //console.log(response.data.gene)
@@ -60,11 +74,37 @@ class VisualizeOptions extends React.Component{
         }
     }
 
+    removeHighlightsOfDifferentCategory = (currentCat) => {
+
+        var allCategories = ['.disease', '.other', '.het', '.pop', '.conserv', '.hgroup'];
+        var ind = allCategories.indexOf(currentCat);
+        allCategories.splice(ind, 1);
+        var otherHighlights = document.querySelectorAll(allCategories.join(", "));
+        for(var i=0; i<otherHighlights.length; i++){
+            otherHighlights[i].removeAttribute('class');
+            otherHighlights[i].style.fill = '';
+        }
+
+        //remove any gradient legend
+        var legend = document.querySelectorAll(".gradient-legend");
+        for(var l of legend){
+            l.remove();
+        }
+
+    }
+
+
     removeHighlights(){
-        var highlights = document.querySelectorAll(".hgroup, .other, .disease, .het");
+        var highlights = document.querySelectorAll(".hgroup, .other, .disease, .het, .pop, .conserv");
         for(var h of highlights){
             h.removeAttribute('class');
             h.style.fill = '';
+        }
+
+        //remove any gradient legend
+        var legend = document.querySelectorAll(".gradient-legend");
+        for(var l of legend){
+            l.remove();
         }
     }
 
@@ -85,19 +125,89 @@ class VisualizeOptions extends React.Component{
 
 
 
+    createGradientLegend = (topcolor, bottomcolor, toplabel, bottomlabel) => {
+
+        var stop1 = document.createElementNS('http://www.w3.org/2000/svg','stop');
+        stop1.setAttribute("offset","0%");
+        stop1.setAttribute("stop-color", topcolor);
+
+        var stop2 = document.createElementNS('http://www.w3.org/2000/svg','stop');
+        stop2.setAttribute("offset","100%");
+        stop2.setAttribute("stop-color", bottomcolor);
+
+        var linearGrad = document.createElementNS('http://www.w3.org/2000/svg','linearGradient');
+        linearGrad.setAttribute("id", "gradient");
+        linearGrad.setAttribute("class", "gradient-legend");
+        linearGrad.setAttribute("gradientTransform", "rotate(90)");
+        linearGrad.appendChild(stop1);
+        linearGrad.appendChild(stop2);
+
+        var defs = document.createElementNS('http://www.w3.org/2000/svg','defs');
+        defs.appendChild(linearGrad);
+
+        var rect = document.createElementNS('http://www.w3.org/2000/svg','rect');
+        rect.setAttribute("id","gradient-rect");
+        rect.setAttribute("class","gradient-legend");
+        rect.setAttribute("x","35");
+        rect.setAttribute("y","60");
+        rect.setAttribute("width","20");
+        rect.setAttribute("height","70");
+        rect.setAttribute("fill","url('#gradient')");
+        if(document.getElementById("svg-container")){
+            var svgnode = document.getElementById("svg-container"); 
+        } else {
+            var svgnode = document.getElementById("rrna-svg-container"); 
+        }
+        svgnode.insertBefore(defs, svgnode.childNodes[svgnode.childNodes.length-1]);
+        svgnode.insertBefore(rect, svgnode.childNodes[svgnode.childNodes.length-1]);
+
+
+        //create the labels
+        console.log(toplabel);
+        var topLabel = document.createTextNode(toplabel);
+        var topNode = document.createElementNS('http://www.w3.org/2000/svg','text');
+        topNode.appendChild(topLabel);
+        topNode.setAttribute('x', '57');
+        topNode.setAttribute('y', '60');
+        topNode.setAttribute('class', 'gradient-legend');
+        topNode.setAttribute('alignment-baseline', 'central');
+        topNode.style.textAnchor = 'start';
+        topNode.style.fill = topcolor;
+        svgnode.appendChild(topNode);
+
+        var bottomLabel = document.createTextNode(bottomlabel);
+        var bottomNode = document.createElementNS('http://www.w3.org/2000/svg','text');
+        bottomNode.appendChild(bottomLabel);
+        bottomNode.setAttribute('x', '57');
+        bottomNode.setAttribute('y', '130');
+        bottomNode.setAttribute('class', 'gradient-legend');
+        bottomNode.setAttribute('color', bottomcolor);
+        bottomNode.setAttribute('alignment-baseline', 'central');
+        bottomNode.style.textAnchor = 'start';
+        bottomNode.style.fill = bottomcolor;
+        svgnode.appendChild(bottomNode);
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
     //bases associated with haplogroups
     showHaplogroup = (e) => {
 
         // clear all other checkboxes of different categories
         this.removeOtherCheckboxesOfDifferentName(e.target.name);
 
-        // remove highlights that are not in the Other category
-        var otherHighlights = document.querySelectorAll(".disease, .other, .het");
-        for(var i=0; i<otherHighlights.length; i++){
-            otherHighlights[i].removeAttribute('class');
-            otherHighlights[i].style.fill = '';
-        }
-
+        // remove highlights that are not in the hgroup category
+        this.removeHighlightsOfDifferentCategory('.hgroup');
 
         if(!e.target.checked){
             var highlights = document.querySelectorAll(".hgroup");
@@ -134,12 +244,7 @@ class VisualizeOptions extends React.Component{
         this.removeOtherCheckboxesOfDifferentName(e.target.name);
 
         // remove highlights that are not in the Other category
-        var otherHighlights = document.querySelectorAll(".hgroup, .disease, .het");
-        for(var i=0; i<otherHighlights.length; i++){
-            otherHighlights[i].removeAttribute('class');
-            otherHighlights[i].style.fill = '';
-        }
-
+        this.removeHighlightsOfDifferentCategory('.other');
 
         if(!e.target.checked){
             var highlights = document.querySelectorAll(".other-modified");
@@ -177,12 +282,7 @@ class VisualizeOptions extends React.Component{
         this.removeOtherCheckboxesOfDifferentName(e.target.name);
 
         // remove highlights that are not in the Other category
-        var otherHighlights = document.querySelectorAll(".hgroup, .disease, .het");
-        for(var i=0; i<otherHighlights.length; i++){
-            otherHighlights[i].removeAttribute('class');
-            otherHighlights[i].style.fill = '';
-        }
-
+        this.removeHighlightsOfDifferentCategory('.other');
 
 
         if(!e.target.checked){
@@ -221,11 +321,7 @@ class VisualizeOptions extends React.Component{
         this.removeOtherCheckboxesOfDifferentName(e.target.name);
 
         // remove highlights that are not disease association
-        var otherHighlights = document.querySelectorAll(".hgroup, .other, .het");
-        for(var i=0; i<otherHighlights.length; i++){
-            otherHighlights[i].removeAttribute('class');
-            otherHighlights[i].style.fill = '';
-        }
+        this.removeHighlightsOfDifferentCategory('.disease');
 
         if(!e.target.checked){
             var highlights = document.querySelectorAll(".disease-mitomap-confirmed");
@@ -258,11 +354,7 @@ class VisualizeOptions extends React.Component{
         this.removeOtherCheckboxesOfDifferentName(e.target.name);
 
         // remove highlights that are not disease association
-        var otherHighlights = document.querySelectorAll(".hgroup, .other, .het");
-        for(var i=0; i<otherHighlights.length; i++){
-            otherHighlights[i].removeAttribute('class');
-            otherHighlights[i].style.fill = '';
-        }
+        this.removeHighlightsOfDifferentCategory('.disease');
 
         if(!e.target.checked){
             var highlights = document.querySelectorAll(".disease-mitomap-reported");
@@ -295,11 +387,7 @@ class VisualizeOptions extends React.Component{
         this.removeOtherCheckboxesOfDifferentName(e.target.name);
 
         // remove highlights that are not disease association
-        var otherHighlights = document.querySelectorAll(".hgroup, .other, .het");
-        for(var i=0; i<otherHighlights.length; i++){
-            otherHighlights[i].removeAttribute('class');
-            otherHighlights[i].style.fill = '';
-        }
+        this.removeHighlightsOfDifferentCategory('.disease');
 
         if(!e.target.checked){
             var highlights = document.querySelectorAll(".disease-clinvar-patho");
@@ -331,11 +419,7 @@ class VisualizeOptions extends React.Component{
         this.removeOtherCheckboxesOfDifferentName(e.target.name);
 
         // remove highlights that are not disease association
-        var otherHighlights = document.querySelectorAll(".hgroup, .other, .het");
-        for(var i=0; i<otherHighlights.length; i++){
-            otherHighlights[i].removeAttribute('class');
-            otherHighlights[i].style.fill = '';
-        }
+        this.removeHighlightsOfDifferentCategory('.disease');
 
         if(!e.target.checked){
             var highlights = document.querySelectorAll(".disease-clinvar-uncertain");
@@ -367,11 +451,7 @@ class VisualizeOptions extends React.Component{
         this.removeOtherCheckboxesOfDifferentName(e.target.name);
 
         // remove highlights that are not disease association
-        var otherHighlights = document.querySelectorAll(".hgroup, .other, .het");
-        for(var i=0; i<otherHighlights.length; i++){
-            otherHighlights[i].removeAttribute('class');
-            otherHighlights[i].style.fill = '';
-        }
+        this.removeHighlightsOfDifferentCategory('.disease');
 
         if(!e.target.checked){
             var highlights = document.querySelectorAll(".disease-clinvar-benign");
@@ -390,13 +470,263 @@ class VisualizeOptions extends React.Component{
             for(var i = 0; i<titles.length; i++){
                 var parentElement = titles[i].parentElement;
                 if(parentElement.tagName=="text" && diseaseClinvarBenign.includes(parseInt(titles[i].innerHTML))){
-                    //parentElement.setAttribute('class', 'disease-clinvar-benign');
                     parentElement.classList.add('disease-clinvar-benign');
                     parentElement.classList.add('disease');
                 }
             }
         }
     }
+
+
+
+
+
+    showPopGnomadHom = (e) => {
+
+        // clear all other checkboxes of different categories
+        this.removeOtherCheckboxesOfDifferentName(e.target.name);
+
+        // remove all other highlights regardless of category
+        this.removeHighlights();
+
+        if(e.target.checked){
+            
+            if(Object.keys(popGnomadHom).length == 0){
+                this.state.geneData.filter(dat => dat.pop_freq_gnomad_af_hom!==null&&dat.pop_freq_gnomad_af_hom!==0).map(function(obj){
+                    if(popGnomadHom[obj.var_coordinate]){
+                        popGnomadHom[obj.var_coordinate] = popGnomadHom[obj.var_coordinate] + obj.pop_freq_gnomad_af_hom;
+                    } else {
+                        popGnomadHom[obj.var_coordinate] = obj.pop_freq_gnomad_af_hom;
+                    }
+                })
+            }
+            console.log(popGnomadHom);
+          
+            var coors = Object.keys(popGnomadHom).map(function(obj){
+                return parseInt(obj)
+            })
+            //console.log(coors);
+
+            var titles = document.getElementsByTagName('title');
+            for(var i = 0; i<titles.length; i++){
+                var parentElement = titles[i].parentElement;
+                var coor = parseInt(titles[i].innerHTML);
+                if(parentElement.tagName=="text" && coors.includes(coor)){
+                    if(popGnomadHom[coor] > 1) {
+                        parentElement.style.fill = 'rgb(250, 220, 50, 0.7)';
+                    } else {
+                        var red = 140 + popGnomadHom[coor]*110;
+                        var green = 0 + popGnomadHom[coor]*220;
+                        var blue = 0 + popGnomadHom[coor] * 50;
+                        parentElement.style.fill = 'rgb('+red+', '+green+', '+blue+')';
+                    }
+                    parentElement.classList.add('pop-gnomad-hom');
+                    parentElement.classList.add('pop');
+                }
+            }
+        }
+
+    }
+
+
+    showPopGnomadHet = (e) => {
+
+        // clear all other checkboxes of different categories
+        this.removeOtherCheckboxesOfDifferentName(e.target.name);
+
+        // remove all other highlights regardless of category
+        this.removeHighlights();
+
+        if(e.target.checked){
+            
+            if(Object.keys(popGnomadHet).length == 0){
+                this.state.geneData.filter(dat => dat.pop_freq_gnomad_af_het!==null&&dat.pop_freq_gnomad_af_het!==0).map(function(obj){
+                    if(popGnomadHet[obj.var_coordinate]){
+                        popGnomadHet[obj.var_coordinate] = popGnomadHet[obj.var_coordinate] + obj.pop_freq_gnomad_af_het;
+                    } else {
+                        popGnomadHet[obj.var_coordinate] = obj.pop_freq_gnomad_af_het;
+                    }
+                })
+            }
+            console.log(popGnomadHet);
+          
+            var coors = Object.keys(popGnomadHet).map(function(obj){
+                return parseInt(obj)
+            })
+            //console.log(coors);
+
+            var titles = document.getElementsByTagName('title');
+            for(var i = 0; i<titles.length; i++){
+                var parentElement = titles[i].parentElement;
+                var coor = parseInt(titles[i].innerHTML);
+                if(parentElement.tagName=="text" && coors.includes(coor)){
+                    if(popGnomadHet[coor] > 1) {
+                        parentElement.style.fill = 'rgb(250, 220, 50, 0.7)';
+                    } else {
+                        var red = 140 + popGnomadHet[coor]*110;
+                        var green = 0 + popGnomadHet[coor]*220;
+                        var blue = 0 + popGnomadHet[coor] * 50;
+                        parentElement.style.fill = 'rgb('+red+', '+green+', '+blue+')';
+                    }
+                    parentElement.classList.add('pop-gnomad-het');
+                    parentElement.classList.add('pop');
+                }
+            }
+        }
+
+    }
+
+
+    showPopMitomap = (e) => {
+
+        // clear all other checkboxes of different categories
+        this.removeOtherCheckboxesOfDifferentName(e.target.name);
+
+        // remove all other highlights regardless of category
+        this.removeHighlights();
+
+        if(e.target.checked){
+            
+            if(Object.keys(popMitomap).length == 0){
+                this.state.geneData.filter(dat => dat.pop_freq_mitomap!==null&&dat.pop_freq_mitomap!==0).map(function(obj){
+                    if(popMitomap[obj.var_coordinate]){
+                        popMitomap[obj.var_coordinate] = popMitomap[obj.var_coordinate] + obj.pop_freq_mitomap;
+                    } else {
+                        popMitomap[obj.var_coordinate] = obj.pop_freq_mitomap;
+                    }
+                })
+            }
+            console.log(popMitomap);
+          
+            var coors = Object.keys(popMitomap).map(function(obj){
+                return parseInt(obj)
+            })
+            //console.log(coors);
+
+            var titles = document.getElementsByTagName('title');
+            for(var i = 0; i<titles.length; i++){
+                var parentElement = titles[i].parentElement;
+                var coor = parseInt(titles[i].innerHTML);
+                if(parentElement.tagName=="text" && coors.includes(coor)){
+                    if(popMitomap[coor] > 1) {
+                        parentElement.style.fill = 'rgb(250, 220, 50, 0.7)';
+                    } else {
+                        var red = 140 + popMitomap[coor]*110;
+                        var green = 0 + popMitomap[coor]*220;
+                        var blue = 0 + popMitomap[coor] * 50;
+                        parentElement.style.fill = 'rgb('+red+', '+green+', '+blue+')';
+                    }
+                    parentElement.classList.add('pop-mitomap');
+                    parentElement.classList.add('pop');
+                }
+            }
+        }
+
+    }
+
+    
+    showPopHelixHom = (e) => {
+
+        console.log("in showPopHelixHom");
+
+        // clear all other checkboxes of different categories
+        this.removeOtherCheckboxesOfDifferentName(e.target.name);
+
+        // remove all other highlights regardless of category
+        this.removeHighlights();
+
+        if(e.target.checked){
+            
+            if(Object.keys(popHelixHom).length == 0){
+                this.state.geneData.filter(dat => dat.pop_freq_helix_af_hom!==null&&dat.pop_freq_helix_af_hom!==0).map(function(obj){
+                    if(popHelixHom[obj.var_coordinate]){
+                        popHelixHom[obj.var_coordinate] = popHelixHom[obj.var_coordinate] + obj.pop_freq_helix_af_hom;
+                    } else {
+                        popHelixHom[obj.var_coordinate] = obj.pop_freq_helix_af_hom;
+                    }
+                })
+            }
+            console.log(popHelixHom);
+          
+            var coors = Object.keys(popHelixHom).map(function(obj){
+                return parseInt(obj)
+            })
+            //console.log(coors);
+
+            var titles = document.getElementsByTagName('title');
+            for(var i = 0; i<titles.length; i++){
+                var parentElement = titles[i].parentElement;
+                var coor = parseInt(titles[i].innerHTML);
+                if(parentElement.tagName=="text" && coors.includes(coor)){
+                    if(popHelixHom[coor] > 1) {
+                        parentElement.style.fill = 'rgb(250, 220, 50, 0.7)';
+                    } else {
+                        var red = 140 + popHelixHom[coor]*110;
+                        var green = 0 + popHelixHom[coor]*220;
+                        var blue = 0 + popHelixHom[coor] * 50;
+                        parentElement.style.fill = 'rgb('+red+', '+green+', '+blue+')';
+                    }
+                    parentElement.classList.add('pop-helix-hom');
+                    parentElement.classList.add('pop');
+                }
+            }
+        }
+
+    }
+
+
+
+    showPopHelixHet = (e) => {
+
+        // clear all other checkboxes of different categories
+        this.removeOtherCheckboxesOfDifferentName(e.target.name);
+
+        // remove all other highlights regardless of category
+        this.removeHighlights();
+
+        if(e.target.checked){
+            
+            if(Object.keys(popHelixHet).length == 0){
+                this.state.geneData.filter(dat => dat.pop_freq_helix_af_het!==null&&dat.pop_freq_helix_af_het!==0).map(function(obj){
+                    if(popHelixHet[obj.var_coordinate]){
+                        popHelixHet[obj.var_coordinate] = popHelixHet[obj.var_coordinate] + obj.pop_freq_helix_af_het;
+                    } else {
+                        popHelixHet[obj.var_coordinate] = obj.pop_freq_helix_af_het;
+                    }
+                })
+            }
+            console.log(popHelixHet);
+          
+            var coors = Object.keys(popHelixHet).map(function(obj){
+                return parseInt(obj)
+            })
+            //console.log(coors);
+
+            var titles = document.getElementsByTagName('title');
+            for(var i = 0; i<titles.length; i++){
+                var parentElement = titles[i].parentElement;
+                var coor = parseInt(titles[i].innerHTML);
+                if(parentElement.tagName=="text" && coors.includes(coor)){
+                    if(popHelixHet[coor] > 1) {
+                        parentElement.style.fill = 'rgb(250, 220, 50, 0.7)';
+                    } else {
+                        var red = 140 + popHelixHet[coor]*110;
+                        var green = 0 + popHelixHet[coor]*220;
+                        var blue = 0 + popHelixHet[coor] * 50;
+                        parentElement.style.fill = 'rgb('+red+', '+green+', '+blue+')';
+                    }
+                    parentElement.classList.add('pop-helix-het');
+                    parentElement.classList.add('pop');
+                }
+            }
+        }
+
+    }
+
+
+
+
+
 
 
 
@@ -411,13 +741,8 @@ class VisualizeOptions extends React.Component{
         // remove all other highlights regardless of category
         this.removeHighlights();
 
-        if(!e.target.checked){
-            var highlights = document.querySelectorAll(".het-gnomad");
-            for(var i=0; i<highlights.length; i++){
-                highlights[i].classList.remove("het-gnomad");
-                highlights[i].style.fill = '';
-            }
-        } else {
+        if(e.target.checked){
+
             if(Object.keys(hetGnomad).length == 0){
                 this.state.geneData.filter(dat => dat.heteroplasmy_gnomad!==null).map(function(obj){
                     hetGnomad[obj.var_coordinate] = obj.heteroplasmy_gnomad
@@ -435,21 +760,26 @@ class VisualizeOptions extends React.Component{
                 var parentElement = titles[i].parentElement;
                 var coor = parseInt(titles[i].innerHTML);
                 if(parentElement.tagName=="text" && coors.includes(coor)){
-                    var opacity = (100-hetGnomad[coor]) * 0.8 + 20;
-                    parentElement.style.fill = 'rgb(250, 0, 0, '+opacity+'%)';
-                    //parentElement.setAttribute('fill', 'rgb(250, 0, 0, '+opacity+'%)' );
+                    var opacity = ((100-hetGnomad[coor]) * 0.5 + 50)/100;
+                    var temp = (100-hetGnomad[coor])/100;
+                    var red = 150 + 100*(1-temp);
+                    var green = 250*(1-opacity);
+                    parentElement.style.fill = 'rgb('+red+', '+green+', 10, '+opacity+')';
                     parentElement.classList.add('het-gnomad');
                     parentElement.classList.add('het');
                 }
             }
         }
 
+        //create color legend
+        this.createGradientLegend('rgb(250, 125, 10, 0.5)', 'rgb(150, 0, 10, 1)', '100%', '0%');
+
     }
 
 
     showHetHelix = (e) => {
 
-        console.log('show het helix');
+        //console.log('show het helix');
 
         // clear all other checkboxes of different categories
         this.removeOtherCheckboxesOfDifferentName(e.target.name);
@@ -457,14 +787,8 @@ class VisualizeOptions extends React.Component{
         // remove all other highlights regardless of category
         this.removeHighlights();
 
-        if(!e.target.checked){
-            var highlights = document.querySelectorAll(".het-helix");
-            for(var i=0; i<highlights.length; i++){
-                highlights[i].classList.remove("het-helix");
-                highlights[i].style.fill = '';
-            }
-        } else {
-            //console.log("helix has been checked");
+        if(e.target.checked){
+
             if(Object.keys(hetHelix).length == 0){
                 this.state.geneData.filter(dat => dat.heteroplasmy_helix!==null).map(function(obj){
                     if(obj.heteroplasmy_helix == ">99") {
@@ -485,14 +809,111 @@ class VisualizeOptions extends React.Component{
                 var parentElement = titles[i].parentElement;
                 var coor = parseInt(titles[i].innerHTML);
                 if(parentElement.tagName=="text" && coors.includes(coor)){
-                    var opacity = (100-hetHelix[coor]) * 0.8 + 20;
-                    parentElement.style.fill = 'rgb(250, 0, 0, '+opacity+'%)';
+                    var opacity = ((100-hetHelix[coor]) * 0.5 + 50)/100;
+                    var temp = (100-hetHelix[coor])/100;
+                    var red = 150 + 100*(1-temp);
+                    var green = 250*(1-opacity);
+                    parentElement.style.fill = 'rgb('+red+', '+green+', 10, '+opacity+')';
                     parentElement.classList.add('het-helix');
                     parentElement.classList.add('het');
                 }
             }
         }
+
+        //create color legend
+        this.createGradientLegend('rgb(250, 125, 10, 0.5)', 'rgb(150, 0, 10, 1)', '100%', '0%');
+
     }
+
+
+
+
+    showConservPhyloP = (e) => {
+
+        // clear all other checkboxes of different categories
+        this.removeOtherCheckboxesOfDifferentName(e.target.name);
+
+        // remove all highlights regardless of category
+        this.removeHighlights();
+
+        if(e.target.checked){
+
+            if(Object.keys(conservPhyloP).length == 0){
+                this.state.geneData.filter(dat => dat.conserv_phylop!==null).map(function(obj){
+                    conservPhyloP[obj.var_coordinate] = obj.conserv_phylop;
+                })
+            }
+            //console.log(conservPhyloP);
+          
+            var coors = Object.keys(conservPhyloP).map(function(obj){
+                return parseInt(obj)
+            })
+
+            var titles = document.getElementsByTagName('title');
+            for(var i = 0; i<titles.length; i++){
+                var parentElement = titles[i].parentElement;
+                var coor = parseInt(titles[i].innerHTML);
+                if(parentElement.tagName=="text" && coors.includes(coor)){
+                    var temp = (conservPhyloP[coor]+20)/30;
+                    var opacity = temp * 0.6 + 0.4;
+                    var red = 0;
+                    var green = 40 + 200 * (1-opacity);
+                    var blue = 200 - 200 * (1-opacity);
+                    parentElement.style.fill = 'rgb('+red+', '+green+', '+blue+', '+opacity+')';
+                    parentElement.classList.add('conserv-phylop');
+                    parentElement.classList.add('conserv');
+                }
+            }
+        }
+
+        //create color legend
+        this.createGradientLegend('rgb(0, 160, 60, 0.4)', 'rgb(0, 40, 200, 1)', '10', '-20');
+
+    }
+
+    showConservPhastCons = (e) => {
+
+        // clear all other checkboxes of different categories
+        this.removeOtherCheckboxesOfDifferentName(e.target.name);
+
+        // remove all other highlights regardless of category
+        this.removeHighlights();
+
+        if(e.target.checked){
+
+            if(Object.keys(conservPhastCons).length == 0){
+                this.state.geneData.filter(dat => dat.conserv_phastcons!==null).map(function(obj){
+                    conservPhastCons[obj.var_coordinate] = obj.conserv_phastcons;
+                })
+            }
+            //console.log(conservPhastCons);
+          
+            var coors = Object.keys(conservPhastCons).map(function(obj){
+                return parseInt(obj)
+            })
+
+            var titles = document.getElementsByTagName('title');
+            for(var i = 0; i<titles.length; i++){
+                var parentElement = titles[i].parentElement;
+                var coor = parseInt(titles[i].innerHTML);
+                if(parentElement.tagName=="text" && coors.includes(coor)){
+                    var opacity = conservPhastCons[coor] * 0.6 + 0.4;
+                    var red = 0;
+                    var green = 40 + 200 * (1-opacity);
+                    var blue = 200 - 200 * (1-opacity);
+                    parentElement.style.fill = 'rgb('+red+', '+green+', '+blue+', '+opacity+')';
+                    parentElement.classList.add('conserv-phastcons');
+                    parentElement.classList.add('conserv');
+                }
+            }
+        }
+
+        //create color legend
+        this.createGradientLegend('rgb(0, 160, 60, 0.4)', 'rgb(0, 40, 200, 1)', '1', '0');
+
+    }
+
+
 
 
 
@@ -511,6 +932,52 @@ class VisualizeOptions extends React.Component{
             <div id="visualize-form">
 
                 <h5>Visualize bases with variants in the selected category, or modifications</h5>
+
+
+                <h6>Population frequency
+                    <div class="help-tip">
+                        <p>For gnomAD and HelixMTdb, frequency and counts are shown for homoplasmic ('hom') and heteroplasmic ('het') variants separately.<br/>
+                           - <a href="https://gnomad.broadinstitute.org/" target="_blank">gnomAD</a>: variants identified from whole genome sequencing data, excluding individuals known to have severe pediatric disease.<br/>
+                           - <a href="https://www.mitomap.org/foswiki/bin/view/MITOMAP/GBFreqInfo" target="_blank">MITOMAP</a>: variants present in GenBank sequence data, may include individuals with disease. <br/>
+                           - <a href="https://www.helix.com/pages/mitochondrial-variant-database" target="_blank">HelixMTdb</a>: variants identified from saliva samples sequenced by Helix's proprietary exome including mtDNA, disease status unknown.</p>
+                    </div>
+                </h6>
+                <label>
+                    <input name="popGnomadHom" type="checkbox" onClick={this.showPopGnomadHom} />
+                    <span>gnomAD hom</span>
+                </label><br/>
+                <label>
+                    <input name="popGnomadHet" type="checkbox" onClick={this.showPopGnomadHet} />
+                    <span>gnomAD het</span>
+                </label><br/>
+                <label>
+                    <input name="popMitomap" type="checkbox" onClick={this.showPopMitomap} />
+                    <span>MITOMAP</span>
+                </label><br/>
+                <label>
+                    <input name="popHelixHom" type="checkbox" onClick={this.showPopHelixHom} />
+                    <span>HelixMTdb Hom</span>
+                </label><br/>
+                <label>
+                    <input name="popHelixHet" type="checkbox" onClick={this.showPopHelixHet} />
+                    <span>HelixMTdb Het</span>
+                </label>
+
+
+                <h6>Maximum heteroplasmy
+                    <div class="help-tip">
+                        <p>Range 0-100%; heteroplasmy information not available from MITOMAP</p>
+                    </div>
+                </h6>
+                <label>
+                    <input name="hetGnomad" type="checkbox" value="0" class="filled-in" onClick={this.showHetGnomad} />
+                    <span>GnomAD</span>
+                </label><br/>
+                <label>
+                    <input name="hetHelix" type="checkbox" value="0" class="filled-in" onClick={this.showHetHelix} />
+                    <span>HelixMTdb</span>
+                </label>
+
 
                 <h6>Variants associated with disease</h6>
                 <p>Mitomap:</p>
@@ -546,15 +1013,21 @@ class VisualizeOptions extends React.Component{
                     <span>Show bases with variants</span>
                 </label>
 
-                <h6>Maximum heteroplasmy</h6>
+
+                <h6>Conservation metrics
+                    <div class="help-tip">
+                        <p>Measures of nucleotide conservation in 100 vertebrate species. <a href="http://compgen.cshl.edu/phast/resources.php" target="_blank">PhyloP scores</a> evaluate conservation at each base, and do not incorporate conservation at neighboring sites. <a href="http://compgen.cshl.edu/phast/resources.php" target="_blank">PhastCons scores</a> are the probability that the base belongs to a conserved multibase element.</p>
+                    </div>
+                </h6>
                 <label>
-                    <input name="hetGnomad" type="checkbox" value="0" class="filled-in" onClick={this.showHetGnomad} />
-                    <span>GnomAD</span>
+                    <input name="conservPhyloP" type="checkbox" onClick={this.showConservPhyloP} />
+                    <span>PhyloP</span>
                 </label><br/>
                 <label>
-                    <input name="hetHelix" type="checkbox" value="0" class="filled-in" onClick={this.showHetHelix} />
-                    <span>HelixMTdb</span>
+                    <input name="conservPhastCons" type="checkbox" onClick={this.showConservPhastCons} />
+                    <span>PhastCons</span>
                 </label>
+
 
                 <h6>Other</h6>
                 <label>

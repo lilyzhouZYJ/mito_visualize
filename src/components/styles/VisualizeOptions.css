@@ -55,6 +55,7 @@
 
 #visualize-form .help-tip p {
     font-weight: normal;
+    font-size: 13px;
 }
 
 #visualize-form button {
@@ -115,6 +116,26 @@
     fill: red !important;
 }
 
+.pop-gnomad-hom {
+    font-weight: bold !important;
+}
+
+.pop-gnomad-het {
+    font-weight: bold !important;
+}
+
+.pop-mitomap {
+    font-weight: bold !important;
+}
+
+.pop-helix-hom {
+    font-weight: bold !important;
+}
+
+.pop-helix-het {
+    font-weight: bold !important;
+}
+
 .het-gnomad {
     font-weight: bold !important;
     /*fill: red !important;*/
@@ -123,6 +144,14 @@
 .het-helix {
     font-weight: bold !important;
     /*fill: red !important;*/
+}
+
+.conserv-phylop{
+    font-weight: bold !important;
+}
+
+.conserv-phastcons{
+    font-weight: bold !important;
 }
 
 
