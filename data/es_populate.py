@@ -285,7 +285,7 @@ def populate_hmtvar1(es):
 
     for line in f:
 
-        if count > 2400:
+        if count > 2000:
             break
 
         if line[0].isdigit():
@@ -362,7 +362,7 @@ def populate_hmtvar2(es):
             if info[2] is not ':':
                 
                 count = count + 1
-                if count <= 2400: 
+                if count <= 2000: 
                     continue
                 
                 coor = info[0]
@@ -1134,9 +1134,9 @@ if __name__ == '__main__':
 	#create_index(es)
         #populate_all_rrna_vars(es)
         #populate_in_silico_mitotip(es)
-        #populate_hmtvar1(es)
-        #populate_hmtvar2(es)
         #populate_in_silico_ponmttrna(es)
+        #populate_hmtvar1(es)
+        populate_hmtvar2(es)
         #populate_disease_association(es)
         #populate_population_freq(es)
         #populate_helix(es)

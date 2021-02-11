@@ -260,7 +260,8 @@ class RrnaSVG extends React.Component{
                     textNode.innerHTML = newLetter+textNode.innerHTML.substring(1); 
                     var textx = parseFloat(textNode.getAttribute('x'));
                     var texty = parseFloat(textNode.getAttribute('y'));
-                    varX = textx, varY = texty;
+                    varX = textx;
+                    varY = texty;
 
                     //add circle for background color of highlight
                     var circle = document.createElementNS('http://www.w3.org/2000/svg','circle');
@@ -303,21 +304,23 @@ class RrnaSVG extends React.Component{
                 var newLine = document.createElementNS('http://www.w3.org/2000/svg','line');
                 var x1, x2, y1, y2;
                 if(textx==pairx){
-                    x1 = textx, x2 = textx;
+                    x1 = textx;
+                    x2 = textx;
                     y1 = (texty+pairy)/2 - 4;
                     y2 = (texty+pairy)/2 + 4;
                 }
                 else if(texty==pairy){
-                    y1 = texty, y2 = texty;
+                    y1 = texty;
+                    y2 = texty;
                     x1 = (textx+pairx)/2 - 4;
                     x2 = (textx+pairx)/2 + 4;
                 } 
                 else{ //for diagonal pairs (in rRNAs)
                     var middle_x = parseFloat((textx+pairx)/2);
-                    var length_x = abs(parseFloat((textx+pairx)/3));
+                    var length_x = Math.abs(parseFloat((textx+pairx)/3));
 
                     var middle_y = parseFloat((texty+pairy)/2);
-                    var length_y = abs(parseFloat((texty+pairy)/3));
+                    var length_y = Math.abs(parseFloat((texty+pairy)/3));
 
                     if(textx > pairx && texty < pairy){
                         x1 = textx - length_x;
