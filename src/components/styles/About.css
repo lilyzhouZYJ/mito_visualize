@@ -1,7 +1,7 @@
 /* formatting for about page (landing page) */
 
 #about-page{
-    margin-top: 150px;
+    margin-top: 80px;
 }
 
 /* logo on about page */
@@ -12,3 +12,16 @@
     display: block;
     margin: auto;
 }
+
+/*
+#about-page ul{
+	list-style-type: disc !important;
+}
+*/
+
+#about li:before {
+  content: "•"; /* Insert content that looks like bullets */
+  padding-right: 8px;
+  color: blue; /* Or a color you prefer */
+}
+

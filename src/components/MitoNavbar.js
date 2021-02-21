@@ -23,7 +23,7 @@ class MitoNavbar extends React.Component{
                 <Nav.Link href="/mtdna" id="mt-DNA-options">mt-DNA</Nav.Link>
               </Nav>
               <Nav className="ml-auto">
-                <Nav.Link href="/" id="mt-about-options">About</Nav.Link>
+                <Nav.Link href="/about-page" id="mt-about-options">About</Nav.Link>
               </Nav>
           </Navbar>
         </div>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 import About from './About';
+import Home from './Home';
 import TrnaPage from './TrnaPage';
 import RrnaPage from './RrnaPage';
 import GeneTool from './GeneTool';
@@ -14,11 +15,12 @@ import RrnaVisualizationSVG from './RrnaVisualizationSVG';
 export default function Routes() {
   return (
     <Switch>
-        <Route exact path='/' component={About} />
+        <Route exact path='/' component={Home} />
         <Route path='/trna-page' component={TrnaPage} />
         <Route path='/rrna-page' component={RrnaPage} />
         <Route path='/mtdna' component={GeneTool} />
         <Route exact path='/rna-visualization' component={VisualizationPage} />
+        <Route exact path='/about-page' component={About} />
 
         <Route
             exact
