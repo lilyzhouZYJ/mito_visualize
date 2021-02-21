@@ -1,36 +1,25 @@
 /* General formatting */
 #trna-visualization-svg #left-container{
-    margin-left: 230px;
-    margin-top: 100px;
+    margin-top: 5%;
     width: 500px;
-    margin-right: 0;
+    margin-right: 0%;
     display: inline-block;
-}
-
-#rrna-visualization-svg #left-container{
-    margin-left: 80px;
-    margin-top: 80px;
-    width: 650px;
 }
 
 #trna-visualization-svg #right-container{
     float: right;
-    margin-right: 200px;
-    margin-top:100px;
-    width: 550px;
+    margin-top:5%;
+    text-align: left;
+}
+
+#rrna-visualization-svg #left-container{
+    margin-top: 5%;
+    width: 650px;
 }
 
 #rrna-visualization-svg #right-container{
-    margin-top: 100px;
-    margin-right: 40px;
+    margin-top: 5%;
 }
-
-
-
-
-
-
-
 
 #visualize-form p {
     margin: 0;

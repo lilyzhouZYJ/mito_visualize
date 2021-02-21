@@ -12,7 +12,9 @@
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.1",
-    "save-svg-as-png": "^1.4.17"
+    "save-svg-as-png": "^1.4.17",
+    "react-bootstrap": "^1.4.3",
+    "bootstrap": "^4.6.0"
   },
   "scripts": {
     "start": "react-scripts start",

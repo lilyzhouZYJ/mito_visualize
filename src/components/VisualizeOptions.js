@@ -102,8 +102,10 @@ class VisualizeOptions extends React.Component{
         }
 
         //remove any gradient legend
+        console.log("removeHighlights()");
         var legend = document.querySelectorAll(".gradient-legend");
         for(var l of legend){
+            console.log("something is removed");
             l.remove();
         }
     }
@@ -500,7 +502,7 @@ class VisualizeOptions extends React.Component{
                     }
                 })
             }
-            console.log(popGnomadHom);
+            //console.log(popGnomadHom);
           
             var coors = Object.keys(popGnomadHom).map(function(obj){
                 return parseInt(obj)
@@ -548,7 +550,7 @@ class VisualizeOptions extends React.Component{
                     }
                 })
             }
-            console.log(popGnomadHet);
+            //console.log(popGnomadHet);
           
             var coors = Object.keys(popGnomadHet).map(function(obj){
                 return parseInt(obj)
@@ -769,10 +771,12 @@ class VisualizeOptions extends React.Component{
                     parentElement.classList.add('het');
                 }
             }
-        }
 
-        //create color legend
-        this.createGradientLegend('rgb(250, 125, 10, 0.5)', 'rgb(150, 0, 10, 1)', '100%', '0%');
+            //create color legend
+            this.createGradientLegend('rgb(250, 125, 10, 0.5)', 'rgb(150, 0, 10, 1)', '100%', '0%');
+
+
+        }
 
     }
 
@@ -818,10 +822,11 @@ class VisualizeOptions extends React.Component{
                     parentElement.classList.add('het');
                 }
             }
-        }
 
-        //create color legend
-        this.createGradientLegend('rgb(250, 125, 10, 0.5)', 'rgb(150, 0, 10, 1)', '100%', '0%');
+            //create color legend
+            this.createGradientLegend('rgb(250, 125, 10, 0.5)', 'rgb(150, 0, 10, 1)', '100%', '0%');
+
+        }
 
     }
 
@@ -864,10 +869,11 @@ class VisualizeOptions extends React.Component{
                     parentElement.classList.add('conserv');
                 }
             }
-        }
 
-        //create color legend
-        this.createGradientLegend('rgb(0, 160, 60, 0.4)', 'rgb(0, 40, 200, 1)', '10', '-20');
+            //create color legend
+            this.createGradientLegend('rgb(0, 160, 60, 0.4)', 'rgb(0, 40, 200, 1)', '10', '-20');
+
+        }
 
     }
 
@@ -906,10 +912,11 @@ class VisualizeOptions extends React.Component{
                     parentElement.classList.add('conserv');
                 }
             }
-        }
 
-        //create color legend
-        this.createGradientLegend('rgb(0, 160, 60, 0.4)', 'rgb(0, 40, 200, 1)', '1', '0');
+            //create color legend
+            this.createGradientLegend('rgb(0, 160, 60, 0.4)', 'rgb(0, 40, 200, 1)', '1', '0');
+
+        }
 
     }
 

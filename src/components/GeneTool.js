@@ -54,7 +54,6 @@ class GeneTool extends React.Component{
         innerRadius: 220,
         dist: 30,
         regionSubmitted: false, //region of deletion or duplication
-        regionInput: "", //the region that has been inputed
         regionGenes: [], //genes in the region of deletion or duplication
     }
 
@@ -331,6 +330,7 @@ class GeneTool extends React.Component{
         if(elementExists!==null){
             elementExists.remove();
             document.getElementById('circle-del').remove();
+            document.getElementById('del-label').remove();
         }
         this.setState({regionSubmitted: false, regionGenes: []});
     }
@@ -445,10 +445,18 @@ class GeneTool extends React.Component{
         var input = document.getElementById("del-input").value;
         
         //get start and end coordinates from user input
-        var startCoor = input.split("-")[0].split(".")[1];
-        var endCoor = input.split("-")[1];
+        var startCoor = parseInt(input.split("-")[0].split(".")[1]);
+        var endCoor = parseInt(input.split("-")[1]);
 
-        if(startCoor>=0 && endCoor<=16569 && startCoor-endCoor<0){
+        //console.log("start:"+startCoor);
+        //console.log("end:"+endCoor);
+
+        if(startCoor>=0 && startCoor<=16568 && endCoor>=0 && endCoor<=16569){
+
+            if(startCoor > endCoor){
+                startCoor = startCoor - 16569;
+            }
+
             var opts = {
                 cx: this.state.cx,
                 cy: this.state.cy,
@@ -456,6 +464,9 @@ class GeneTool extends React.Component{
                 start_angle: (startCoor/16569*2*Math.PI)*180/Math.PI,
                 end_angle: (endCoor/16569*2*Math.PI)*180/Math.PI,
             };
+            //console.log("start angle:"+opts.start_angle);
+            //console.log("end angle:"+opts.end_angle);
+
             var start = this.polarToCartesian(opts.cx, opts.cy, opts.radius, opts.end_angle),
                 end = this.polarToCartesian(opts.cx, opts.cy, opts.radius, opts.start_angle),
                 largeArcFlag = opts.end_angle - opts.start_angle <= 180 ? "0" : "1";
@@ -471,7 +482,7 @@ class GeneTool extends React.Component{
             highlight.setAttribute("fill","black");
             highlight.setAttribute("id","highlight-del");
             var svgnode = document.getElementById("circle");
-            svgnode.insertBefore(highlight,svgnode[svgnode.childNodes.length-1]);
+            svgnode.insertBefore(highlight,svgnode[svgnode.childNodes.length-10]);
 
             var circleCover = document.createElementNS('http://www.w3.org/2000/svg','circle');
             circleCover.setAttribute('cx',opts.cx);
@@ -479,7 +490,7 @@ class GeneTool extends React.Component{
             circleCover.setAttribute('r',opts.radius-20);
             circleCover.setAttribute('fill','white');
             circleCover.setAttribute('id','circle-del');
-            svgnode.insertBefore(circleCover,svgnode[svgnode.childNodes.length-1]);
+            svgnode.insertBefore(circleCover,svgnode[svgnode.childNodes.length-10]);
 
             //get genes within the inputed region
             var genes = [];
@@ -489,8 +500,21 @@ class GeneTool extends React.Component{
                 else if(endCoor>=dict[g][0] && endCoor<=dict[g][1]) { genes.push(g) }
             }
 
+                    // add text label in the middle of circle
+            var textNode = document.createElementNS('http://www.w3.org/2000/svg','text');
+            var text = document.createTextNode(input);
+            textNode.appendChild(text);
+            textNode.setAttribute('text-anchor','middle');
+            textNode.setAttribute('x','350');
+            textNode.setAttribute('y','350');
+            textNode.setAttribute("fill","black");
+            textNode.setAttribute("font-size","18px");
+            textNode.setAttribute("font-weight","bold");
+            textNode.setAttribute("id","del-label");
+            svgnode.append(textNode);
+
             //set regionSubmitted to true would print the helptexts under the svg
-            this.setState({regionSubmitted: true, regionInput: input, regionGenes: genes});
+            this.setState({regionSubmitted: true, regionGenes: genes});
 
         }
 
@@ -511,7 +535,6 @@ class GeneTool extends React.Component{
                             <feGaussianBlur in="SourceGraphic" stdDeviation="2" />
                         </filter>
 
-                        {this.state.regionSubmitted && <text x="350" y="350" fontSize="18px" fontWeight="bold" text-anchor="middle">{this.state.regionInput}</text>}
                     </svg>
 
                     {this.state.regionSubmitted &&
