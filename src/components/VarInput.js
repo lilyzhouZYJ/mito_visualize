@@ -178,7 +178,10 @@ class VarInput extends React.Component{
             <div id="var-form">
                 <form onSubmit={this.checkSubmit}>
                     <h5>Enter variant</h5>
-                    <label htmlFor="var-input">Format: m.555A>G (single nucleotide variants only)</label>
+                    <label htmlFor="var-input">
+                        Format: m.555A>G (single nucleotide variants only) <br />
+                        Expected genomic coordinates for {this.props.gene}: {loc[this.props.gene][0]}-{loc[this.props.gene][1]}
+                    </label>
                     <input type="text" id="var-input"></input>
                     <button type="submit">Submit</button>
                     <button type="reset" onClick={this.clearVariant.bind(this)}>Clear Variant</button>
