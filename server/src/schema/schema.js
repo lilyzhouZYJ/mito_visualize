@@ -3,6 +3,7 @@ const graphql = require('graphql');
 
 import { fetchAllSearchResults } from '../elasticsearch'
 import shapeExpression from '../shapeExpression'
+import { SearchResultType, resolveSearchResults } from '../search'
 
 const { 
     GraphQLObjectType,
@@ -11,6 +12,7 @@ const {
     GraphQLFloat,
     GraphQLInt,
     GraphQLList,
+    GraphQLNonNull
 } = graphql;
 
 
@@ -162,7 +164,14 @@ const RootQuery = new GraphQLObjectType({
             resolve(parent, args, ctx){
                 return fetchGeneDetails(ctx, args.gene)
             }
-        }
+        },
+        searchResults: {
+          type: new GraphQLList(SearchResultType),
+          args: {
+            query: { type: new GraphQLNonNull(GraphQLString) },
+          },
+          resolve: (obj, args, ctx) => resolveSearchResults(ctx, args.query),
+        }        
     })
 });
 
