@@ -13,15 +13,10 @@
     margin: auto;
 }
 
-/*
-#about-page ul{
-	list-style-type: disc !important;
-}
-*/
 
-#about li:before {
-  content: "•"; /* Insert content that looks like bullets */
-  padding-right: 8px;
-  color: blue; /* Or a color you prefer */
+#about-page li{
+    list-style-type: square;
+    list-style-position: inside;
 }
+
 

@@ -26,25 +26,25 @@ class About extends React.Component {
 
 		<b>Contacts & Team:</b><br />
 		Nicole Lake, Lily Zhou, Monkol Lek<br />
-		All code for this tool is on the <a href="https://github.com/lilyzhouZYJ/mito_visualize">github repositiory</a><br />
-		To share feedback, suggest improvements, or for any other enquiries please leave a message (as an issue) on the  
-		 <a href="https://github.com/lilyzhouZYJ/mito_visualize/issues">github repository</a>
+		All code for this tool is on the <a href="https://github.com/lilyzhouZYJ/mito_visualize" target="_blank">github repositiory</a><br />
+		To share feedback or suggest improvements, please leave a message (as an issue) on the <a href="https://github.com/lilyzhouZYJ/mito_visualize/issues" target="_blank">github repository</a>.<br/>
+                For general enquiries please email mitovisualize@gmail.com.<br />
 		<br /><br />
 
 		<b>Acknowledgements:</b><br />
 		MitoVisualize displays information from a variety of sources which we gratefully acknowledge:
 		<ul>
-		<li><a href="https://www.ncbi.nlm.nih.gov/clinvar/ ">ClinVar</a></li>
-		<li><a href="https://gnomad.broadinstitute.org/">gnomAD</a></li>
-		<li><a href="https://www.helix.com/pages/mitochondrial-variant-database">HelixMTdb</a></li> 
-		<li><a href="https://www.hmtvar.uniba.it/">HmtVar</a></li>
-		<li><a href="http://mamit-trna.u-strasbg.fr/">Mamit-tRNA</a></li> 
-		<li><a href="https://www.mitomap.org/MITOMAP">MITOMAP, including MitoTip</a></li>
-		<li><a href="https://genome.ucsc.edu/cgi-bin/hgTrackUi?db=hg38&g=cons100way#TRACK_HTML">PHAST (phastCons and phyloP) via UCSC</a></li> 
-		<li><a href="https://www.phylotree.org/">Phylotree</a></li>
-		<li><a href="http://structure.bmc.lu.se/PON-mt-tRNA/">PON-mt-tRNA</a></li>
-		<li>Rebelo-Guiomar P, et al. The mammalian mitochondrial epitranscriptome. <b>Biochim Biophys Acta Gene Regul 
-		 Mech.</b> 2019 Mar;1862(3):429-446. <a href="https://pubmed.ncbi.nlm.nih.gov/30529456/">PMID: 30529456</a></li>
+                    <li><a href="https://www.ncbi.nlm.nih.gov/clinvar/ " target="_blank">ClinVar</a></li>
+                    <li><a href="https://gnomad.broadinstitute.org/" target="_blank">gnomAD</a></li>
+                    <li><a href="https://www.helix.com/pages/mitochondrial-variant-database" target="_blank">HelixMTdb</a></li> 
+                    <li><a href="https://www.hmtvar.uniba.it/" target="_blank">HmtVar</a></li>
+                    <li><a href="http://mamit-trna.u-strasbg.fr/" target="_blank">Mamit-tRNA</a></li> 
+                    <li><a href="https://www.mitomap.org/MITOMAP" target="_blank">MITOMAP, including MitoTip</a></li>
+                    <li><a href="https://genome.ucsc.edu/cgi-bin/hgTrackUi?db=hg38&g=cons100way#TRACK_HTML" target="_blank">PHAST (phastCons and phyloP) via UCSC</a></li> 
+                    <li><a href="https://www.phylotree.org/" target="_blank">Phylotree</a></li>
+                    <li><a href="http://structure.bmc.lu.se/PON-mt-tRNA/" target="_blank">PON-mt-tRNA</a></li>
+                    <li>Rebelo-Guiomar P, et al. The mammalian mitochondrial epitranscriptome. <b>Biochim Biophys Acta Gene Regul Mech.</b> 2019 Mar;1862(3):429-446. <a href="https://pubmed.ncbi.nlm.nih.gov/30529456/" target="_blank">PMID: 30529456</a></li>
+                    <li>Suzuki T, et al. Complete chemical structures of human mitochondrial tRNAs. Nat Commun. 2020 Aug 28;11(1):4269. <a href="https://pubmed.ncbi.nlm.nih.gov/32859890/" target="_blank">PMID: 32859890.</a></li>
 		</ul>
 		<br /><br /><br /><br /><br /><br />
          </div>

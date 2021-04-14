@@ -109,43 +109,33 @@ export const fetchGeneDetails = async (ctx, geneName) => {
 
     return data;
 
-    /*
-    const docs = response.hits.hits;
-    if(docs[0]){
-        const doc = [];
-        for(var i = 0; i<docs.length; i++){
-            doc.push(docs[i]._source);
-        }
-        return doc;
-    }
-    return null;*/
 }
 
 
-/*
+
+
 export const fetchCoorDetails = async (ctx, var_coordinate) => {
 
-    const response = await ctx.database.elastic.search({
+    //console.log('fetch coordinate details');
+
+    const response = await fetchAllSearchResults(ctx.database.elastic, {
         type: '_doc',
         body: {
-            'query' : {
-                'match': {'var_coordinate': var_coordinate}
+            query : {
+                query_string: {
+                    default_field: 'var_coordinate',
+                    query: var_coordinate
+                }
             }
         },
     })
 
-    const docs = response.hits.hits;
-    if(docs[0]){
-        const doc = [];
-        for(var i = 0; i<docs.length; i++){
-            doc.push(docs[i]._source);
-        }
-        return doc;
-    }
-    return null;
+    //console.log(response);
+    const data = response.map(shapeExpression())
+
+    return data;
 
 }
-*/
 
 
 //defining root query
@@ -159,13 +149,13 @@ const RootQuery = new GraphQLObjectType({
                 return fetchVarDetails(ctx, args.var_id)
             }
         },
-//        coordinate: {
-//            type: new GraphQLList(VarType),
-//            args: { var_coordinate: {type: GraphQLInt} },
-//            resolve(parent, args, ctx){
-//                return fetchCoorDetails(ctx, args.var_coordinate)
-//            }
-//        }
+        coordinate: {
+            type: new GraphQLList(VarType),
+            args: { var_coordinate: {type: GraphQLInt} },
+            resolve(parent, args, ctx){
+                return fetchCoorDetails(ctx, args.var_coordinate)
+            }
+        },
         gene: {
             type: new GraphQLList(VarType),
             args: { gene: {type: GraphQLString} },

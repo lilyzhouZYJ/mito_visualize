@@ -568,7 +568,7 @@ class GeneTool extends React.Component{
                     </form>
                     <br></br>
 
-                    <p>Show region of deletion or duplication</p>
+                    <p>Show region (eg. of deletion or duplication)</p>
                     <form onSubmit={this.handleSubmitDel}>
                         <label htmlFor="del-input">Format example: m.5618-7319</label>
                         <input type="text" id='del-input' />

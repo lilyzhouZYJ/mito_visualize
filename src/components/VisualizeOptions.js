@@ -129,6 +129,11 @@ class VisualizeOptions extends React.Component{
 
     createGradientLegend = (topcolor, bottomcolor, toplabel, bottomlabel) => {
 
+        var multiplier = 1;
+        var xShift = 0;
+        if(this.props.gene == "MT-RNR2"){ multiplier = 4; xShift = 100; }
+        if(this.props.gene == "MT-RNR1"){ multiplier = 2; }
+
         var stop1 = document.createElementNS('http://www.w3.org/2000/svg','stop');
         stop1.setAttribute("offset","0%");
         stop1.setAttribute("stop-color", topcolor);
@@ -150,10 +155,10 @@ class VisualizeOptions extends React.Component{
         var rect = document.createElementNS('http://www.w3.org/2000/svg','rect');
         rect.setAttribute("id","gradient-rect");
         rect.setAttribute("class","gradient-legend");
-        rect.setAttribute("x","35");
-        rect.setAttribute("y","60");
-        rect.setAttribute("width","20");
-        rect.setAttribute("height","70");
+        rect.setAttribute("x", 35+xShift);
+        rect.setAttribute("y", 60);
+        rect.setAttribute("width", 20*multiplier);
+        rect.setAttribute("height", 70*multiplier);
         rect.setAttribute("fill","url('#gradient')");
         if(document.getElementById("svg-container")){
             var svgnode = document.getElementById("svg-container"); 
@@ -169,10 +174,11 @@ class VisualizeOptions extends React.Component{
         var topLabel = document.createTextNode(toplabel);
         var topNode = document.createElementNS('http://www.w3.org/2000/svg','text');
         topNode.appendChild(topLabel);
-        topNode.setAttribute('x', '57');
-        topNode.setAttribute('y', '60');
+        topNode.setAttribute('x', (35+xShift) + 22*multiplier);
+        topNode.setAttribute('y', 60);
         topNode.setAttribute('class', 'gradient-legend');
         topNode.setAttribute('alignment-baseline', 'central');
+        topNode.setAttribute('font-size', 12*multiplier+"px");
         topNode.style.textAnchor = 'start';
         topNode.style.fill = topcolor;
         svgnode.appendChild(topNode);
@@ -180,17 +186,119 @@ class VisualizeOptions extends React.Component{
         var bottomLabel = document.createTextNode(bottomlabel);
         var bottomNode = document.createElementNS('http://www.w3.org/2000/svg','text');
         bottomNode.appendChild(bottomLabel);
-        bottomNode.setAttribute('x', '57');
-        bottomNode.setAttribute('y', '130');
+        bottomNode.setAttribute('x', (35+xShift) + 22*multiplier);
+        bottomNode.setAttribute('y', 60 + 70*multiplier);
         bottomNode.setAttribute('class', 'gradient-legend');
         bottomNode.setAttribute('color', bottomcolor);
         bottomNode.setAttribute('alignment-baseline', 'central');
+        bottomNode.setAttribute('font-size', 12*multiplier+"px");
+        bottomNode.style.textAnchor = 'start';
+        bottomNode.style.fill = bottomcolor;
+        svgnode.appendChild(bottomNode);
+
+    }
+
+
+
+    // creates color gradient 
+    // for population frequency
+    // thresholdColor = color for > 1
+    createPopGradientLegend = (thresholdColor, topcolor, bottomcolor, toplabel, bottomlabel) => {
+
+        var multiplier = 1;
+        var xShift = 0;
+        if(this.props.gene == "MT-RNR2"){ multiplier = 4; xShift = 100; }
+        if(this.props.gene == "MT-RNR1"){ multiplier = 2; }
+
+        /* creates square for thresholdColor only */
+        var square = document.createElementNS('http://www.w3.org/2000/svg','rect');
+        square.setAttribute("id","gradient-square");
+        square.setAttribute("class","gradient-legend");
+        square.setAttribute("x", 35+xShift);
+        square.setAttribute("y", 60);
+        square.setAttribute("width", 20*multiplier);
+        square.setAttribute("height", 20*multiplier);
+        square.setAttribute("fill", thresholdColor);
+        if(document.getElementById("svg-container")){
+            var svgnode = document.getElementById("svg-container"); 
+        } else {
+            var svgnode = document.getElementById("rrna-svg-container"); 
+        }
+        svgnode.insertBefore(square, svgnode.childNodes[svgnode.childNodes.length-1]);
+
+        var thresholdLabel = document.createTextNode(">1%");
+        var thresholdNode = document.createElementNS('http://www.w3.org/2000/svg','text');
+        thresholdNode.appendChild(thresholdLabel);
+        thresholdNode.setAttribute('x', (35+xShift) + 22*multiplier);
+        thresholdNode.setAttribute('y', 60 + 10*multiplier);
+        thresholdNode.setAttribute('class', 'gradient-legend');
+        thresholdNode.setAttribute('alignment-baseline', 'central');
+        thresholdNode.setAttribute('font-size', 12*multiplier+"px");
+        thresholdNode.style.textAnchor = 'start';
+        thresholdNode.style.fill = thresholdColor;
+        svgnode.appendChild(thresholdNode);
+
+
+        /* rest of the gradient */
+
+        var stop1 = document.createElementNS('http://www.w3.org/2000/svg','stop');
+        stop1.setAttribute("offset","0%");
+        stop1.setAttribute("stop-color", topcolor);
+
+        var stop2 = document.createElementNS('http://www.w3.org/2000/svg','stop');
+        stop2.setAttribute("offset","100%");
+        stop2.setAttribute("stop-color", bottomcolor);
+
+        var linearGrad = document.createElementNS('http://www.w3.org/2000/svg','linearGradient');
+        linearGrad.setAttribute("id", "gradient");
+        linearGrad.setAttribute("class", "gradient-legend");
+        linearGrad.setAttribute("gradientTransform", "rotate(90)");
+        linearGrad.appendChild(stop1);
+        linearGrad.appendChild(stop2);
+
+        var defs = document.createElementNS('http://www.w3.org/2000/svg','defs');
+        defs.appendChild(linearGrad);
+
+        var rect = document.createElementNS('http://www.w3.org/2000/svg','rect');
+        rect.setAttribute("id","gradient-rect");
+        rect.setAttribute("class","gradient-legend");
+        rect.setAttribute("x", 35+xShift);
+        rect.setAttribute("y", 60 + 25*multiplier);
+        rect.setAttribute("width", 20*multiplier);
+        rect.setAttribute("height", 70*multiplier);
+        rect.setAttribute("fill","url('#gradient')");
+        svgnode.insertBefore(defs, svgnode.childNodes[svgnode.childNodes.length-1]);
+        svgnode.insertBefore(rect, svgnode.childNodes[svgnode.childNodes.length-1]);
+
+        //create the labels
+        var topLabel = document.createTextNode(toplabel);
+        var topNode = document.createElementNS('http://www.w3.org/2000/svg','text');
+        topNode.appendChild(topLabel);
+        topNode.setAttribute('x', (35+xShift) + 22*multiplier);
+        topNode.setAttribute('y', 60 + 30*multiplier);
+        topNode.setAttribute('class', 'gradient-legend');
+        topNode.setAttribute('alignment-baseline', 'central');
+        topNode.setAttribute('font-size', 12*multiplier+"px");
+        topNode.style.textAnchor = 'start';
+        topNode.style.fill = topcolor;
+        svgnode.appendChild(topNode);
+
+        var bottomLabel = document.createTextNode(bottomlabel);
+        var bottomNode = document.createElementNS('http://www.w3.org/2000/svg','text');
+        bottomNode.appendChild(bottomLabel);
+        bottomNode.setAttribute('x', (35+xShift) + 22*multiplier);
+        bottomNode.setAttribute('y', 60 + 95*multiplier);
+        bottomNode.setAttribute('class', 'gradient-legend');
+        bottomNode.setAttribute('color', bottomcolor);
+        bottomNode.setAttribute('alignment-baseline', 'central');
+        bottomNode.setAttribute('font-size', 12*multiplier+"px");
         bottomNode.style.textAnchor = 'start';
         bottomNode.style.fill = bottomcolor;
         svgnode.appendChild(bottomNode);
 
 
     }
+
 
 
 
@@ -526,6 +634,9 @@ class VisualizeOptions extends React.Component{
                     parentElement.classList.add('pop');
                 }
             }
+
+            this.createPopGradientLegend('rgb(250, 220, 50, 0.7)', 'rgb(250, 220, 50)', 'rgb(140, 0, 0)', "1%", "0%");
+
         }
 
     }
@@ -574,6 +685,9 @@ class VisualizeOptions extends React.Component{
                     parentElement.classList.add('pop');
                 }
             }
+
+            this.createPopGradientLegend('rgb(250, 220, 50, 0.7)', 'rgb(250, 220, 50)', 'rgb(140, 0, 0)', "1%", "0%");
+
         }
 
     }
@@ -622,6 +736,9 @@ class VisualizeOptions extends React.Component{
                     parentElement.classList.add('pop');
                 }
             }
+
+            this.createPopGradientLegend('rgb(250, 220, 50, 0.7)', 'rgb(250, 220, 50)', 'rgb(140, 0, 0)', "1%", "0%");
+
         }
 
     }
@@ -672,6 +789,9 @@ class VisualizeOptions extends React.Component{
                     parentElement.classList.add('pop');
                 }
             }
+
+            this.createPopGradientLegend('rgb(250, 220, 50, 0.7)', 'rgb(250, 220, 50)', 'rgb(140, 0, 0)', "1%", "0%");
+
         }
 
     }
@@ -721,6 +841,9 @@ class VisualizeOptions extends React.Component{
                     parentElement.classList.add('pop');
                 }
             }
+
+            this.createPopGradientLegend('rgb(250, 220, 50, 0.7)', 'rgb(250, 220, 50)', 'rgb(140, 0, 0)', "1%", "0%");
+
         }
 
     }
@@ -860,10 +983,10 @@ class VisualizeOptions extends React.Component{
                 var coor = parseInt(titles[i].innerHTML);
                 if(parentElement.tagName=="text" && coors.includes(coor)){
                     var temp = (conservPhyloP[coor]+20)/30;
-                    var opacity = temp * 0.6 + 0.4;
-                    var red = 0;
-                    var green = 40 + 200 * (1-opacity);
-                    var blue = 200 - 200 * (1-opacity);
+                    var opacity = 1;
+                    var red = 250 * temp;
+                    var green = 230 * temp;
+                    var blue = 150 - 150*temp;
                     parentElement.style.fill = 'rgb('+red+', '+green+', '+blue+', '+opacity+')';
                     parentElement.classList.add('conserv-phylop');
                     parentElement.classList.add('conserv');
@@ -871,7 +994,7 @@ class VisualizeOptions extends React.Component{
             }
 
             //create color legend
-            this.createGradientLegend('rgb(0, 160, 60, 0.4)', 'rgb(0, 40, 200, 1)', '10', '-20');
+            this.createGradientLegend('rgb(250,230,0,1)', 'rgb(0,0,150,1)', '10', '-20');
 
         }
 
@@ -914,7 +1037,7 @@ class VisualizeOptions extends React.Component{
             }
 
             //create color legend
-            this.createGradientLegend('rgb(0, 160, 60, 0.4)', 'rgb(0, 40, 200, 1)', '1', '0');
+            this.createGradientLegend('rgb(0, 40, 200, 1)','rgb(0, 160, 60, 0.4)', '1', '0');
 
         }
 
@@ -938,13 +1061,14 @@ class VisualizeOptions extends React.Component{
           return(
             <div id="visualize-form">
 
-                <h5>Visualize bases with variants in the selected category, or modifications</h5>
+                <h5>Visualize information on the RNA structure</h5>
 
 
                 <h6>Population frequency
+                    <i style={{fontSize: "13px", color:'gray', fontWeight:'normal'}}> Displays as gradient, sum allele frequencies for all SNVs per base</i>
                     <div class="help-tip">
                         <p>For gnomAD and HelixMTdb, frequency and counts are shown for homoplasmic ('hom') and heteroplasmic ('het') variants separately.<br/>
-                           - <a href="https://gnomad.broadinstitute.org/" target="_blank">gnomAD</a>: variants identified from whole genome sequencing data, excluding individuals known to have severe pediatric disease.<br/>
+                           - <a href="https://gnomad.broadinstitute.org/" target="_blank">gnomAD</a>: variants identified from whole genome sequencing data, excluding individuals known to have severe pediatric disease. Variants with heteroplasmy level &gt;95% are defined as homoplasmic.<br/>
                            - <a href="https://www.mitomap.org/foswiki/bin/view/MITOMAP/GBFreqInfo" target="_blank">MITOMAP</a>: variants present in GenBank sequence data, may include individuals with disease. <br/>
                            - <a href="https://www.helix.com/pages/mitochondrial-variant-database" target="_blank">HelixMTdb</a>: variants identified from saliva samples sequenced by Helix's proprietary exome including mtDNA, disease status unknown.</p>
                     </div>
@@ -972,8 +1096,9 @@ class VisualizeOptions extends React.Component{
 
 
                 <h6>Maximum heteroplasmy
+                    <i style={{fontSize: "13px", color:'gray', fontWeight:'normal'}}> Displays as gradient</i>
                     <div class="help-tip">
-                        <p>Range 0-100%; heteroplasmy information not available from MITOMAP</p>
+                        <p>Range 0-100%; heteroplasmy information not available from MITOMAP. For HelixMTdb, the maximum heteroplasmy level of homoplasmic variants is not reported, and have been assigned here as having maximum heteroplasmy of 1.</p>
                     </div>
                 </h6>
                 <label>
@@ -986,7 +1111,9 @@ class VisualizeOptions extends React.Component{
                 </label>
 
 
-                <h6>Variants associated with disease</h6>
+                <h6>Variants associated with disease<br/>
+                    <i style={{fontSize: "13px", color:'gray', fontWeight:'normal'}}> Show bases with variants per category, multiple selections allowed</i><br/>
+                </h6>
                 <p>Mitomap:</p>
                 <label>
                     <input name="disease" type="checkbox" onClick={this.showDiseaseMitomapConfirmed} />
@@ -1022,17 +1149,22 @@ class VisualizeOptions extends React.Component{
 
 
                 <h6>Conservation metrics
+                    <i style={{fontSize: "13px", color:'gray', fontWeight:'normal'}}> Displays as gradient</i>
                     <div class="help-tip">
                         <p>Measures of nucleotide conservation in 100 vertebrate species. <a href="http://compgen.cshl.edu/phast/resources.php" target="_blank">PhyloP scores</a> evaluate conservation at each base, and do not incorporate conservation at neighboring sites. <a href="http://compgen.cshl.edu/phast/resources.php" target="_blank">PhastCons scores</a> are the probability that the base belongs to a conserved multibase element.</p>
                     </div>
                 </h6>
                 <label>
                     <input name="conservPhyloP" type="checkbox" onClick={this.showConservPhyloP} />
-                    <span>PhyloP</span>
+                    <span>PhyloP
+                        <i style={{fontSize: "13px", color:'gray', fontWeight:'normal'}}> PhyloP: &gt; 0 conserved, &lt; 0 fast-evolving; range -20-10</i>
+                    </span>
                 </label><br/>
                 <label>
                     <input name="conservPhastCons" type="checkbox" onClick={this.showConservPhastCons} />
-                    <span>PhastCons</span>
+                    <span>PhastCons
+                        <i style={{fontSize: "13px", color:'gray', fontWeight:'normal'}}> PhastCons: probability of negative selection; range 0-1</i>
+                    </span>
                 </label>
 
 
@@ -1057,7 +1189,7 @@ class VisualizeOptions extends React.Component{
 
                 <button type="reset" onClick={this.clearAll.bind(this)}>Clear</button>
 
-                <p>Note that only one group (disease, haplogroups, heteroplasmy or other) can be visualized at a time.</p>                
+                <p>Note that only one category can be visualized at a time.</p>                
 
             </div>
           )

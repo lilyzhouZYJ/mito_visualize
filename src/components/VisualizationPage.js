@@ -16,6 +16,8 @@ class VisualizationPage extends React.Component{
     
     render() {
 
+        var rnaType = this.props.rnaType
+
         if(this.state.geneSubmitted){   //when a gene has been selected, redirect to visualization svg page
             var geneInput = document.getElementById('gene-input').value;
             return(
@@ -24,7 +26,7 @@ class VisualizationPage extends React.Component{
         }
         else{   //a gene hasn't been selected, show dropdown menu
             return(
-                <GeneDropDown rnaType="both" onSubmit={this.handleGeneSubmit}/>
+                <GeneDropDown rnaType={rnaType} onSubmit={this.handleGeneSubmit}/>
             )
         }
 

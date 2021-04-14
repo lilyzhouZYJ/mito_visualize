@@ -12,13 +12,13 @@ class MitoNavbar extends React.Component{
             <Navbar collapseOnSelect className="color-nav">
               <Navbar.Brand href="/"><img src={logo} className="logo"/></Navbar.Brand>
               <Nav>
-                <NavDropdown title="mt-rRNA" id="mt-rRNA-options">
-                  <NavDropdown.Item href="/rrna-page" id="mt-rRNA-options-a">Variant</NavDropdown.Item>
-                  <NavDropdown.Item href="/rna-visualization" id="mt-rRNA-options-b">Gene</NavDropdown.Item>
-                </NavDropdown>
                 <NavDropdown title="mt-tRNA" id="mt-tRNA-options">
                   <NavDropdown.Item href="/trna-page" id="mt-tRNA-options-a">Variant</NavDropdown.Item>
-                  <NavDropdown.Item href="/rna-visualization" id="mt-tRNA-options-b">Gene</NavDropdown.Item>
+                  <NavDropdown.Item href="/trna-visualization" id="mt-tRNA-options-b">Gene</NavDropdown.Item>
+                </NavDropdown>
+                <NavDropdown title="mt-rRNA" id="mt-rRNA-options">
+                  <NavDropdown.Item href="/rrna-page" id="mt-rRNA-options-a">Variant</NavDropdown.Item>
+                  <NavDropdown.Item href="/rrna-visualization" id="mt-rRNA-options-b">Gene</NavDropdown.Item>
                 </NavDropdown>
                 <Nav.Link href="/mtdna" id="mt-DNA-options">mt-DNA</Nav.Link>
               </Nav>
@@ -32,4 +32,3 @@ class MitoNavbar extends React.Component{
 }
 
 export default MitoNavbar;
-

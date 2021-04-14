@@ -1,5 +1,5 @@
 import React from 'react';
-import { fetchVarInfo } from './fetch.js'
+import { fetchVarInfo, fetchCoorInfo } from './fetch.js'
 
 import Mtta from './tRNA/MT-TA';
 import Mttt from './tRNA/MT-TT';
@@ -101,13 +101,23 @@ class TrnaSVG extends React.Component{
 
 
 
-    loadData = (variant) => {
+    loadData = (variant, varCoor) => {
+
         this.setState({loadError:null, varData:null});
+
         fetchVarInfo(variant).then(response => {
             //console.log(response)
             var varData = response.data.variant;
-            if(!varData) {this.setState({loadError: "Variant not found"});}
-            else {
+
+            if(!varData) {
+                fetchCoorInfo(varCoor).then(response2 => {
+                    if(response2){
+                        var var_ref = response2.data.coordinate[0].var_ref;
+                        this.setState({loadError: "Expected "+var_ref+" at position m."+varCoor});
+                    }
+                })
+
+            } else {
                 var initLetter = variant[variant.length-3];
                 var newLetter = variant[variant.length-1];
                 //if the gene is on the reverse strand

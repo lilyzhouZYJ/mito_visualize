@@ -19,7 +19,8 @@ export default function Routes() {
         <Route path='/trna-page' component={TrnaPage} />
         <Route path='/rrna-page' component={RrnaPage} />
         <Route path='/mtdna' component={GeneTool} />
-        <Route exact path='/rna-visualization' component={VisualizationPage} />
+        <Route exact path='/trna-visualization' render={(props) => <VisualizationPage rnaType="tRNA" {...props} />} />
+        <Route exact path='/rrna-visualization' render={(props) => <VisualizationPage rnaType="rRNA" {...props} />} />
         <Route exact path='/about-page' component={About} />
 
         <Route

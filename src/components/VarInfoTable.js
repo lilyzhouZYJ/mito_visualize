@@ -34,7 +34,7 @@ class VarInfoTable extends React.Component{
                             <td class='left-col'>Population frequency<br/>& (allele count)
                                 <div class="help-tip">
                                     <p>For gnomAD and HelixMTdb, frequency and counts are shown for homoplasmic ('hom') and heteroplasmic ('het') variants separately.<br/>
-                                       - <a href="https://gnomad.broadinstitute.org/" target="_blank">gnomAD</a>: variants identified from whole genome sequencing data, excluding individuals known to have severe pediatric disease.<br/>
+                                       - <a href="https://gnomad.broadinstitute.org/" target="_blank">gnomAD</a>: variants identified from whole genome sequencing data, excluding individuals known to have severe pediatric disease. Variants with heteroplasmy level &gt;95% are defined as homoplasmic.<br/>
                                        - <a href="https://www.mitomap.org/foswiki/bin/view/MITOMAP/GBFreqInfo" target="_blank">MITOMAP</a>: variants present in GenBank sequence data, may include individuals with disease. <br/>
                                        - <a href="https://www.helix.com/pages/mitochondrial-variant-database" target="_blank">HelixMTdb</a>: variants identified from saliva samples sequenced by Helix's proprietary exome including mtDNA, disease status unknown.</p>
                                 </div>
@@ -56,7 +56,7 @@ class VarInfoTable extends React.Component{
                         <tr>
                             <td class='left-col'>Maximum heteroplasmy
                                 <div class="help-tip">
-                                    <p>Range 0-100%; heteroplasmy information not available from MITOMAP</p>
+                                    <p>Range 0-100%; heteroplasmy information not available from MITOMAP. For HelixMTdb, the maximum heteroplasmy level of homoplasmic variants is not reported, and have been assigned here as having maximum heteroplasmy of 1.</p>
                                 </div>
                             </td>
                             <td>gnomAD: <a href={gnomadLink} target="_blank">{data.heteroplasmy_gnomad!==null ?

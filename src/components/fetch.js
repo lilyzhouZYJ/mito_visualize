@@ -113,7 +113,8 @@ export const fetchGeneInfo = geneName => {
 }
 
 
-/*
+
+
 export const fetchCoorInfo = varCoor => {
     const argument = `var_coordinate: ${varCoor}`
 
@@ -131,11 +132,11 @@ export const fetchCoorInfo = varCoor => {
             pop_freq_gnomad_af_het,
             pop_freq_gnomad_ac_het,
             pop_freq_mitomap,
-            pop_count_mitomap,
             pop_freq_helix_af_hom,
             pop_freq_helix_counts_hom,
             pop_freq_helix_af_het,
             pop_freq_helix_counts_het,
+            pop_count_mitomap,
             heteroplasmy_gnomad,
             heteroplasmy_helix,
             prediction_mitotip,
@@ -154,11 +155,11 @@ export const fetchCoorInfo = varCoor => {
             conserv_phylop,
             conserv_phastcons,
             post_transcription_modifications,
-            structural_interaction_hmtvar
+            structural_interaction_hmtvar,
             domain
        }
     }`
 
     return fetch(query)
 }
-*/
+

@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { fetchVarInfo } from './fetch.js'
+import { fetchVarInfo, fetchCoorInfo } from './fetch.js'
 
 import Mtrnr1 from './rRNA/MT-RNR1';
 import Mtrnr1Zoom from './rRNA/MT-RNR1-zoom';
@@ -103,13 +103,23 @@ class RrnaSVG extends React.Component{
 
 
 
-    loadData = (variant) => {
+    loadData = (variant, varCoor) => {
+
         this.setState({loadError:null, varData:null});
+
         fetchVarInfo(variant).then(response => {
             //console.log(response)
             var varData = response.data.variant;
-            if(!varData) {this.setState({loadError: "Variant not found"});}
-            else {
+
+            if(!varData) {
+                fetchCoorInfo(varCoor).then(response2 => {
+                    if(response2){
+                        var var_ref = response2.data.coordinate[0].var_ref;
+                        this.setState({loadError: "Expected "+var_ref+" at position m."+varCoor});
+                    }
+                })
+
+            } else {
                 var initLetter = variant[variant.length-3];
                 var newLetter = variant[variant.length-1];
 
