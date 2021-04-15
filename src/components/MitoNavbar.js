@@ -1,6 +1,7 @@
 import React from 'react';
 import logo from './images/mitovisualize_logo_white.jpg';
 import {Navbar,Nav,NavDropdown} from 'react-bootstrap';
+import Searchbox from './Searchbox'
 import './styles/MitoNavbar.css'
 
 class MitoNavbar extends React.Component{
@@ -21,6 +22,7 @@ class MitoNavbar extends React.Component{
                   <NavDropdown.Item href="/rrna-visualization" id="mt-rRNA-options-b">Gene</NavDropdown.Item>
                 </NavDropdown>
                 <Nav.Link href="/mtdna" id="mt-DNA-options">mt-DNA</Nav.Link>
+                <Searchbox id="nav-search-box" />
               </Nav>
               <Nav className="ml-auto">
                 <Nav.Link href="/about-page" id="mt-about-options">About</Nav.Link>

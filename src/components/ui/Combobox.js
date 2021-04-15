@@ -30,6 +30,9 @@ export const Item = styled.div`
   background: ${props => (props.isHighlighted ? transparentize(0.5, '#428bca') : 'none')};
   cursor: pointer;
   font-size: 14px;
+  text-align: left;
+  line-height: 1.5rem;
+  color: #000;
 `
 
 export const menuStyle = {

@@ -45,6 +45,12 @@ nav {
 
 }
 
+#nav-search-box {
+  color: #fff;
+  width: 250px;
+  font-size: 0.875rem;
+ 
+}
 
 #mt-rRNA-options-a, #mt-rRNA-options-b, #mt-tRNA-options-a, #mt-tRNA-options-b {
   display: block;  
