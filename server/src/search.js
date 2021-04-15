@@ -105,8 +105,42 @@ export const normalizeVariantId = variantId =>
 */
 
 
+const VARIANT_ID_REGEX = /^m\.([0-9]+)([acgt]+)>([acgt]+)$/i
+
+export const isVariantId = str => {
+  const match = VARIANT_ID_REGEX.exec(str)
+
+  if (!match) {
+    return null
+  }
+
+  // check for coordinate range?
+  // const pos = match[0].toLowerCase()
+
+  var variantId = "m-"+match[1]+"-"+match[2]+"-"+match[3]
+  //var variantId = match[0]
+  //console.log(variantId)
+
+  return variantId
+}
+
+
+
+
 export const resolveSearchResults = async (ctx, query) => {
 
+
+  var variantId = isVariantId(query)
+
+  if (isVariantId(query)) {
+    //const variantId = normalizeVariantId(query)
+    return [
+      {
+        label: variantId,
+        url: `/variant/${variantId}`,
+      },
+    ]
+  }
 
 	//let mt_filtered = mt_genes.filter(x => x === query)
 
