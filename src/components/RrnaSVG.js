@@ -243,6 +243,25 @@ class RrnaSVG extends React.Component{
 
     }
 
+
+
+	componentDidMount(){
+
+		// if variant has already been passed as prop
+		if(this.props.variant){
+			var variant = this.props.variant;
+			var varCoor = variant.replace(/\D/g, "");
+
+			this.setState({varSubmitted: variant, varCor: varCoor});
+			this.loadData(variant, varCoor);
+		}
+
+	}
+
+
+
+
+
     componentDidUpdate(){
         var variant = this.state.varSubmitted;
         var variantCor = this.state.varCor;

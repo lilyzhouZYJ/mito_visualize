@@ -135,7 +135,7 @@ class TrnaSVG extends React.Component{
 
                 this.setState({loadError:null, varData:varData, initLetter:initLetter, newLetter:newLetter, formWC:formWC, breakWC:breakWC, pairCoor:pairCoor});
             }
-            //console.log(this.state.varData);
+            // console.log(this.state.varData);
         })
     }
 
@@ -145,10 +145,22 @@ class TrnaSVG extends React.Component{
 
 
     componentDidMount(){
+
+		// if variant has already been passed as prop
+		if(this.props.variant){
+			var variant = this.props.variant;
+			var varCoor = variant.replace(/\D/g, "");
+
+			this.setState({varSubmitted: variant, varCor: varCoor});
+			this.loadData(variant, varCoor);
+		}
+
         document.getElementById('svg-container').setAttribute("height","500");
         document.getElementById('svg-container').setAttribute("width","500");
         document.getElementById('svg-container').setAttribute("viewBox","0 0 400 400");
     }
+
+
 
     //if a variant is submitted
     handleVarSubmit = (varSubmitted,variantCor) => {
@@ -230,6 +242,7 @@ class TrnaSVG extends React.Component{
 
 
     componentDidUpdate(){
+
         var variant = this.state.varSubmitted;
         var variantCor = this.state.varCor;
         
