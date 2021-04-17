@@ -173,7 +173,17 @@ class VarInput extends React.Component{
     }
     
     render() {
-    
+        console.log("In VarInput render")
+        console.log(this.props.variant)
+
+        if(this.props.variant){
+            var errExists = document.getElementById('error');
+            if(errExists!==null){
+                errExists.remove();
+            }
+            document.getElementById('var-input').value = this.props.variant;
+        }
+
         return(
             <div id="var-form">
                 <form onSubmit={this.checkSubmit}>

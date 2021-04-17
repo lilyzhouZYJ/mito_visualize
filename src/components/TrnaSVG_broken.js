@@ -146,16 +146,14 @@ class TrnaSVG extends React.Component{
 
     componentDidMount(){
 
-        console.log("in componentDidMount")
+		// if variant has already been passed as prop
+		if(this.props.variant){
+			var variant = this.props.variant;
+			var varCoor = variant.replace(/\D/g, "");
 
-        // if variant has already been passed as prop
-        if(this.props.variant){
-            var variant = this.props.variant;
-            var varCoor = variant.replace(/\D/g, "");
-
-            this.setState({varSubmitted: variant, varCor: varCoor});
-            this.loadData(variant, varCoor);
-        }
+			this.setState({varSubmitted: variant, varCor: varCoor});
+			this.loadData(variant, varCoor);
+		}
 
         document.getElementById('svg-container').setAttribute("height","500");
         document.getElementById('svg-container').setAttribute("width","500");
@@ -243,134 +241,141 @@ class TrnaSVG extends React.Component{
 
 
 
-    componentDidUpdate(prevProps){
+    componentDidUpdate(){
 
+		console.log(" in component did update!" );
+
+        var variant = this.state.varSubmitted;
+        var variantCor = this.state.varCor;
+
+		// if the update is because of new variant getting passed as prop
+		// then we need to load the new data
+
+		console.log("variant:" + variant);
+		console.log("props.variant:" + this.props.variant);
+
+		/*if(this.props.variant !== variant){
+
+			var variant = this.props.variant;
+
+			console.log("new prop received, will update state");
+			// console.log("new variant: "+ variant.replace(/\D/g, ""));
+
+			varCor = variant.replace(/\D/g, "");
+
+			//this.setState({varSubmitted: variant, varCor: varCor});
+			//this.loadData(variant, varCoor);
+		} */
+
+		var tmp = true;
+
+		if(tmp) {
+
+			console.log("in else statement!");
         
-
-        console.log("In componentDidUpdate")
-
-        if(this.props.variant !== prevProps.variant){
-            console.log("this.props.variant changed")
-            console.log(prevProps.variant + " " + this.props.variant)
-
-            var variant = this.props.variant
-            var varCoor = variant.replace(/\D/g, "");
-
-            this.loadData(variant, varCoor);
-            this.setState({varSubmitted: variant, varCor: varCoor});
-
-        }
-        else{
-            var variant = this.state.varSubmitted;
-            var variantCor = this.state.varCor;            
-        }
-
-
-        //remove preexisting variant highlight
-        this.removeVariantHighlight();
+			//remove preexisting variant highlight
+			this.removeVariantHighlight();
         
-        //make new highlight
-        if(this.state.varData){
+			//make new highlight
+			if(this.state.varData){
 
-            //add variant name to svg legend
-            var varLegend = document.createElementNS('http://www.w3.org/2000/svg','text');
-            varLegend.setAttribute('x','35');
-            varLegend.setAttribute('y','55');
-            varLegend.setAttribute('id','var-legend');
-            varLegend.innerHTML = variant;
-            document.getElementById('svg-container').appendChild(varLegend);
+				//add variant name to svg legend
+            	var varLegend = document.createElementNS('http://www.w3.org/2000/svg','text');
+	            varLegend.setAttribute('x','35');
+	            varLegend.setAttribute('y','55');
+	            varLegend.setAttribute('id','var-legend');
+	            varLegend.innerHTML = variant;
+	            document.getElementById('svg-container').appendChild(varLegend);
 
-            var initLetter = this.state.initLetter;
-            var newLetter = this.state.newLetter;
+	            var initLetter = this.state.initLetter;
+	            var newLetter = this.state.newLetter;
 
-            var origPairing;
-            var allTitle = document.getElementById('svg-container').getElementsByTagName('title');
-            for(var title of allTitle){
+    	        var origPairing;
+            	var allTitle = document.getElementById('svg-container').getElementsByTagName('title');
+        	    for(var title of allTitle){
 
-                //get the variant and find its coordinates
-                if(title.innerHTML==variantCor){
-                    var textNode = title.parentElement;
-                    textNode.setAttribute('id', 'highlight');
-                    textNode.setAttribute('class',textNode.innerHTML[0]);
-                    textNode.innerHTML = newLetter+textNode.innerHTML.substring(1); 
-                    var textx = parseFloat(textNode.getAttribute('x'));
-                    var texty = parseFloat(textNode.getAttribute('y'));
+                	//get the variant and find its coordinates
+	                if(title.innerHTML==variantCor){
+    	                var textNode = title.parentElement;
+        	            textNode.setAttribute('id', 'highlight');
+            	        textNode.setAttribute('class',textNode.innerHTML[0]);
+                	    textNode.innerHTML = newLetter+textNode.innerHTML.substring(1); 
+                    	var textx = parseFloat(textNode.getAttribute('x'));
+	                    var texty = parseFloat(textNode.getAttribute('y'));
 
-                    //add circle for background color of highlight
-                    var circle = document.createElementNS('http://www.w3.org/2000/svg','circle');
-                    circle.setAttribute('cx',textx);
-                    circle.setAttribute('cy',texty);
-                    circle.setAttribute('r','9px');
-                    circle.setAttribute('id','highlight-background')
-                    document.getElementById('svg-container').insertBefore(circle,document.getElementById('svg-container').childNodes[0]);
-                }
+    	                //add circle for background color of highlight
+        	            var circle = document.createElementNS('http://www.w3.org/2000/svg','circle');
+            	        circle.setAttribute('cx',textx);
+                	    circle.setAttribute('cy',texty);
+                    	circle.setAttribute('r','9px');
+	                    circle.setAttribute('id','highlight-background')
+    	                document.getElementById('svg-container').insertBefore(circle,document.getElementById('svg-container').childNodes[0]);
+        	        }
 
-                //find the pairing
-                if((title.innerHTML.split(',')[0]==variantCor||title.innerHTML.split(',')[1]==variantCor)){
-                    if(title.parentElement) {origPairing = title.parentElement}
-                }
+            	    //find the pairing
+                	if((title.innerHTML.split(',')[0]==variantCor||title.innerHTML.split(',')[1]==variantCor)){
+                    	if(title.parentElement) {origPairing = title.parentElement}
+	                }	
 
-                //get coordinates of the pair
-                if(title.innerHTML==this.state.pairCoor){
-                    var pairNode = title.parentElement;
-                    var pairx = parseFloat(pairNode.getAttribute('x'));
-                    var pairy = parseFloat(pairNode.getAttribute('y'));
-                }
-            }
+    	            //get coordinates of the pair
+        	        if(title.innerHTML==this.state.pairCoor){
+            	        var pairNode = title.parentElement;
+                	    var pairx = parseFloat(pairNode.getAttribute('x'));
+                    	var pairy = parseFloat(pairNode.getAttribute('y'));
+	                }
+    	        }
 
-            //console.log(origPairing);
+        	    //console.log(origPairing);
 
-            if(this.state.breakWC){
-                var newCircle = document.createElementNS('http://www.w3.org/2000/svg','circle');
-                newCircle.setAttribute('cx',(textx+pairx)/2);
-                newCircle.setAttribute('cy',(texty+pairy)/2);
-                newCircle.setAttribute('r','2');
-                newCircle.setAttribute('id','highlight-circle');
-                //stores original line coordinates
-                newCircle.setAttribute('class',origPairing.getAttribute('x1')+","+origPairing.getAttribute('y1')+","+origPairing.getAttribute('x2')+","+origPairing.getAttribute('y2'));
-                newCircle.innerHTML = origPairing.innerHTML;
-                document.getElementById('svg-container').insertBefore(newCircle, origPairing);
-                origPairing.remove();
-            }
+	            if(this.state.breakWC){
+    	            var newCircle = document.createElementNS('http://www.w3.org/2000/svg','circle');
+        	        newCircle.setAttribute('cx',(textx+pairx)/2);
+            	    newCircle.setAttribute('cy',(texty+pairy)/2);
+                	newCircle.setAttribute('r','2');
+	                newCircle.setAttribute('id','highlight-circle');
+    	            //stores original line coordinates
+        	        newCircle.setAttribute('class',origPairing.getAttribute('x1')+","+origPairing.getAttribute('y1')+","+origPairing.getAttribute('x2')+","+origPairing.getAttribute('y2'));
+            	    newCircle.innerHTML = origPairing.innerHTML;
+                	document.getElementById('svg-container').insertBefore(newCircle, origPairing);
+	                origPairing.remove();
+    	        }
 
-            if(this.state.formWC){
-                var newLine = document.createElementNS('http://www.w3.org/2000/svg','line');
-                if(textx==pairx){
-                    var x1 = textx, x2 = textx;
-                    var y1 = (texty+pairy)/2 - 4;
-                    var y2 = (texty+pairy)/2 + 4;
-                }
-                if(texty==pairy){
-                    var y1 = texty, y2 = texty;
-                    var x1 = (textx+pairx)/2 - 4;
-                    var x2 = (textx+pairx)/2 + 4;
-                }
-                newLine.setAttribute('x1',x1);
-                newLine.setAttribute('x2',x2);
-                newLine.setAttribute('y1',y1);
-                newLine.setAttribute('y2',y2);
-                newLine.setAttribute('id','highlight-line')
-                newLine.innerHTML = origPairing.innerHTML;
-                document.getElementById('svg-container').insertBefore(newLine, origPairing);
-                origPairing.remove();
-            }
+        	    if(this.state.formWC){
+            	    var newLine = document.createElementNS('http://www.w3.org/2000/svg','line');
+	                if(textx==pairx){
+    	                var x1 = textx, x2 = textx;
+        	            var y1 = (texty+pairy)/2 - 4;
+            	        var y2 = (texty+pairy)/2 + 4;
+                	}
+	                if(texty==pairy){
+    	                var y1 = texty, y2 = texty;
+        	            var x1 = (textx+pairx)/2 - 4;
+            	        var x2 = (textx+pairx)/2 + 4;
+                	}
+	                newLine.setAttribute('x1',x1);
+    	            newLine.setAttribute('x2',x2);
+        	        newLine.setAttribute('y1',y1);
+            	    newLine.setAttribute('y2',y2);
+                	newLine.setAttribute('id','highlight-line')
+	                newLine.innerHTML = origPairing.innerHTML;
+    	            document.getElementById('svg-container').insertBefore(newLine, origPairing);
+        	        origPairing.remove();
+            	}
 
-            //add note on the variant highlight
-            var varNote = document.createElement('li');
-            varNote.innerHTML = "The base and pair type change (if applicable) is shown in red.";
-            varNote.setAttribute('id','varNote');
-            document.getElementById('notes').appendChild(varNote);
+	            //add note on the variant highlight
+    	        var varNote = document.createElement('li');
+        	    varNote.innerHTML = "The base and pair type change (if applicable) is shown in red.";
+            	varNote.setAttribute('id','varNote');
+	            document.getElementById('notes').appendChild(varNote);
 
-        }
+	        }
+		}
         
     }
 
     render() {
 
-        console.log("In render")
-
         var gene = this.props.gene;
-        // const variant = this.props.variant
 
         const { varSubmitted, varCor, varData, loadError, initLetter, newLetter, breakWC, formWC, pairCoor } = this.state;
        
@@ -393,7 +398,7 @@ class TrnaSVG extends React.Component{
                         <p id="citation-note">If you use MitoVisualize in your paper please cite XXX</p>
                     </div>
                     <div id="right-container">
-                        <VarInput handleVarSubmit={this.handleVarSubmit} gene={gene} variant={this.props.variant}/>
+                        <VarInput handleVarSubmit={this.handleVarSubmit} gene={gene}/>
                         <VarInfo variant={varSubmitted} gene={gene} dom={varData.domain} rnaType="tRNA" initLetter={initLetter} newLetter={newLetter} breakWC={breakWC} formWC={formWC} />
                         <VarInfoTable variant={varSubmitted} varData={varData} rnaType="tRNA" />
                     </div>
