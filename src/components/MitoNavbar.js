@@ -21,7 +21,7 @@ class MitoNavbar extends React.Component{
                   <NavDropdown.Item href="/rrna-page" id="mt-rRNA-options-a">Variant</NavDropdown.Item>
                   <NavDropdown.Item href="/rrna-visualization" id="mt-rRNA-options-b">Gene</NavDropdown.Item>
                 </NavDropdown>
-                <Nav.Link href="/mtdna" id="mt-DNA-options">mt-DNA</Nav.Link>
+                <Nav.Link href="/mtdna" id="mt-DNA-options">mtDNA</Nav.Link>
                 <Searchbox id="nav-search-box" />
               </Nav>
               <Nav className="ml-auto">
