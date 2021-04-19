@@ -157,9 +157,9 @@ class TrnaSVG extends React.Component{
             this.loadData(variant, varCoor);
         }
 
-        document.getElementById('svg-container').setAttribute("height","500");
+        /*document.getElementById('svg-container').setAttribute("height","500");
         document.getElementById('svg-container').setAttribute("width","500");
-        document.getElementById('svg-container').setAttribute("viewBox","0 0 400 400");
+        document.getElementById('svg-container').setAttribute("viewBox","0 0 400 400");*/
     }
 
 

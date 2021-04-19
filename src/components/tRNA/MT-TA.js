@@ -5,7 +5,7 @@ class Mtta extends React.Component{
     render() {
 
         return(
-            <svg id="svg-container" height="390" width="350" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
+            <svg id="svg-container" height="500" width="500" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" viewBox="0 0 400 400">
                 <text x='35' y='10' style={{fontSize:'17', fontFamily:"sans-serif",textAnchor:'start',fontWeight:'bold'}}>MT-TA</text>
                 <text x='35' y='35' style={{fontSize:'12', fontFamily:"sans-serif",textAnchor:'start',fontWeight:'bold'}}>mt-tRNA
                     <tspan style={{fontSize:'9'}} baselineShift="super">Ala</tspan>
