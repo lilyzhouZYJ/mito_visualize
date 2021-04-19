@@ -174,7 +174,9 @@ class VarInput extends React.Component{
         }
 
         //pass empty string back to TrnaSVG/RrnaSVG so that its state could update and thus removes VarInfoTable
-        this.props.handleVarSubmit('','');
+        //this.props.handleVarSubmit('','');
+
+        window.location.href = '/'+this.props.gene
 
     }
     
