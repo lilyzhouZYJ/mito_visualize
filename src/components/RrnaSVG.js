@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Redirect } from 'react-router-dom';
 import { fetchVarInfo, fetchCoorInfo } from './fetch.js'
 
 import Mtrnr1 from './rRNA/MT-RNR1';
@@ -139,6 +140,22 @@ class RrnaSVG extends React.Component{
 
     //if a variant is submitted
     handleVarSubmit = (varSubmitted,variantCor) => {
+
+        if(varSubmitted==''&&variantCor==''){
+            this.setState({varSubmitted:null,varCor:null, varData:null, loadError:null})
+        }
+        else{
+
+            const VARIANT_ID_REGEX = /^m\.([0-9]+)([acgt]+)>([acgt]+)$/i
+            const match = VARIANT_ID_REGEX.exec(varSubmitted)
+
+            var variantId = "m-"+match[1]+"-"+match[2]+"-"+match[3]
+            console.log("In handleVarSubmit: "+varSubmitted+" variantId: "+variantId)
+
+            window.location.href = '/variant/'+variantId;
+
+        }
+        /*
         if(varSubmitted==''&&variantCor==''){
             this.setState({varSubmitted:null,varCor:null, varData:null, loadError:null})
         } else {
@@ -147,6 +164,12 @@ class RrnaSVG extends React.Component{
                 this.loadData(varSubmitted, variantCor);
             }
         }
+        */
+        /*
+        return(
+            <Redirect push to={'./variant/'+variantId} />
+        )
+        */
     }
 
 
@@ -262,9 +285,28 @@ class RrnaSVG extends React.Component{
 
 
 
-    componentDidUpdate(){
-        var variant = this.state.varSubmitted;
-        var variantCor = this.state.varCor;
+    componentDidUpdate(prevProps){
+        //var variant = this.state.varSubmitted;
+        //var variantCor = this.state.varCor;
+
+        console.log("In componentDidUpdate")
+
+        if(this.props.variant !== prevProps.variant){
+            console.log("this.props.variant changed")
+            console.log(prevProps.variant + " " + this.props.variant)
+
+            var variant = this.props.variant
+            var varCoor = variant.replace(/\D/g, "");
+
+            this.loadData(variant, varCoor);
+            this.setState({varSubmitted: variant, varCor: varCoor});
+
+        }
+        else{
+            var variant = this.state.varSubmitted;
+        }
+
+        var variantCor = this.state.varCor;            
         
         //remove preexisting variant highlight/rectangles/change svg sizes
         this.removeVariantHighlight();
@@ -277,6 +319,8 @@ class RrnaSVG extends React.Component{
 
             var origPairing;
             var allTitle = document.getElementById('rrna-svg-container-zoom').getElementsByTagName('title');
+            console.log("In this.state.varData with variantCor: "+variantCor)
+
             for(var title of allTitle){
 
                 //get the variant and find its coordinates
@@ -546,7 +590,7 @@ class RrnaSVG extends React.Component{
                         </div>
                     </div>    
                     <div id="right-container">
-                        <VarInput handleVarSubmit={this.handleVarSubmit} gene={gene}/>
+                        <VarInput handleVarSubmit={this.handleVarSubmit} gene={gene} variant={this.props.variant}/>
                         <VarInfo variant={varSubmitted} gene={gene} dom={varData.dom} rnaType="rRNA" initLetter={initLetter} newLetter={newLetter} breakWC={breakWC} formWC={formWC} />
                         <VarInfoTable variant={varSubmitted} varData={varData} rnaType="rRNA" />
                     </div>

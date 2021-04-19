@@ -1129,22 +1129,25 @@ def testapi(es):
 if __name__ == '__main__':
 	es = connect_elasticsearch()
 
-        #testapi(es)
+		#testapi(es)
 	
-	#create_index(es)
+        #create_index(es)
         #populate_all_rrna_vars(es)
-        #populate_in_silico_mitotip(es)
-        #populate_in_silico_ponmttrna(es)
+        populate_in_silico_mitotip(es)
+        populate_in_silico_ponmttrna(es)
+
+        # these two use api - slow
         #populate_hmtvar1(es)
-        populate_hmtvar2(es)
-        #populate_disease_association(es)
-        #populate_population_freq(es)
-        #populate_helix(es)
-        #populate_haplogroup(es)
-        #populate_gnomad(es)
-        #populate_post_transcript(es)
-        #populate_conserv(es)
-        #populate_base_pair(es)
+        #populate_hmtvar2(es)
+
+        populate_disease_association(es)
+        populate_population_freq(es)
+        populate_helix(es)
+        populate_haplogroup(es)
+        populate_gnomad(es)
+        populate_post_transcript(es)
+        populate_conserv(es)
+        populate_base_pair(es)
 
 
         #test_func(es)

@@ -55,7 +55,13 @@ class VarInput extends React.Component{
             errMsg.style.fontSize = '20px';
             errMsg.setAttribute('id','error');
             document.getElementById("var-form").appendChild(errMsg);
-        } else {
+        } 
+        else{
+            var variantCor = varSubmitted.replace(/\D/g, "");//coordinate only
+            this.props.handleVarSubmit(varSubmitted,variantCor);
+        }
+        /*
+        else {
             var variantCor = varSubmitted.replace(/\D/g, "");//coordinate only
 
             //if the variant is in current gene
@@ -155,7 +161,7 @@ class VarInput extends React.Component{
 
                 }
             }
-        }
+        }*/
         
     }
 
