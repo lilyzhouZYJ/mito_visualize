@@ -1,25 +1,65 @@
 /* General formatting */
-#trna-visualization-svg #left-container{
-    margin-top: 5%;
+
+#trna-svg{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+#trna-svg #left-container{
     width: 500px;
-    margin-right: 0%;
-    display: inline-block;
+}
+
+#trna-svg #right-container{
+    text-align: left;
+    margin-left: 5%;
+}
+
+
+#trna-visualization-svg{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+#trna-visualization-svg #left-container{
+    width: 500px;
 }
 
 #trna-visualization-svg #right-container{
-    float: right;
-    margin-top:5%;
     text-align: left;
+    margin-left: 5%;
+}
+
+#rrna-visualization-svg{
+    width: 100%;
+    display: flex;
+    justify-content: center;
 }
 
 #rrna-visualization-svg #left-container{
-    margin-top: 5%;
-    width: 650px;
+    width: 650px;    
 }
 
 #rrna-visualization-svg #right-container{
-    margin-top: 5%;
+    margin-left: 5%;
 }
+
+#rrna-svg{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+#rrna-svg #left-container{
+    width: 650px;
+}
+
+#rrna-svg #right-container{
+    text-align: left;
+    margin-left: 5%;
+}
+
 
 #visualize-form p {
     margin: 0;

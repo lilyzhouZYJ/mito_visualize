@@ -12,6 +12,7 @@ import VarInfo from './VarInfo';
 import VarInfoTable from './VarInfoTable';
 
 import "./styles/VariantHighlight.css";
+import './styles/VisualizeOptions.css';
 
 const saveSvgAsPng = require('save-svg-as-png');
 
@@ -275,8 +276,8 @@ class RrnaSVG extends React.Component{
 			var variant = this.props.variant;
 			var varCoor = variant.replace(/\D/g, "");
 
+            this.loadData(variant, varCoor);
 			this.setState({varSubmitted: variant, varCor: varCoor});
-			this.loadData(variant, varCoor);
 		}
 
 	}
@@ -298,15 +299,21 @@ class RrnaSVG extends React.Component{
             var variant = this.props.variant
             var varCoor = variant.replace(/\D/g, "");
 
+            var variantCor = varCoor;
+
+            this.state.varData = null
+            console.log("setting varData to null")
+
             this.loadData(variant, varCoor);
             this.setState({varSubmitted: variant, varCor: varCoor});
 
         }
         else{
             var variant = this.state.varSubmitted;
+            var variantCor = this.state.varCor;            
+
         }
 
-        var variantCor = this.state.varCor;            
         
         //remove preexisting variant highlight/rectangles/change svg sizes
         this.removeVariantHighlight();

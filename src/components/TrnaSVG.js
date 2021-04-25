@@ -27,6 +27,9 @@ import VarInput from './VarInput';
 import VarInfoTable from './VarInfoTable';
 import VarInfo from './VarInfo';
 
+
+import './styles/VisualizeOptions.css';
+
 //match each gene to its respective component
 const tRNAs = {
     'MT-TA': Mtta,
