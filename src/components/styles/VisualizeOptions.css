@@ -39,6 +39,7 @@
 
 #rrna-visualization-svg #left-container{
     width: 650px;    
+    min-width: 650px;
 }
 
 #rrna-visualization-svg #right-container{
@@ -53,6 +54,7 @@
 
 #rrna-svg #left-container{
     width: 650px;
+    min-width: 650px;
 }
 
 #rrna-svg #right-container{
