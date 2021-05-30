@@ -34,6 +34,8 @@ class About extends React.Component {
 		<b>Acknowledgements:</b><br />
 		MitoVisualize displays information from a variety of sources which we gratefully acknowledge:
 		<ul>
+                    <li>Amunts A, Brown A, et al. Ribosome. The structure of the human mitochondrial ribosome. Science. 2015 Apr 3;348(6230):95-98. doi: 10.1126/science.aaa1193. <a href="https://pubmed.ncbi.nlm.nih.gov/25838379/" target="_blank">PMID: 25838379</a>.</li>
+                    <li>Brown A, Amunts A, et al. Structure of the large ribosomal subunit from human mitochondria. Science. 2014 Nov 7;346(6210):718-722. doi: 10.1126/science.1258026. <a href="https://pubmed.ncbi.nlm.nih.gov/25278503/" target="_blank">PMID: 25278503</a>.</li>
                     <li><a href="https://www.ncbi.nlm.nih.gov/clinvar/ " target="_blank">ClinVar</a></li>
                     <li><a href="https://gnomad.broadinstitute.org/" target="_blank">gnomAD</a></li>
                     <li><a href="https://www.helix.com/pages/mitochondrial-variant-database" target="_blank">HelixMTdb</a></li> 
@@ -43,7 +45,7 @@ class About extends React.Component {
                     <li><a href="https://genome.ucsc.edu/cgi-bin/hgTrackUi?db=hg38&g=cons100way#TRACK_HTML" target="_blank">PHAST (phastCons and phyloP) via UCSC</a></li> 
                     <li><a href="https://www.phylotree.org/" target="_blank">Phylotree</a></li>
                     <li><a href="http://structure.bmc.lu.se/PON-mt-tRNA/" target="_blank">PON-mt-tRNA</a></li>
-                    <li>Rebelo-Guiomar P, et al. The mammalian mitochondrial epitranscriptome. <b>Biochim Biophys Acta Gene Regul Mech.</b> 2019 Mar;1862(3):429-446. <a href="https://pubmed.ncbi.nlm.nih.gov/30529456/" target="_blank">PMID: 30529456</a></li>
+                    <li>Rebelo-Guiomar P, et al. The mammalian mitochondrial epitranscriptome. Biochim Biophys Acta Gene Regul Mech. 2019 Mar;1862(3):429-446. <a href="https://pubmed.ncbi.nlm.nih.gov/30529456/" target="_blank">PMID: 30529456</a></li>
                     <li>Suzuki T, et al. Complete chemical structures of human mitochondrial tRNAs. Nat Commun. 2020 Aug 28;11(1):4269. <a href="https://pubmed.ncbi.nlm.nih.gov/32859890/" target="_blank">PMID: 32859890.</a></li>
 		</ul>
 		<br /><br /><br /><br /><br /><br />

@@ -97,7 +97,7 @@ class GeneTool extends React.Component{
         var pos = [577,648,1602,1671,3230,3305,3307,4263,4331,4329,4401,4402,4470,5512,5580,5587,5656,5657,5730,5761,5826,5892,5904,7446,7515,7518,7586,8270,8295,8365,8366,8572,8527,9207,9991,10059,10405,10470,10766,10760,12138,12207,12266,12337,14149,14674,14743,14747,15888,15954,15956,16024];
         var angles = [];
         for (var p of pos){
-            angles.push(p/16569*2*Math.PI-Math.PI/2);   //angles in radians
+            angles.push(-p/16569*2*Math.PI-Math.PI/2);   //angles in radians
         }
         
         //plot each line
@@ -140,8 +140,8 @@ class GeneTool extends React.Component{
         //mRNA overlap
         var overlap = [8,9,31,32,38,39];
         for (var i = 0; i<overlap.length/2; i++){
-            opts.start_angle = (angles[overlap[i*2]]+Math.PI/2)*180/Math.PI;
-            opts.end_angle = (angles[overlap[i*2+1]]+Math.PI/2)*180/Math.PI;
+            opts.start_angle = (angles[overlap[i*2+1]]+Math.PI/2)*180/Math.PI;
+            opts.end_angle = (angles[overlap[i*2]]+Math.PI/2)*180/Math.PI;
 
             var start = this.polarToCartesian(opts.cx, opts.cy, opts.radius, opts.end_angle),
                 end = this.polarToCartesian(opts.cx, opts.cy, opts.radius, opts.start_angle),
@@ -165,8 +165,8 @@ class GeneTool extends React.Component{
         //tRNA
         var tRnaAngles = [0,1,2,3,4,6,7,12,13,18,19,22,23,26,27,29,34,35,36,37,40,43,45,47,48,51];
         for (var i = 0; i<tRnaAngles.length/2; i++){
-            opts.start_angle = (angles[tRnaAngles[i*2]]+Math.PI/2)*180/Math.PI;
-            opts.end_angle = (angles[tRnaAngles[i*2+1]]+Math.PI/2)*180/Math.PI;
+            opts.start_angle = (angles[tRnaAngles[i*2+1]]+Math.PI/2)*180/Math.PI;
+            opts.end_angle = (angles[tRnaAngles[i*2]]+Math.PI/2)*180/Math.PI;
             
             var start = this.polarToCartesian(opts.cx, opts.cy, opts.radius, opts.end_angle),
                 end = this.polarToCartesian(opts.cx, opts.cy, opts.radius, opts.start_angle),
@@ -189,8 +189,8 @@ class GeneTool extends React.Component{
         //mRNA
         var mRnaAngles = [5,18,19,48];
         for (var i = 0; i<mRnaAngles.length/2; i++){
-            opts.start_angle = (angles[mRnaAngles[i*2]]+Math.PI/2)*180/Math.PI;
-            opts.end_angle = (angles[mRnaAngles[i*2+1]]+Math.PI/2)*180/Math.PI;
+            opts.start_angle = (angles[mRnaAngles[i*2+1]]+Math.PI/2)*180/Math.PI;
+            opts.end_angle = (angles[mRnaAngles[i*2]]+Math.PI/2)*180/Math.PI;
 
             var start = this.polarToCartesian(opts.cx, opts.cy, opts.radius, opts.end_angle),
                 end = this.polarToCartesian(opts.cx, opts.cy, opts.radius, opts.start_angle),
@@ -212,8 +212,8 @@ class GeneTool extends React.Component{
         
         
         //rRNA
-        opts.start_angle = (angles[1]+Math.PI/2)*180/Math.PI;
-        opts.end_angle = (angles[4]+Math.PI/2)*180/Math.PI;
+        opts.start_angle = (angles[4]+Math.PI/2)*180/Math.PI;
+        opts.end_angle = (angles[1]+Math.PI/2)*180/Math.PI;
 
         var start = this.polarToCartesian(opts.cx, opts.cy, opts.radius, opts.end_angle),
             end = this.polarToCartesian(opts.cx, opts.cy, opts.radius, opts.start_angle),
@@ -235,8 +235,8 @@ class GeneTool extends React.Component{
         //noncoding
         var noncode = [51,0,18,19];
         for (var i = 0; i<noncode.length/2; i++){
-            opts.start_angle = (angles[noncode[i*2]]+Math.PI/2)*180/Math.PI;
-            opts.end_angle = (angles[noncode[i*2+1]]+Math.PI/2)*180/Math.PI;
+            opts.start_angle = (angles[noncode[i*2+1]]+Math.PI/2)*180/Math.PI;
+            opts.end_angle = (angles[noncode[i*2]]+Math.PI/2)*180/Math.PI;
 
             var start = this.polarToCartesian(opts.cx, opts.cy, opts.radius, opts.end_angle),
                 end = this.polarToCartesian(opts.cx, opts.cy, opts.radius, opts.start_angle),
@@ -263,7 +263,7 @@ class GeneTool extends React.Component{
         for (const [key, value] of Object.entries(dict)) {
 
             var textPos = (value[0]+value[1])/2;
-            var textAngle = textPos/16569*2*Math.PI-Math.PI/2;  //text angle in radians
+            var textAngle = -textPos/16569*2*Math.PI-Math.PI/2;  //text angle in radians
             var textX = 1.02 * radius * Math.cos(textAngle) + cx;
             var textY = 1.02 * radius * Math.sin(textAngle) + cy;
 
@@ -273,11 +273,11 @@ class GeneTool extends React.Component{
 
             labelNode.setAttribute("x",textX);
             labelNode.setAttribute("y",textY);
-            if(textAngle>Math.PI/2){
+            if(textAngle<-3*Math.PI/2){
+                labelNode.setAttribute("text-anchor","start");
+            } else {
                 textAngle = textAngle+Math.PI;
                 labelNode.setAttribute("text-anchor","end");
-            } else {
-                labelNode.setAttribute("text-anchor","start");
             }
             labelNode.setAttribute("transform","rotate("+textAngle*180/Math.PI+","+textX+","+textY+")");
             labelNode.setAttribute("fill","black");
@@ -351,8 +351,8 @@ class GeneTool extends React.Component{
                 cx: 350,
                 cy: 350,
                 radius: 250,
-                start_angle: (newPos[0]/16569*2*Math.PI)*180/Math.PI,
-                end_angle: (newPos[1]/16569*2*Math.PI)*180/Math.PI,
+                start_angle: -(newPos[1]/16569*2*Math.PI)*180/Math.PI,
+                end_angle: -(newPos[0]/16569*2*Math.PI)*180/Math.PI,
             };
             var start = this.polarToCartesian(opts.cx, opts.cy, opts.radius, opts.end_angle),
                 end = this.polarToCartesian(opts.cx, opts.cy, opts.radius, opts.start_angle),
@@ -394,7 +394,7 @@ class GeneTool extends React.Component{
         if(varPos<=16569){
             
             //add line to highlight variant position
-            var angle = varPos/16569*2*Math.PI-Math.PI/2;   //angles in radians
+            var angle = -varPos/16569*2*Math.PI-Math.PI/2;   //angles in radians
             var pt1x = radius * Math.cos(angle) + cx;
             var pt1y = radius * Math.sin(angle) + cy;
             var pt2x = (radius-dist-50) * Math.cos(angle) + cx;
@@ -418,7 +418,7 @@ class GeneTool extends React.Component{
             node1.appendChild(text);
             textNode.appendChild(node1);
 
-            if(varPos>16569/2){
+            if(varPos<16569/2){
                 textNode.setAttribute('text-anchor','start');
                 textNode.setAttribute('x',pt2x+5);
                 textNode.setAttribute('y',pt2y);
@@ -461,8 +461,8 @@ class GeneTool extends React.Component{
                 cx: this.state.cx,
                 cy: this.state.cy,
                 radius: this.state.innerRadius - 10,
-                start_angle: (startCoor/16569*2*Math.PI)*180/Math.PI,
-                end_angle: (endCoor/16569*2*Math.PI)*180/Math.PI,
+                start_angle: -(endCoor/16569*2*Math.PI)*180/Math.PI,
+                end_angle: -(startCoor/16569*2*Math.PI)*180/Math.PI,
             };
             //console.log("start angle:"+opts.start_angle);
             //console.log("end angle:"+opts.end_angle);
@@ -500,7 +500,7 @@ class GeneTool extends React.Component{
                 else if(endCoor>=dict[g][0] && endCoor<=dict[g][1]) { genes.push(g) }
             }
 
-                    // add text label in the middle of circle
+            // add text label in the middle of circle
             var textNode = document.createElementNS('http://www.w3.org/2000/svg','text');
             var text = document.createTextNode(input);
             textNode.appendChild(text);
@@ -559,7 +559,7 @@ class GeneTool extends React.Component{
                     </form>
                     <br></br>
 
-                    <p>Show variant position</p>
+                    <p>Show base or variant position</p>
                     <form onSubmit={this.handleSubmitVar}>
                         <label htmlFor="var-pos">Format example: m.555 (single nucleotide variants only)</label>
                         <input type="text" id="var-pos" />

@@ -25,7 +25,7 @@ class Home extends React.Component {
                   m.5762A>G
                 </Link>
                 <br /><br />
-                A tool to visualize the effects of mtDNA variants. MitoVisualize displays information and generates figures for variants and genes of interest 
+                MitoVisualize displays information and generates figures for variants and genes of interest 
                 in the human mitochondrial DNA (mtDNA), specifically for RNA and mtDNA structures. 
                 </p>
 

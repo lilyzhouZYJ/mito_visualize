@@ -1087,11 +1087,11 @@ class VisualizeOptions extends React.Component{
                 </label><br/>
                 <label>
                     <input name="popHelixHom" type="checkbox" onClick={this.showPopHelixHom} />
-                    <span>HelixMTdb Hom</span>
+                    <span>HelixMTdb hom</span>
                 </label><br/>
                 <label>
                     <input name="popHelixHet" type="checkbox" onClick={this.showPopHelixHet} />
-                    <span>HelixMTdb Het</span>
+                    <span>HelixMTdb het</span>
                 </label>
 
 

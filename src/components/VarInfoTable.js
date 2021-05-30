@@ -131,8 +131,8 @@ class VarInfoTable extends React.Component{
                             <td class='left-col'>Other</td>
                             <td>Modified:&nbsp;
                                 {posttrans==null && "No"}
-                                {posttrans!==null && posttrans.indexOf("N")>=0 && <a href={posttransLink}>Yes ({posttrans.substring(0,posttrans.indexOf("N")+1)}<sup>{posttrans.charAt(posttrans.indexOf("N")+1)}</sup>{posttrans.substring(posttrans.indexOf("N")+2)})</a>}
-                                {posttrans!==null && posttrans.indexOf("N")==-1 && <a href={posttransLink}>Yes ({posttrans})</a>}
+                                {posttrans!==null && posttrans.indexOf("N")>=0 && <a href={posttransLink} target="_blank">Yes ({posttrans.substring(0,posttrans.indexOf("N")+1)}<sup>{posttrans.charAt(posttrans.indexOf("N")+1)}</sup>{posttrans.substring(posttrans.indexOf("N")+2)})</a>}
+                                {posttrans!==null && posttrans.indexOf("N")==-1 && <a href={posttransLink} target="_blank">Yes ({posttrans})</a>}
                                 <div class="help-tip">
                                     <p>Post-transcriptional modifications can impact mitochondrial RNA function and abundance. Listed tRNA and rRNA modified sites are per <a href='https://pubmed.ncbi.nlm.nih.gov/32859890/' target="_blank">Suzuki et al 2020</a> and <a href='https://pubmed.ncbi.nlm.nih.gov/30529456/' target="_blank">Rebelo-Guiomar et al 2019</a>, respectively.</p>
                                 </div>

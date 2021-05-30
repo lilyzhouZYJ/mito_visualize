@@ -211,6 +211,97 @@ def populate_all_rrna_vars(es):
 
 
 
+# population frequency (MITOMAP)
+def populate_population_freq_mitomap(es):
+
+    #first part of population frequency (mitomap - disease.cgi)
+    f = urllib2.urlopen('https://mitomap.org/cgi-bin/disease.cgi')
+
+    for line in f:
+
+        if line[0].isdigit():
+            info = line.split('\t')
+
+            if len(info[2])==1 and len(info[3])==1 and len(info[4])==0 and info[3]!=':':
+                coor = info[1]
+                ref = info[2]
+                alt = info[3]
+                count = info[10]
+                freq = info[11]
+ 
+                var_id = 'm.'+coor+ref+'>'+alt
+                #print(var_id)
+
+                #find index
+                gene_name = []
+                for gene in geneLoc:
+                    if int(coor)>=geneLoc[gene][0] and int(coor)<=geneLoc[gene][1]:
+                        gene_name.append(gene)
+                #print(gene_name)
+
+                data = {
+                    "var_id": var_id,
+                    "var_coordinate": coor,
+                    "var_alt": alt,
+                    "var_ref": ref,
+                    "gene": gene_name,
+                    "pop_freq_mitomap": freq,
+                    "pop_count_mitomap": count
+                }
+
+                for g in gene_name:
+                    if es.exists(index=g.lower(), doc_type='_doc', id=var_id):
+                        es.update(index=g.lower(), doc_type='_doc', id=var_id, body={'doc':data})
+                        print('some doc was updated with mitomap pop freq data: '+var_id)
+                    else:
+                        es.index(index=g.lower(), doc_type='_doc', id=var_id, body={'doc':data})
+                        print('some doc was added with mitomap pop freq data: '+var_id)
+
+    #the other part of population frequency (mitomap - polymorphisms.cgi.txt)
+    f = urllib2.urlopen('https://mitomap.org/cgi-bin/polymorphisms.cgi')
+
+    for line in f:
+
+        if line[0].isdigit():
+            info = line.split('\t')
+            if len(info[2])==1 and len(info[3])==1 and (info[4]=='tRNA' or info[4]=='rRNA') and info[3] is not ':':
+                coor = info[1]
+                ref = info[2]
+                alt = info[3]
+                count = info[6]
+                freq = info[7]
+ 
+                var_id = 'm.'+coor+ref+'>'+alt
+                #print(var_id)
+
+                #find index
+                gene_name = []
+                for gene in geneLoc:
+                    if int(coor)>=geneLoc[gene][0] and int(coor)<=geneLoc[gene][1]:
+                        gene_name.append(gene)
+                #print(gene_name)
+
+                data = {
+                    "var_id": var_id,
+                    "var_coordinate": coor,
+                    "var_alt": alt,
+                    "var_ref": ref,
+                    "gene": gene_name,
+                    "pop_freq_mitomap": freq,
+                    "pop_count_mitomap": count
+                }
+
+                for g in gene_name:
+                    if es.exists(index=g.lower(), doc_type='_doc', id=var_id):
+                        es.update(index=g.lower(), doc_type='_doc', id=var_id, body={'doc':data})
+                        print('some more doc was updated with mitomap pop freq data: '+var_id)
+                    else:
+                        es.index(index=g.lower(), doc_type='_doc', id=var_id, body={'doc':data})
+                        print('some more doc was added with mitotip pop freq data: '+var_id)
+
+
+
+
 
 
 
@@ -494,10 +585,10 @@ def populate_in_silico_ponmttrna(es):
 
 
 
-#disease association 
-def populate_disease_association(es):
+# disease association (MITOMAP)
+def populate_disease_association_mitomap(es):
 
-    #mitomap, disease.cgi, "status" and "disease"
+    # mitomap, disease.cgi, "status" and "disease"
     f = urllib2.urlopen('https://mitomap.org/cgi-bin/disease.cgi')
 
     for line in f:
@@ -535,10 +626,14 @@ def populate_disease_association(es):
                 for g in gene_name:
                     if es.exists(index=g.lower(), doc_type='_doc', id=var_id):
                         es.update(index=g.lower(), doc_type='_doc', id=var_id, body={'doc':data})
-                        print('some doc was updated with mitotip disease data: '+var_id)
+                        print('some doc was updated with mitomap disease data: '+var_id)
                     else:
                         es.index(index=g.lower(), doc_type='_doc', id=var_id, body={'doc':data})
-                        print('some doc was added with mitotip disease data: '+var_id)
+                        print('some doc was added with mitomap disease data: '+var_id)
+
+
+# disease association (ClinVar)
+def populate_disease_association_clinvar(es):
 
     #clinvar, variant_summary.txt.gz, "ClinicalSignificance" and "PhenotypeList"
     f = gzip.open('variant_summary.txt.gz', 'rt')
@@ -599,93 +694,6 @@ def populate_disease_association(es):
 
 
 
-#population frequency (mitomap)
-def populate_population_freq(es):
-
-    #first part of population frequency (mitomap - disease.cgi)
-    f = urllib2.urlopen('https://mitomap.org/cgi-bin/disease.cgi')
-
-    for line in f:
-
-        if line[0].isdigit():
-            info = line.split('\t')
-
-            if len(info[2])==1 and len(info[3])==1 and len(info[4])==0 and info[3]!=':':
-                coor = info[1]
-                ref = info[2]
-                alt = info[3]
-                count = info[10]
-                freq = info[11]
- 
-                var_id = 'm.'+coor+ref+'>'+alt
-                #print(var_id)
-
-                #find index
-                gene_name = []
-                for gene in geneLoc:
-                    if int(coor)>=geneLoc[gene][0] and int(coor)<=geneLoc[gene][1]:
-                        gene_name.append(gene)
-                #print(gene_name)
-
-                data = {
-                    "var_id": var_id,
-                    "var_coordinate": coor,
-                    "var_alt": alt,
-                    "var_ref": ref,
-                    "gene": gene_name,
-                    "pop_freq_mitomap": freq,
-                    "pop_count_mitomap": count
-                }
-
-                for g in gene_name:
-                    if es.exists(index=g.lower(), doc_type='_doc', id=var_id):
-                        es.update(index=g.lower(), doc_type='_doc', id=var_id, body={'doc':data})
-                        print('some doc was updated with mitotip disease data: '+var_id)
-                    else:
-                        es.index(index=g.lower(), doc_type='_doc', id=var_id, body={'doc':data})
-                        print('some doc was added with mitotip disease data: '+var_id)
-
-    #the other part of population frequency (mitomap - polymorphisms.cgi.txt)
-    f = urllib2.urlopen('https://mitomap.org/cgi-bin/polymorphisms.cgi')
-
-    for line in f:
-
-        if line[0].isdigit():
-            info = line.split('\t')
-            if len(info[2])==1 and len(info[3])==1 and (info[4]=='tRNA' or info[4]=='rRNA') and info[3] is not ':':
-                coor = info[1]
-                ref = info[2]
-                alt = info[3]
-                count = info[6]
-                freq = info[7]
- 
-                var_id = 'm.'+coor+ref+'>'+alt
-                #print(var_id)
-
-                #find index
-                gene_name = []
-                for gene in geneLoc:
-                    if int(coor)>=geneLoc[gene][0] and int(coor)<=geneLoc[gene][1]:
-                        gene_name.append(gene)
-                #print(gene_name)
-
-                data = {
-                    "var_id": var_id,
-                    "var_coordinate": coor,
-                    "var_alt": alt,
-                    "var_ref": ref,
-                    "gene": gene_name,
-                    "pop_freq_mitomap": freq,
-                    "pop_count_mitomap": count
-                }
-
-                for g in gene_name:
-                    if es.exists(index=g.lower(), doc_type='_doc', id=var_id):
-                        es.update(index=g.lower(), doc_type='_doc', id=var_id, body={'doc':data})
-                        #print('some more doc was updated with mitotip disease data: '+var_id)
-                    else:
-                        es.index(index=g.lower(), doc_type='_doc', id=var_id, body={'doc':data})
-                        #print('some more doc was added with mitotip disease data: '+var_id)
 
 
 
@@ -1133,21 +1141,22 @@ if __name__ == '__main__':
 	
         #create_index(es)
         #populate_all_rrna_vars(es)
-        populate_in_silico_mitotip(es)
-        populate_in_silico_ponmttrna(es)
+        #populate_in_silico_mitotip(es)
+        #populate_in_silico_ponmttrna(es)
 
         # these two use api - slow
         #populate_hmtvar1(es)
         #populate_hmtvar2(es)
 
-        populate_disease_association(es)
-        populate_population_freq(es)
-        populate_helix(es)
-        populate_haplogroup(es)
-        populate_gnomad(es)
-        populate_post_transcript(es)
-        populate_conserv(es)
-        populate_base_pair(es)
+        #populate_disease_association_mitomap(es)
+        populate_disease_association_clinvar(es)
+        #populate_population_freq_mitomap(es)
+        #populate_helix(es)
+        #populate_haplogroup(es)
+        #populate_gnomad(es)
+        #populate_post_transcript(es)
+        #populate_conserv(es)
+        #populate_base_pair(es)
 
 
         #test_func(es)
