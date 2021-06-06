@@ -227,7 +227,8 @@ def populate_population_freq_mitomap(es):
                 ref = info[2]
                 alt = info[3]
                 count = info[10]
-                freq = info[11]
+                #freq = info[11]
+                freq = float(count)/51836*100    #manual calculation of frequency
  
                 var_id = 'm.'+coor+ref+'>'+alt
                 #print(var_id)
@@ -269,7 +270,8 @@ def populate_population_freq_mitomap(es):
                 ref = info[2]
                 alt = info[3]
                 count = info[6]
-                freq = info[7]
+                #freq = info[7]
+                freq = float(count)/51836*100    #manual calculation of frequency
  
                 var_id = 'm.'+coor+ref+'>'+alt
                 #print(var_id)
@@ -1149,8 +1151,8 @@ if __name__ == '__main__':
         #populate_hmtvar2(es)
 
         #populate_disease_association_mitomap(es)
-        populate_disease_association_clinvar(es)
-        #populate_population_freq_mitomap(es)
+        #populate_disease_association_clinvar(es)
+        populate_population_freq_mitomap(es)
         #populate_helix(es)
         #populate_haplogroup(es)
         #populate_gnomad(es)

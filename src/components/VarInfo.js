@@ -1,5 +1,6 @@
 import React from 'react';
 import loadGif from './images/loading.gif';
+// image from: https://gifimage.net/loading-text-gif-14/
 
 class VarInfo extends React.Component{
 

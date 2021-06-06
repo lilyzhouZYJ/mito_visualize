@@ -19,6 +19,9 @@ class RrnaVisualizationSVG extends React.Component{
         if(this.props.gene=="MT-RNR2"){
             document.getElementById('rrna-svg-container').setAttribute("height","650");
             document.getElementById('rrna-svg-container').setAttribute("width","800");
+
+            // for svg to not overlap with right container
+            document.getElementById('left-container').style.minWidth = "800px";
         }
     }
 

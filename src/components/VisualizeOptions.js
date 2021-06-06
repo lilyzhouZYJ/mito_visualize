@@ -1,6 +1,7 @@
 import React from 'react';
 import './styles/VisualizeOptions.css';
 import loadGif from './images/loading.gif';
+// image from: https://gifimage.net/loading-text-gif-14/
 
 import { fetchGeneInfo } from './fetch.js';
 
@@ -255,6 +256,117 @@ class VisualizeOptions extends React.Component{
         linearGrad.setAttribute("gradientTransform", "rotate(90)");
         linearGrad.appendChild(stop1);
         linearGrad.appendChild(stop2);
+
+        var defs = document.createElementNS('http://www.w3.org/2000/svg','defs');
+        defs.appendChild(linearGrad);
+
+        var rect = document.createElementNS('http://www.w3.org/2000/svg','rect');
+        rect.setAttribute("id","gradient-rect");
+        rect.setAttribute("class","gradient-legend");
+        rect.setAttribute("x", 35+xShift);
+        rect.setAttribute("y", 60 + 25*multiplier);
+        rect.setAttribute("width", 20*multiplier);
+        rect.setAttribute("height", 70*multiplier);
+        rect.setAttribute("fill","url('#gradient')");
+        svgnode.insertBefore(defs, svgnode.childNodes[svgnode.childNodes.length-1]);
+        svgnode.insertBefore(rect, svgnode.childNodes[svgnode.childNodes.length-1]);
+
+        //create the labels
+        var topLabel = document.createTextNode(toplabel);
+        var topNode = document.createElementNS('http://www.w3.org/2000/svg','text');
+        topNode.appendChild(topLabel);
+        topNode.setAttribute('x', (35+xShift) + 22*multiplier);
+        topNode.setAttribute('y', 60 + 30*multiplier);
+        topNode.setAttribute('class', 'gradient-legend');
+        topNode.setAttribute('alignment-baseline', 'central');
+        topNode.setAttribute('font-size', 12*multiplier+"px");
+        topNode.style.textAnchor = 'start';
+        topNode.style.fill = topcolor;
+        svgnode.appendChild(topNode);
+
+        var bottomLabel = document.createTextNode(bottomlabel);
+        var bottomNode = document.createElementNS('http://www.w3.org/2000/svg','text');
+        bottomNode.appendChild(bottomLabel);
+        bottomNode.setAttribute('x', (35+xShift) + 22*multiplier);
+        bottomNode.setAttribute('y', 60 + 95*multiplier);
+        bottomNode.setAttribute('class', 'gradient-legend');
+        bottomNode.setAttribute('color', bottomcolor);
+        bottomNode.setAttribute('alignment-baseline', 'central');
+        bottomNode.setAttribute('font-size', 12*multiplier+"px");
+        bottomNode.style.textAnchor = 'start';
+        bottomNode.style.fill = bottomcolor;
+        svgnode.appendChild(bottomNode);
+
+
+    }
+
+
+
+
+    //
+    // TESTING!!!
+    //
+
+    // creates color gradient (NON LINEAR)
+    // for population frequency
+    // thresholdColor = color for > 1
+    createPopGradientLegendNonLinear = (thresholdcolor, topcolor, midcolor, bottomcolor, toplabel, bottomlabel) => {
+
+        var multiplier = 1;
+        var xShift = 0;
+        if(this.props.gene == "MT-RNR2"){ multiplier = 4; xShift = 100; }
+        if(this.props.gene == "MT-RNR1"){ multiplier = 2; }
+
+        /* creates square for thresholdColor only */
+        var square = document.createElementNS('http://www.w3.org/2000/svg','rect');
+        square.setAttribute("id","gradient-square");
+        square.setAttribute("class","gradient-legend");
+        square.setAttribute("x", 35+xShift);
+        square.setAttribute("y", 60);
+        square.setAttribute("width", 20*multiplier);
+        square.setAttribute("height", 20*multiplier);
+        square.setAttribute("fill", thresholdcolor);
+        if(document.getElementById("svg-container")){
+            var svgnode = document.getElementById("svg-container"); 
+        } else {
+            var svgnode = document.getElementById("rrna-svg-container"); 
+        }
+        svgnode.insertBefore(square, svgnode.childNodes[svgnode.childNodes.length-1]);
+
+        var thresholdLabel = document.createTextNode(">1%");
+        var thresholdNode = document.createElementNS('http://www.w3.org/2000/svg','text');
+        thresholdNode.appendChild(thresholdLabel);
+        thresholdNode.setAttribute('x', (35+xShift) + 22*multiplier);
+        thresholdNode.setAttribute('y', 60 + 10*multiplier);
+        thresholdNode.setAttribute('class', 'gradient-legend');
+        thresholdNode.setAttribute('alignment-baseline', 'central');
+        thresholdNode.setAttribute('font-size', 12*multiplier+"px");
+        thresholdNode.style.textAnchor = 'start';
+        thresholdNode.style.fill = thresholdcolor;
+        svgnode.appendChild(thresholdNode);
+
+
+        /* rest of the gradient */
+
+        var stop1 = document.createElementNS('http://www.w3.org/2000/svg','stop');
+        stop1.setAttribute("offset","0%");
+        stop1.setAttribute("stop-color", topcolor);
+
+        var stop2 = document.createElementNS('http://www.w3.org/2000/svg','stop');
+        stop2.setAttribute("offset","50%");
+        stop2.setAttribute("stop-color", midcolor);
+
+        var stop3 = document.createElementNS('http://www.w3.org/2000/svg','stop');
+        stop3.setAttribute("offset","100%");
+        stop3.setAttribute("stop-color", bottomcolor);
+
+        var linearGrad = document.createElementNS('http://www.w3.org/2000/svg','linearGradient');
+        linearGrad.setAttribute("id", "gradient");
+        linearGrad.setAttribute("class", "gradient-legend");
+        linearGrad.setAttribute("gradientTransform", "rotate(90)");
+        linearGrad.appendChild(stop1);
+        linearGrad.appendChild(stop2);
+        linearGrad.appendChild(stop3);
 
         var defs = document.createElementNS('http://www.w3.org/2000/svg','defs');
         defs.appendChild(linearGrad);
