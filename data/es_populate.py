@@ -1,6 +1,7 @@
 from elasticsearch import Elasticsearch
 import gzip
 import urllib2
+import ssl
 import urllib3
 import pprint
 import csv
@@ -215,7 +216,7 @@ def populate_all_rrna_vars(es):
 def populate_population_freq_mitomap(es):
 
     #first part of population frequency (mitomap - disease.cgi)
-    f = urllib2.urlopen('https://mitomap.org/cgi-bin/disease.cgi')
+    f = urllib2.urlopen('https://mitomap.org/cgi-bin/disease.cgi', context=ssl._create_unverified_context())
 
     for line in f:
 
@@ -228,7 +229,7 @@ def populate_population_freq_mitomap(es):
                 alt = info[3]
                 count = info[10]
                 #freq = info[11]
-                freq = float(count)/51836*100    #manual calculation of frequency
+                freq = float(count)/52633*100    # manual calculation of frequency, sample size = 52633 (08/31/2021)
  
                 var_id = 'm.'+coor+ref+'>'+alt
                 #print(var_id)
@@ -259,7 +260,7 @@ def populate_population_freq_mitomap(es):
                         print('some doc was added with mitomap pop freq data: '+var_id)
 
     #the other part of population frequency (mitomap - polymorphisms.cgi.txt)
-    f = urllib2.urlopen('https://mitomap.org/cgi-bin/polymorphisms.cgi')
+    f = urllib2.urlopen('https://mitomap.org/cgi-bin/polymorphisms.cgi', context=ssl._create_unverified_context())
 
     for line in f:
 
@@ -271,7 +272,7 @@ def populate_population_freq_mitomap(es):
                 alt = info[3]
                 count = info[6]
                 #freq = info[7]
-                freq = float(count)/51836*100    #manual calculation of frequency
+                freq = float(count)/52633*100    # manual calculation of frequency, sample size = 52633 (08/31/2021)
  
                 var_id = 'm.'+coor+ref+'>'+alt
                 #print(var_id)
@@ -310,7 +311,7 @@ def populate_population_freq_mitomap(es):
 # MitoTip in silico scores/categories
 def populate_in_silico_mitotip(es):
 
-    f = urllib2.urlopen('https://mitomap.org/downloads/mitotip_scores.txt')
+    f = urllib2.urlopen('https://mitomap.org/downloads/mitotip_scores.txt', context=ssl._create_unverified_context())
 
     for line in f:
 
@@ -372,7 +373,7 @@ def populate_hmtvar1(es):
     urllib3.disable_warnings() 
 
     # use MitoTip file to add HmtVar data
-    f = urllib2.urlopen('https://mitomap.org/downloads/mitotip_scores.txt')
+    f = urllib2.urlopen('https://mitomap.org/downloads/mitotip_scores.txt', context=ssl._create_unverified_context())
 
     count = 0
 
@@ -443,7 +444,7 @@ def populate_hmtvar2(es):
     urllib3.disable_warnings() 
 
     # use MitoTip file to add HmtVar data
-    f = urllib2.urlopen('https://mitomap.org/downloads/mitotip_scores.txt')
+    f = urllib2.urlopen('https://mitomap.org/downloads/mitotip_scores.txt', context=ssl._create_unverified_context())
 
     count = 0
 
@@ -515,7 +516,7 @@ def populate_hmtvar2(es):
 def populate_in_silico_ponmttrna(es):
 
     #prediction_pon_mt_trna: in silico score from PON-mt-tRNA
-    f = urllib2.urlopen('http://structure.bmc.lu.se/PON-mt-tRNA/download/')
+    f = urllib2.urlopen('http://structure.bmc.lu.se/PON-mt-tRNA/download/', context=ssl._create_unverified_context())
 
     isJunk = True
 
@@ -591,7 +592,7 @@ def populate_in_silico_ponmttrna(es):
 def populate_disease_association_mitomap(es):
 
     # mitomap, disease.cgi, "status" and "disease"
-    f = urllib2.urlopen('https://mitomap.org/cgi-bin/disease.cgi')
+    f = urllib2.urlopen('https://mitomap.org/cgi-bin/disease.cgi', context=ssl._create_unverified_context())
 
     for line in f:
 
@@ -819,7 +820,7 @@ def populate_haplogroup(es):
 def populate_gnomad(es):
 
     #population frequency in gnomad
-    f = urllib2.urlopen('https://storage.googleapis.com/gnomad-public/release/3.1/vcf/genomes/gnomad.genomes.v3.1.sites.chrM.reduced_annotations.tsv')
+    f = urllib2.urlopen('https://storage.googleapis.com/gnomad-public/release/3.1/vcf/genomes/gnomad.genomes.v3.1.sites.chrM.reduced_annotations.tsv', context=ssl._create_unverified_context())
     read_tsv = csv.DictReader(f, delimiter="\t")
 
     for row in read_tsv:
@@ -1137,30 +1138,29 @@ def testapi(es):
 
 
 if __name__ == '__main__':
-	es = connect_elasticsearch()
+    es = connect_elasticsearch()
 
-		#testapi(es)
+    #testapi(es)
 	
-        #create_index(es)
-        #populate_all_rrna_vars(es)
-        #populate_in_silico_mitotip(es)
-        #populate_in_silico_ponmttrna(es)
+    #create_index(es)
+    #populate_all_rrna_vars(es)
+    #populate_in_silico_mitotip(es)
+    #populate_in_silico_ponmttrna(es)
 
-        # these two use api - slow
-        #populate_hmtvar1(es)
-        #populate_hmtvar2(es)
+    # these two use api - slow
+    #populate_hmtvar1(es)
+    #populate_hmtvar2(es)
 
-        #populate_disease_association_mitomap(es)
-        #populate_disease_association_clinvar(es)
-        populate_population_freq_mitomap(es)
-        #populate_helix(es)
-        #populate_haplogroup(es)
-        #populate_gnomad(es)
-        #populate_post_transcript(es)
-        #populate_conserv(es)
-        #populate_base_pair(es)
+    populate_disease_association_mitomap(es)
+    populate_disease_association_clinvar(es)
+    populate_population_freq_mitomap(es)
+    #populate_helix(es)
+    #populate_haplogroup(es)
+    #populate_gnomad(es)
+    #populate_post_transcript(es)
+    #populate_conserv(es)
+    #populate_base_pair(es)
 
-
-        #test_func(es)
-        #test_gzip('chrM.phastCons100way.wigFix.gz')
-        #test(es)
+    #test_func(es)
+    #test_gzip('chrM.phastCons100way.wigFix.gz')
+    #test(es)

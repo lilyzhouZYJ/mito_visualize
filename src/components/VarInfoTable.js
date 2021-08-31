@@ -44,7 +44,7 @@ class VarInfoTable extends React.Component{
                                              : "0% (0)"
                                         }</a><br/>
                                 MITOMAP: <a href={mitomapLink} target="_blank">{data.pop_freq_mitomap!==null ? 
-                                             data.pop_freq_mitomap+"% ("+data.pop_count_mitomap+")"
+                                             data.pop_freq_mitomap.toPrecision(3)+"% ("+data.pop_count_mitomap+")"
                                              : "0% (0)"
                                          }</a><br/>
                                 HelixMTdb: <a href='https://www.helix.com/pages/mitochondrial-variant-database' target="_blank">{data.pop_freq_helix_af_hom!==null ? 
