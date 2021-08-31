@@ -4,6 +4,7 @@ import { PromiseOrValue } from '../jsutils/PromiseOrValue';
 import { Path } from '../jsutils/Path';
 
 import { GraphQLError } from '../error/GraphQLError';
+import { GraphQLFormattedError } from '../error/formatError';
 
 import {
   DocumentNode,
@@ -43,11 +44,26 @@ export interface ExecutionContext {
  *
  *   - `errors` is included when any errors occurred as a non-empty array.
  *   - `data` is the result of a successful execution of the query.
+ *   - `extensions` is reserved for adding non-standard properties.
  */
-export interface ExecutionResult<TData = { [key: string]: any }> {
+export interface ExecutionResult<
+  TData = { [key: string]: any },
+  TExtensions = { [key: string]: any }
+> {
   errors?: ReadonlyArray<GraphQLError>;
   // TS_SPECIFIC: TData. Motivation: https://github.com/graphql/graphql-js/pull/2490#issuecomment-639154229
   data?: TData | null;
+  extensions?: TExtensions;
+}
+
+export interface FormattedExecutionResult<
+  TData = { [key: string]: any },
+  TExtensions = { [key: string]: any }
+> {
+  errors?: ReadonlyArray<GraphQLFormattedError>;
+  // TS_SPECIFIC: TData. Motivation: https://github.com/graphql/graphql-js/pull/2490#issuecomment-639154229
+  data?: TData | null;
+  extensions?: TExtensions;
 }
 
 export interface ExecutionArgs {
@@ -84,6 +100,13 @@ export function execute(
   fieldResolver?: Maybe<GraphQLFieldResolver<any, any>>,
   typeResolver?: Maybe<GraphQLTypeResolver<any, any>>,
 ): PromiseOrValue<ExecutionResult>;
+
+/**
+ * Also implements the "Evaluating requests" section of the GraphQL specification.
+ * However, it guarantees to complete synchronously (or throw an error) assuming
+ * that all field resolvers are also synchronous.
+ */
+export function executeSync(args: ExecutionArgs): ExecutionResult;
 
 /**
  * Essential assertions before executing to provide developer feedback for
@@ -135,21 +158,6 @@ export function buildResolveInfo(
   parentType: GraphQLObjectType,
   path: Path,
 ): GraphQLResolveInfo;
-
-/**
- * Isolates the "ReturnOrAbrupt" behavior to not de-opt the `resolveField`
- * function. Returns the result of resolveFn or the abrupt-return Error object.
- *
- * @internal
- */
-export function resolveFieldValueOrError(
-  exeContext: ExecutionContext,
-  fieldDef: GraphQLField<any, any>,
-  fieldNodes: ReadonlyArray<FieldNode>,
-  resolveFn: GraphQLFieldResolver<any, any>,
-  source: any,
-  info: GraphQLResolveInfo,
-): any;
 
 /**
  * If a resolveType function is not given, then a default resolve behavior is
