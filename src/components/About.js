@@ -36,12 +36,12 @@ class About extends React.Component {
 		<ul>
                     <li>Amunts A, Brown A, et al. Ribosome. The structure of the human mitochondrial ribosome. Science. 2015 Apr 3;348(6230):95-98. doi: 10.1126/science.aaa1193. <a href="https://pubmed.ncbi.nlm.nih.gov/25838379/" target="_blank">PMID: 25838379</a>.</li>
                     <li>Brown A, Amunts A, et al. Structure of the large ribosomal subunit from human mitochondria. Science. 2014 Nov 7;346(6210):718-722. doi: 10.1126/science.1258026. <a href="https://pubmed.ncbi.nlm.nih.gov/25278503/" target="_blank">PMID: 25278503</a>.</li>
-                    <li><a href="https://www.ncbi.nlm.nih.gov/clinvar/ " target="_blank">ClinVar</a> (date of access 30th May 2021)</li>
+                    <li><a href="https://www.ncbi.nlm.nih.gov/clinvar/ " target="_blank">ClinVar</a> (date of access 31st August 2021)</li>
                     <li><a href="https://gnomad.broadinstitute.org/" target="_blank">gnomAD</a> (version 3.1)</li>
                     <li><a href="https://www.helix.com/pages/mitochondrial-variant-database" target="_blank">HelixMTdb</a> (version dated 2020/03/27)</li> 
                     <li><a href="https://www.hmtvar.uniba.it/" target="_blank">HmtVar</a> (date of access 6th June 2021)</li>
                     <li><a href="http://mamit-trna.u-strasbg.fr/" target="_blank">Mamit-tRNA</a> (date of access 15th September 2020)</li> 
-                    <li><a href="https://www.mitomap.org/MITOMAP" target="_blank">MITOMAP, including MitoTip</a> (date of access 6th June 2021)</li>
+                    <li><a href="https://www.mitomap.org/MITOMAP" target="_blank">MITOMAP, including MitoTip</a> (date of access 31st August 2021)</li>
                     <li><a href="https://genome.ucsc.edu/cgi-bin/hgTrackUi?db=hg38&g=cons100way#TRACK_HTML" target="_blank">PHAST (phastCons and phyloP) via UCSC</a> (hg38)</li> 
                     <li><a href="https://www.phylotree.org/" target="_blank">Phylotree</a> (build 17)</li>
                     <li><a href="http://structure.bmc.lu.se/PON-mt-tRNA/" target="_blank">PON-mt-tRNA</a> (date of access 2nd June 2021)</li>
