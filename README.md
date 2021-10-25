@@ -24,7 +24,12 @@ Server:
     cd mito_visualize/server
     ./start.sh
 
-React App:
+Front End:
     
     cd mito_visualize
     npm start
+
+## Updates
+
+    cd mito_visualize
+    ./build.sh
