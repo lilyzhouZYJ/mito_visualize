@@ -101,7 +101,7 @@ class TrnaVisualizationSVG extends React.Component{
                         <li>2D cloverleaf tRNA structures are per <a href="https://pubmed.ncbi.nlm.nih.gov/17585048/" target="_blank">Putz et al</a> as shown on <a href="http://mamit-trna.u-strasbg.fr/human.asp" target="_blank">Mamit-tRNA</a>.</li>
                     </ul>
                     <button id="download-btn" onClick={this.handleClick}>Download Image (png)</button>
-                    <p id="citation-note">If you use MitoVisualize in your paper please cite XXX</p>
+                    <p id="citation-note">If you use MitoVisualize please cite as "MitoVisualize. http://www.mitovisualize.org, 2021".</p>
                 </div>
                 <div id="right-container">
                     <VisualizeOptions gene={gene} rnaType={rnaType} />

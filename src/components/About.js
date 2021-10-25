@@ -21,7 +21,7 @@ class About extends React.Component {
 		<br /><br />
 
 		<b>Citation:</b><br />
-		If you use MitoVisualize, please cite XXX.
+		If you use MitoVisualize please cite as "MitoVisualize. http://www.mitovisualize.org, 2021".
 		<br /><br />
 
 		<b>Contacts & Team:</b><br />

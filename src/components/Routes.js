@@ -42,6 +42,33 @@ const loc = {   //list of all RNAs with their respective genomic coordinates
 };
 
 
+// list of all protein-coding genes
+const ProteinGeneDict = {
+    'MT-ND1':[3307,4262],
+    'MT-ND2':[4470,5511],
+    'MT-CO1':[5904,7445],
+    'MT-CO2':[7586,8269],
+    'MT-ATP8':[8366,8572],
+    'MT-ATP6':[8527,9207],
+    'MT-CO3':[9207,9990],
+    'MT-ND3':[10059,10404],
+    'MT-ND4L':[10470,10766],
+    'MT-ND4':[10760,12137],
+    'MT-ND5': [12337,14148],
+    'MT-ND6': [14149,14673],
+    'MT-CYB': [14747,15887],
+};
+
+const isProteinGene = (coor) => {
+  var coorInt = parseInt(coor);
+  for (var gene in ProteinGeneDict){
+    if(ProteinGeneDict [gene][0] <= coorInt && coorInt <= ProteinGeneDict [gene][1])
+      return true;
+  }
+  return false;
+}
+
+
 export default function Routes() {
   return (
     <Switch>
@@ -144,13 +171,20 @@ export default function Routes() {
               // code here
 
               if(newGene === null){
-                return(
-                  <Page>
-                  <PageHeading>Error resolving variant</PageHeading>
-                  <p>Variant position: {regex_match[1]} is not in a tRNA or rRNA gene</p>
-                  </Page>
-                )
-
+                if(isProteinGene(variantCor))
+                  return(
+                    <Page>
+                    <PageHeading>Error resolving variant</PageHeading>
+                    <p>Visualization for protein-coding genes not available. MitImpact is a database for non-synonymous variants in human mitochondrial protein-coding genes, available at <a href="https://mitimpact.css-mendel.it/">https://mitimpact.css-mendel.it/</a>.</p>
+                    </Page>
+                  )
+                else
+                  return(
+                    <Page>
+                    <PageHeading>Error resolving variant</PageHeading>
+                    <p>Variant position: {regex_match[1]} is not in a tRNA or rRNA gene</p>
+                    </Page>
+                  )
               }
               else if(newGene[3]=='T'){
                 return (

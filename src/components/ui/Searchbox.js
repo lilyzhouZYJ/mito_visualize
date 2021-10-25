@@ -13,7 +13,11 @@ const SearchboxInput = styled(ComboboxInput)`
 
 const PlaceholderItem = styled(Item)`
   color: rgba(0, 0, 0, 0.5);
+  max-width: 250px;
 `
+
+const ProteinGenes = ["MT-CYB", "MT-ND6", "MT-ND5", "MT-ND4", "MT-ND4L", "MT-ND3", "MT-CO3", "MT-ATP6", "MT-ATP8", "MT-CO2", "MT-CO1", "MT-ND2", "MT-ND1"];
+
 
 class CancelablePromise {
   isCanceled = false
@@ -154,7 +158,10 @@ export class Searchbox extends Component {
       if (isFetching) {
         menuContent = <PlaceholderItem>Searching...</PlaceholderItem>
       } else {
-        menuContent = <PlaceholderItem>No results found</PlaceholderItem>
+        if (ProteinGenes.includes(inputValue.toUpperCase()))
+          menuContent = <PlaceholderItem>Visualization for protein-coding genes not available. MitImpact is a database for non-synonymous variants in human mitochondrial protein-coding genes, available at <a style={{color:"gray"}} href="https://mitimpact.css-mendel.it/">https://mitimpact.css-mendel.it/</a>.</PlaceholderItem>
+        else
+          menuContent = <PlaceholderItem>No results found</PlaceholderItem>
       }
     } else {
       menuContent = items

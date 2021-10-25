@@ -545,7 +545,7 @@ class GeneTool extends React.Component{
                     }
 
                     <button id="download-btn" onClick={this.handleClick}>Download Image (png)</button>
-                    <p id="citation-note">If you use MitoVisualize in your paper please cite XXX</p>
+                    <p id="citation-note">If you use MitoVisualize please cite as "MitoVisualize. http://www.mitovisualize.org, 2021".</p>
 
                 </div>
 
