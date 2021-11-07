@@ -36,7 +36,20 @@ const mt_genes = [
     'MT-TM',
     'MT-TR',
     'MT-RNR1',
-    'MT-RNR2']
+    'MT-RNR2',
+    'MT-CYB', 
+    'MT-ND6',
+    'MT-ND5',
+    'MT-ND4',
+    'MT-ND4L',
+    'MT-ND3',
+    'MT-CO3',
+    'MT-ATP6',
+    'MT-ATP8',
+    'MT-CO2',
+    'MT-CO1',
+    'MT-ND2',
+    'MT-ND1']
 
 
 /*

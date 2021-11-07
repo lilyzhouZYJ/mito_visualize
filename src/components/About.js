@@ -26,8 +26,8 @@ class About extends React.Component {
 
 		<b>Contacts & Team:</b><br />
 		Nicole Lake, Lily Zhou, Monkol Lek<br />
-		All code for this tool is on the <a href="https://github.com/lilyzhouZYJ/mito_visualize" target="_blank">github repositiory</a><br />
-		To share feedback or suggest improvements, please leave a message (as an issue) on the <a href="https://github.com/lilyzhouZYJ/mito_visualize/issues" target="_blank">github repository</a>.<br/>
+		All code for this tool is on the <a href="https://github.com/leklab/mito_visualize" target="_blank">github repositiory</a><br />
+		To share feedback or suggest improvements, please leave a message (as an issue) on the <a href="https://github.com/leklab/mito_visualize/issues" target="_blank">github repository</a>.<br/>
                 For general enquiries please email mitovisualize@gmail.com.<br />
 		<br /><br />
 

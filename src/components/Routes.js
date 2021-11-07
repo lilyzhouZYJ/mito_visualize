@@ -84,6 +84,7 @@ export default function Routes() {
             exact
             path="/:gene"
             render={({ match }) => {
+
               if(match.params.gene[3]=='T'){
                 return (
                   <TrnaSVG
@@ -100,21 +101,6 @@ export default function Routes() {
               }
             }}
           />
-        {/*
-        <Route
-            exact
-            path="/:gene/:variant"
-            render={({ match }) => {
-              return (
-                <TrnaSVG
-                  variant={match.params.variant}
-                  variantCor={match.params.variant.replace(/\D/g, "")}
-                  gene={match.params.gene}
-                />
-              )
-            }}
-          />
-          */} 
 
         
         <Route
@@ -175,7 +161,7 @@ export default function Routes() {
                   return(
                     <Page>
                     <PageHeading>Error resolving variant</PageHeading>
-                    <p>Visualization for protein-coding genes not available. MitImpact is a database for non-synonymous variants in human mitochondrial protein-coding genes, available at <a href="https://mitimpact.css-mendel.it/">https://mitimpact.css-mendel.it/</a>.</p>
+                    <p>Visualization for protein-coding genes not available. MitImpact is a database for non-synonymous variants in human mitochondrial protein-coding genes, available at <a href="https://mitimpact.css-mendel.it/" target="_blank">https://mitimpact.css-mendel.it/</a>.</p>
                     </Page>
                   )
                 else
@@ -212,6 +198,19 @@ export default function Routes() {
             exact
             path="/rna-visualization/:gene"
             render={({ match }) => {
+                // console.log(match.params.gene);
+
+                if(match.params.gene in ProteinGeneDict){
+                  // console.log("gene in proteinGeneDict");
+                  return(
+                    <Page>
+                      <PageHeading>Error resolving variant</PageHeading>
+                      <p>Visualization for protein-coding genes not available. MitImpact is a database for non-synonymous variants in human mitochondrial protein-coding genes, available at <a href="https://mitimpact.css-mendel.it/" target="_blank">https://mitimpact.css-mendel.it/</a>.</p>
+                    </Page>
+                  )
+                }
+
+
                 if(match.params.gene[3]=='T'){
                     return (
                       <TrnaVisualizationSVG
