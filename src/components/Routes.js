@@ -109,7 +109,7 @@ export default function Routes() {
             render={({ match }) => {
               //m.5761A>G
 
-              console.log(match.params.variant)
+              // console.log(match.params.variant)
 
               // check variant format
               // code here
@@ -141,7 +141,7 @@ export default function Routes() {
               const variant_reformat = "m." + regex_match[1] + regex_match[2] + ">" + regex_match[3]
 
 
-              console.log(variant_reformat)
+              // console.log(variant_reformat)
               var variantCor = variant_reformat.replace(/\D/g, "")
 
               var newGene = null;
@@ -151,7 +151,7 @@ export default function Routes() {
                   }
               }
 
-              console.log(newGene)
+              // console.log(newGene)
 
               // check gene
               // code here
@@ -168,7 +168,7 @@ export default function Routes() {
                   return(
                     <Page>
                     <PageHeading>Error resolving variant</PageHeading>
-                    <p>Variant position: {regex_match[1]} is not in a tRNA or rRNA gene</p>
+                    <p>Visualization for non-coding regions not available. See the <a href="https://www.mitovisualize.org/mtdna" target="_blank">mtDNA tool</a> for visualization of a base/variant or region in the circular mtDNA.</p>
                     </Page>
                   )
               }
@@ -201,10 +201,9 @@ export default function Routes() {
                 // console.log(match.params.gene);
 
                 if(match.params.gene in ProteinGeneDict){
-                  // console.log("gene in proteinGeneDict");
                   return(
                     <Page>
-                      <PageHeading>Error resolving variant</PageHeading>
+                      <PageHeading>Error</PageHeading>
                       <p>Visualization for protein-coding genes not available. MitImpact is a database for non-synonymous variants in human mitochondrial protein-coding genes, available at <a href="https://mitimpact.css-mendel.it/" target="_blank">https://mitimpact.css-mendel.it/</a>.</p>
                     </Page>
                   )

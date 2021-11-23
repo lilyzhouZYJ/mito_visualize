@@ -148,9 +148,6 @@ class TrnaSVG extends React.Component{
 
 
     componentDidMount(){
-
-        console.log("in componentDidMount")
-
         // if variant has already been passed as prop
         if(this.props.variant){
             var variant = this.props.variant;
@@ -180,7 +177,6 @@ class TrnaSVG extends React.Component{
             const match = VARIANT_ID_REGEX.exec(varSubmitted)
 
             var variantId = "m-"+match[1]+"-"+match[2]+"-"+match[3]
-            console.log("In handleVarSubmit: "+varSubmitted+" variantId: "+variantId)
 
             window.location.href = '/variant/'+variantId;
 
@@ -266,15 +262,7 @@ class TrnaSVG extends React.Component{
 
 
     componentDidUpdate(prevProps){
-
-        
-
-        console.log("In componentDidUpdate")
-
         if(this.props.variant !== prevProps.variant){
-            console.log("this.props.variant changed")
-            console.log(prevProps.variant + " " + this.props.variant)
-
             var variant = this.props.variant
             var varCoor = variant.replace(/\D/g, "");
 
@@ -389,8 +377,6 @@ class TrnaSVG extends React.Component{
     }
 
     render() {
-
-        console.log("In render")
 
         var gene = this.props.gene;
         // const variant = this.props.variant

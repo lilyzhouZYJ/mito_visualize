@@ -181,8 +181,6 @@ class VarInput extends React.Component{
     }
     
     render() {
-        console.log("In VarInput render")
-        console.log(this.props.variant)
 
         if(this.props.variant){
             var errExists = document.getElementById('error');

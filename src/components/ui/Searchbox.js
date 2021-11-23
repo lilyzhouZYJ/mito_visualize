@@ -160,12 +160,6 @@ export class Searchbox extends Component {
       if (isFetching) {
         menuContent = <PlaceholderItem>Searching...</PlaceholderItem>
       } else {
-        /*
-        if (ProteinGenes.includes(inputValue.toUpperCase()))
-          menuContent = <PlaceholderItem>Visualization for protein-coding genes not available. MitImpact is a database for non-synonymous variants in human mitochondrial protein-coding genes, available at <a style={{color:"gray"}} href="https://mitimpact.css-mendel.it/" target="_blank">https://mitimpact.css-mendel.it/</a>.</PlaceholderItem>
-          // menuContent = inputValue.toUpperCase()
-        else
-        */
           menuContent = <PlaceholderItem>No results found</PlaceholderItem>
       }
     } else {

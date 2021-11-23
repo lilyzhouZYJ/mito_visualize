@@ -23,11 +23,24 @@ class Home extends React.Component {
                 , Variant:{' '}
                 <Link to="/variant/m-5762-A-G">
                   m.5762A>G
-                </Link>
-                <br /><br />
-                MitoVisualize displays information and generates figures for variants and genes of interest 
-                in the human mitochondrial DNA (mtDNA), specifically for RNA and mtDNA structures. 
-                </p>
+                </Link> 
+                </p><br /><br />
+
+                <div style={{margin:"auto", width:"65%"}}>
+                  <p>MitoVisualize is a tool for analysis of variants in human mitochondrial RNAs and DNA.</p>
+                  <br />
+                  <p>
+                    MitoVisualize can be used to:
+                  </p>
+                  <ul>
+                    <li>Analyze a variant in a mitochondrial RNA gene, by visualizing its position in the RNA structure alongside various variant annotations.</li>
+                    <li>Visualize data across RNA structures, such as to show all positions with disease-associated variants.</li>
+                    <li>Label a base or region in the circular mtDNA, such as to visualize the location of a large deletion.</li>
+                  </ul>
+                  <p>
+                    All visualizations can be easily downloaded as figures for reuse.
+                  </p>
+                </div>
 
             </div>
         )

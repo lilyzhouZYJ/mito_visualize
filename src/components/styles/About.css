@@ -16,7 +16,7 @@
 
 #about-page li{
     list-style-type: square;
-    list-style-position: inside;
+    list-style-position: outside;
 }
 
 

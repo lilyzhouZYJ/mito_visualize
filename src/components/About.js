@@ -6,18 +6,17 @@ class About extends React.Component {
     render(){
         return(
             <div id="about-page" className="container">
-		MitoVisualize displays information and generates figures for variants and genes of interest in the human mitochondrial DNA (mtDNA), 
-		specifically for RNA and mtDNA structures.<br /><br />
+		MitoVisualize is a tool for analysis of variants in human mitochondrial RNAs and DNA.<br /><br />
 		
-		Current functionality includes: <br />
+		MitoVisualize can be used to: <br />
 		<ol>
-		<li>Easy generation of figures to display position of variants in mitochondrial RNA structures, and in the mtDNA (including regions of large deletion)</li>
-		<li>Display of information for variants in mitochondrial RNA genes, including but not limited to population frequency data, in silico predictions, and reported disease associations, </li>
-		<li>Visualization of data across mitochondrial RNA structures, such as to show all positions with disease-associated variants</li>
+		<li>Analyze a variant in a mitochondrial RNA gene, by visualizing its position in the RNA structure alongside various variant annotations.</li>
+		<li>Visualize data across RNA structures, such as to show all positions with disease-associated variants.</li>
+		<li>Label a base or region in the circular mtDNA, such as to visualize the location of a large deletion.</li>
 		</ol>
-		<br />
-		MitoVisualize may be useful for anyone interested in exploring mtDNA variation, though it has been designed to facilitate mtDNA variant interpretation 
-		in particular. 
+        All visualizations can be easily downloaded as png figures for reuse.
+		<br /><br />
+		MitoVisualize can be useful for anyone interested in exploring mtDNA variation, though is designed to facilitate mtDNA variant interpretation in particular. 
 		<br /><br />
 
 		<b>Citation:</b><br />
@@ -26,7 +25,7 @@ class About extends React.Component {
 
 		<b>Contacts & Team:</b><br />
 		Nicole Lake, Lily Zhou, Monkol Lek<br />
-		All code for this tool is on the <a href="https://github.com/leklab/mito_visualize" target="_blank">github repositiory</a><br />
+		All code for this tool is on the <a href="https://github.com/leklab/mito_visualize" target="_blank">github repository</a><br />
 		To share feedback or suggest improvements, please leave a message (as an issue) on the <a href="https://github.com/leklab/mito_visualize/issues" target="_blank">github repository</a>.<br/>
                 For general enquiries please email mitovisualize@gmail.com.<br />
 		<br /><br />

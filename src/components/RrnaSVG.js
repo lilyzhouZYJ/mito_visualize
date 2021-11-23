@@ -151,7 +151,7 @@ class RrnaSVG extends React.Component{
             const match = VARIANT_ID_REGEX.exec(varSubmitted)
 
             var variantId = "m-"+match[1]+"-"+match[2]+"-"+match[3]
-            console.log("In handleVarSubmit: "+varSubmitted+" variantId: "+variantId)
+            // console.log("In handleVarSubmit: "+varSubmitted+" variantId: "+variantId)
 
             window.location.href = '/variant/'+variantId;
 
@@ -287,22 +287,15 @@ class RrnaSVG extends React.Component{
 
 
     componentDidUpdate(prevProps){
-        //var variant = this.state.varSubmitted;
-        //var variantCor = this.state.varCor;
-
-        console.log("In componentDidUpdate")
 
         if(this.props.variant !== prevProps.variant){
-            console.log("this.props.variant changed")
-            console.log(prevProps.variant + " " + this.props.variant)
-
             var variant = this.props.variant
             var varCoor = variant.replace(/\D/g, "");
 
             var variantCor = varCoor;
 
             this.state.varData = null
-            console.log("setting varData to null")
+            // console.log("setting varData to null")
 
             this.loadData(variant, varCoor);
             this.setState({varSubmitted: variant, varCor: varCoor});
@@ -326,7 +319,6 @@ class RrnaSVG extends React.Component{
 
             var origPairing;
             var allTitle = document.getElementById('rrna-svg-container-zoom').getElementsByTagName('title');
-            console.log("In this.state.varData with variantCor: "+variantCor)
 
             for(var title of allTitle){
 

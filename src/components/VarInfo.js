@@ -17,7 +17,7 @@ class VarInfo extends React.Component{
 
             return(
                 <div id='var-info'>
-                    {dom!==null ?
+                    {dom != null ?
                        <div>
                            This variant in the {this.props.gene} gene results in a {initLetter}>{newLetter} change in the {dom} domain of the {this.props.rnaType}{wc}.
                            <div className="help-tip">
