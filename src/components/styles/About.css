@@ -13,6 +13,9 @@
     margin: auto;
 }
 
+#about-page ul{
+    margin-left: 2rem;
+}
 
 #about-page li{
     list-style-type: square;
