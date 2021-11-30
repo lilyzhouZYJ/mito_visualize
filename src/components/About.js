@@ -28,7 +28,7 @@ class About extends React.Component {
 		All code for this tool is on the <a href="https://github.com/leklab/mito_visualize" target="_blank">github repository</a><br />
 		To share feedback or suggest improvements, please leave a message (as an issue) on the <a href="https://github.com/leklab/mito_visualize/issues" target="_blank">github repository</a>.<br/>
                 For general enquiries please email mitovisualize@gmail.com.<br />
-		<br /><br />
+		<br />
 
 		<b>Acknowledgements of Data Sources:</b><br />
 		MitoVisualize displays information from a variety of sources which we gratefully acknowledge (version details or date of last access are noted):
@@ -47,6 +47,42 @@ class About extends React.Component {
                     <li>Rebelo-Guiomar P, et al. The mammalian mitochondrial epitranscriptome. Biochim Biophys Acta Gene Regul Mech. 2019 Mar;1862(3):429-446. <a href="https://pubmed.ncbi.nlm.nih.gov/30529456/" target="_blank">PMID: 30529456</a></li>
                     <li>Suzuki T, et al. Complete chemical structures of human mitochondrial tRNAs. Nat Commun. 2020 Aug 28;11(1):4269. <a href="https://pubmed.ncbi.nlm.nih.gov/32859890/" target="_blank">PMID: 32859890.</a></li>
 		</ul>
+
+		<br />
+		<b>API:</b><br />
+        MitoVisualize allows users to access its processed data directly via the <a href="https://mitovisualize.org/api" target="_blank">GraphQL interface</a>. 
+        It allows for queries using mtDNA coordinate (example: <code>coordinate(var_coordinate:2492)</code>), variant ID (example: <code>variant(var_id:"m.5618T>A")</code>), or gene name (example: <code>gene(gene: "MT-TA")</code>). 
+        To access specific fields, add the field name to the query (example: <code>post_transcription_modifications</code>). 
+        A complete list of fields can be found on the GraphQL interface in the Documentation Explorer in the top-right corner. 
+        The query output is in JSON format which allows for easy parsing.
+        <br />
+
+        Example: The user may search for the variant with ID "m.5618T>C" in the following format:
+        <br /><br />
+        <pre style={{marginLeft: "2rem"}}>
+          <code>
+            variant(var_id:"m.5618T>C")&#123;<br />&#9;gene<br />&#9;domain<br />&#9;pop_freq_gnomad_ac_hom<br />&#9;prediction_mitotip_category<br />&#125;
+          </code>
+        </pre>
+
+        The query indicates that the user is searching for data about the variant m.5618T>C, and is looking for its 
+        gene, domain, homoplasmic allele count in gnomAD, and in silico prediction based on MitoTip. 
+
+        The query will render the following result:
+        <br /><br />
+
+        <pre style={{marginLeft: "2rem"}}>
+          <code>
+            "data": &#123;<br />&#9;"variant": &#123;<br /> &#9;&#9;"gene": [<br />&#9;&#9;&#9;"MT-TA"<br />&#9;&#9;],<br />&#9;&#9;"domain": "Anticodon stem",<br />&#9;&#9;"pop_freq_gnomad_ac_hom": 32,<br />&#9;&#9;"prediction_mitotip_category": "possibly benign"<br />&#9;&#125;<br />&#125;
+          </code>
+        </pre>
+
+        This indicates that the variant is located in the MT-TA gene, within the anticodon stem domain, and that it 
+        has a homoplasmic allele count of 32 in gnomAD, and is predicted to be possibly benign by MitoTip.
+
+
+        <br />
+
 		<br /><br /><br /><br /><br /><br />
          </div>
 
