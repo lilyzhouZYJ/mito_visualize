@@ -585,7 +585,7 @@ class RrnaSVG extends React.Component{
                                     </label>
                                 </p>
                             </div>   
-                            <p id="citation-note">If you use MitoVisualize please cite as "MitoVisualize. http://www.mitovisualize.org, 2021".</p>
+                            <p id="citation-note">If you use MitoVisualize, please cite "Lake NJ, Zhou L, Xu J, Lek M. 2021. MitoVisualize: A resource for analysis of variants in human mitochondrial RNAs and DNA. bioRxiv <a href="https://www.biorxiv.org/content/10.1101/2021.12.04.470997v1" target="_blank">doi: 10.1101/2021.12.04.470997</a>".</p>
                         </div>
                     </div>    
                     <div id="right-container">
@@ -611,7 +611,7 @@ class RrnaSVG extends React.Component{
                                 }
                             </ul>
                             <button id='download-btn' onClick={this.handleClick}>Download Image (png)</button>
-                            <p id="citation-note">If you use MitoVisualize please cite as "MitoVisualize. http://www.mitovisualize.org, 2021".</p>
+                            <p id="citation-note">If you use MitoVisualize, please cite "Lake NJ, Zhou L, Xu J, Lek M. 2021. MitoVisualize: A resource for analysis of variants in human mitochondrial RNAs and DNA. bioRxiv <a href="https://www.biorxiv.org/content/10.1101/2021.12.04.470997v1" target="_blank">doi: 10.1101/2021.12.04.470997</a>".</p>
                         </div>
                     </div>    
                     <div id="right-container">
@@ -636,7 +636,7 @@ class RrnaSVG extends React.Component{
                                 }
                             </ul>
                             <button id='download-btn' onClick={this.handleClick}>Download Image (png)</button>
-                            <p id="citation-note">If you use MitoVisualize please cite as "MitoVisualize. http://www.mitovisualize.org, 2021".</p>
+                            <p id="citation-note">If you use MitoVisualize, please cite "Lake NJ, Zhou L, Xu J, Lek M. 2021. MitoVisualize: A resource for analysis of variants in human mitochondrial RNAs and DNA. bioRxiv <a href="https://www.biorxiv.org/content/10.1101/2021.12.04.470997v1" target="_blank">doi: 10.1101/2021.12.04.470997</a>".</p>
                         </div>    
                     </div>
                     <div id="right-container">
