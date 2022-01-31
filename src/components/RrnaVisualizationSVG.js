@@ -45,14 +45,16 @@ class RrnaVisualizationSVG extends React.Component{
             */
 
             var imageOptions = {
-                backgroundColor: 'white'
+                backgroundColor: 'white',
+                //encoderType: 'image/jpeg'
             }
 
 
         } else {
 
             var imageOptions = {
-                backgroundColor: 'white'
+                backgroundColor: 'white',
+                //encoderType: 'image/jpeg'
             }
 
 
@@ -74,7 +76,9 @@ class RrnaVisualizationSVG extends React.Component{
         console.log(this.props.gene)
         console.log(imageOptions)
         //fileName = this.props.gene;
+        //fileName = this.props.gene + ".jpeg"
         fileName = this.props.gene + ".png"
+
         saveSvgAsPng.saveSvgAsPng(document.getElementById('rrna-svg-container'), fileName, imageOptions);
     };
 

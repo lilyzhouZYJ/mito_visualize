@@ -42,6 +42,7 @@ class RrnaSVG extends React.Component{
 
         if(this.props.gene=="MT-RNR1"){
             if(document.getElementById('select-download')==null||document.getElementById('zoomed-out').checked){  //if the user chooses to download full image
+                /*
                 var imageOptions = {
                     scale: 9,
                     encoderOptions: 1,
@@ -51,6 +52,13 @@ class RrnaSVG extends React.Component{
                     width: 950,
                     height: 1000
                 }
+                */
+
+                var imageOptions = {
+                    backgroundColor: 'white'
+                }
+
+
             } else {    //if the user chooses to download zoomed-in image
                 var imageOptions = {
                     scale: 9,
@@ -67,6 +75,7 @@ class RrnaSVG extends React.Component{
             }
         } else {
             if(document.getElementById('select-download')==null||document.getElementById('zoomed-out').checked){
+                /*
                 var imageOptions = {
                     scale: 4,
                     encoderOptions: 1,
@@ -76,6 +85,13 @@ class RrnaSVG extends React.Component{
                     width: 2880,
                     height: 1974
                 }
+                */
+                var imageOptions = {
+                    backgroundColor: 'white'
+                }
+
+
+
             } else {
                 var imageOptions = {
                     scale: 4,
@@ -99,8 +115,15 @@ class RrnaSVG extends React.Component{
             saveSvgAsPng.saveSvgAsPng(document.getElementById('rrna-svg-container'), fileName, imageOptions);
         } else {
             console.log("rRNA - Variant submitted")
+            console.log(imageOptions)
             fileName = this.state.varSubmitted + " [" + this.props.gene + "]" + fileName + '.png';
-            saveSvgAsPng.saveSvgAsPng(document.getElementById('rrna-svg-container-zoom'), fileName, imageOptions);
+
+            if(document.getElementById('select-download')==null||document.getElementById('zoomed-out').checked){
+                saveSvgAsPng.saveSvgAsPng(document.getElementById('rrna-svg-container'), fileName, imageOptions);
+            }
+            else{
+                saveSvgAsPng.saveSvgAsPng(document.getElementById('rrna-svg-container-zoom'), fileName, imageOptions);                
+            }
         }
 
         // document.getElementById('gene-legend').remove();
