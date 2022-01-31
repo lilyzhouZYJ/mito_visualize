@@ -93,9 +93,12 @@ class RrnaSVG extends React.Component{
         }
         
         if(this.state.varSubmitted==null){
-            fileName = this.props.gene;
+            console.log("rRNA - No variant submitted")
+            //fileName = this.props.gene;
+            fileName = this.props.gene + '.png'
             saveSvgAsPng.saveSvgAsPng(document.getElementById('rrna-svg-container'), fileName, imageOptions);
         } else {
+            console.log("rRNA - Variant submitted")
             fileName = this.state.varSubmitted + " [" + this.props.gene + "]" + fileName + '.png';
             saveSvgAsPng.saveSvgAsPng(document.getElementById('rrna-svg-container-zoom'), fileName, imageOptions);
         }

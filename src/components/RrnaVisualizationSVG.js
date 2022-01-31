@@ -31,6 +31,8 @@ class RrnaVisualizationSVG extends React.Component{
         var fileName = "";
 
         if(this.props.gene=="MT-RNR1"){
+
+            /*
             var imageOptions = {
                 scale: 9,
                 encoderOptions: 1,
@@ -40,7 +42,21 @@ class RrnaVisualizationSVG extends React.Component{
                 width: 950,
                 height: 1000
             }
+            */
+
+            var imageOptions = {
+                backgroundColor: 'white'
+            }
+
+
         } else {
+
+            var imageOptions = {
+                backgroundColor: 'white'
+            }
+
+
+            /*
             var imageOptions = {
                 scale: 4,
                 encoderOptions: 1,
@@ -50,9 +66,15 @@ class RrnaVisualizationSVG extends React.Component{
                 width: 2880,
                 height: 1974
             }
+            */
         }
         
-        fileName = this.props.gene;
+
+        console.log("In rna-visualization button click");
+        console.log(this.props.gene)
+        console.log(imageOptions)
+        //fileName = this.props.gene;
+        fileName = this.props.gene + ".png"
         saveSvgAsPng.saveSvgAsPng(document.getElementById('rrna-svg-container'), fileName, imageOptions);
     };
 
