@@ -56,7 +56,7 @@ const reverseStrand = ["MT-TQ","MT-TA","MT-TN","MT-TC","MT-TY","MT-TS1","MT-TE",
 
 //download SVG button setup
 const saveSvgAsPng = require('save-svg-as-png')
-const imageOptions = {
+const defaultImageOptions = {
   scale: 5,
   encoderOptions: 1,
   backgroundColor: 'white',
@@ -71,7 +71,25 @@ class TrnaVisualizationSVG extends React.Component{
     //download svg
     handleClick = () => {
         var fileName;
-        fileName = this.props.gene;
+        //fileName = this.props.gene;
+        var imageOptions
+
+        if(document.getElementById('jpeg').checked){
+            imageOptions = { ...defaultImageOptions, encoderType: 'image/jpeg'}            
+            fileName = this.props.gene + ".jpeg"
+        }
+        else if(document.getElementById('webp').checked){
+            imageOptions = { ...defaultImageOptions, encoderType: 'image/webp'}                        
+            fileName = this.props.gene + ".webp"
+        }
+
+        else{
+            imageOptions = { ...defaultImageOptions, encoderType: 'image/png'}                        
+            fileName = this.props.gene + ".png"
+        }
+
+
+
         saveSvgAsPng.saveSvgAsPng(document.getElementById('svg-container'), fileName, imageOptions);
     };
 
@@ -100,7 +118,29 @@ class TrnaVisualizationSVG extends React.Component{
                         <li>Hovering over each base will display the genomic coordinate.</li>
                         <li>2D cloverleaf tRNA structures are per <a href="https://pubmed.ncbi.nlm.nih.gov/17585048/" target="_blank">Putz et al</a> as shown on <a href="http://mamit-trna.u-strasbg.fr/human.asp" target="_blank">Mamit-tRNA</a>.</li>
                     </ul>
-                    <button id="download-btn" onClick={this.handleClick}>Download Image (png)</button>
+                    
+
+                    <div id="select-image-type" style={{display: "flex", alignItems: "center"}}>
+                        <div id="radio-button-area" style={{paddingRight: "25px"}}>
+                            <label>
+                                <input type='radio' name="image-type" id="png" class="with-gap" checked />
+                                <span>PNG</span>
+                            </label>
+                            <br />
+                            <label>
+                                <input type='radio' name="image-type" id="jpeg" class="with-gap"/>
+                                <span>JPEG</span>
+                            </label>
+                            <br />
+                            <label>
+                                <input type='radio' name="image-type" id="webp" class="with-gap"/>
+                                <span>WEBP</span>
+                            </label>
+                        </div>
+                        
+                        <button id='download-btn' onClick={this.handleClick}>Download Image</button>
+                    </div>                            
+                    
                     <p id="citation-note">If you use MitoVisualize, please cite "Lake NJ, Zhou L, Xu J, Lek M. 2021. MitoVisualize: A resource for analysis of variants in human mitochondrial RNAs and DNA. bioRxiv <a href="https://www.biorxiv.org/content/10.1101/2021.12.04.470997v1" target="_blank">doi: 10.1101/2021.12.04.470997</a>".</p>
                 </div>
                 <div id="right-container">
