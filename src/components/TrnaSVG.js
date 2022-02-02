@@ -120,6 +120,69 @@ class TrnaSVG extends React.Component{
     };
 
 
+    //download var data as table
+    // https://stackoverflow.com/questions/27013963/write-to-csv-file-locally-with-html5
+    downloadVarClick = () => {
+        console.log("In download Var click")
+
+
+
+        const {varData, varCor} = this.state
+
+        console.log(varData)
+        //console.log(varCor)
+        //console.log(Object.keys(varData))
+
+        const varDataKeys = Object.keys(varData)
+        console.log(varDataKeys)
+
+        var header = varDataKeys[0]
+        var data_row = varData[varDataKeys[0]]
+        var i
+        const sep = '\t'
+
+
+        for(i= 1; i < varDataKeys.length; i++){
+            header += sep + varDataKeys[i]
+
+            if(varData[varDataKeys[i]] !== null){
+                data_row += sep + varData[varDataKeys[i]]
+            }
+            else{
+                data_row += sep + 'NA'                
+            }
+        }
+
+
+        //console.log(header)
+        //console.log(data_row)
+
+        //var fileName = 'm_' + varData.var_coordinate + '_' + varData.var_ref + '_' + varData.var_alt + '.tsv'
+        var fileName = `m_${varData.var_coordinate}_${varData.var_ref}_${varData.var_alt}.tsv`
+
+        var data = header + '\n' + data_row + '\n'
+
+        // Idea taken from: https://github.com/exupero/saveSvgAsPng in out$.download function
+        var exportLink = document.createElement('a');
+        var uri = 'data:text/csv;base64,' + window.btoa(data)
+
+        exportLink.setAttribute('href', uri);
+        exportLink.setAttribute('download', fileName);
+        document.body.appendChild(exportLink);
+
+        exportLink.onclick = () => requestAnimationFrame(() => URL.revokeObjectURL(uri));
+        exportLink.click();
+        document.body.removeChild(exportLink);
+
+
+        //exportLink.appendChild(document.createTextNode('test.csv'));
+        //exportLink.onclick = () => requestAnimationFrame(() => URL.revokeObjectURL(url));
+
+
+        //document.getElementById('results').appendChild(exportLink);
+
+
+    };
 
 
 
@@ -445,6 +508,8 @@ class TrnaSVG extends React.Component{
                         <VarInput handleVarSubmit={this.handleVarSubmit} gene={gene} variant={this.props.variant}/>
                         <VarInfo variant={varSubmitted} gene={gene} dom={varData.domain} rnaType="tRNA" initLetter={initLetter} newLetter={newLetter} breakWC={breakWC} formWC={formWC} />
                         <VarInfoTable variant={varSubmitted} varData={varData} rnaType="tRNA" />
+                        <button id='download-btn' onClick={this.downloadVarClick}>Download Variant Data</button>
+                        <div id="results"></div>
                     </div>
                 </div>
             )
