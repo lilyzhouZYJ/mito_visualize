@@ -11,6 +11,50 @@ export const fetchVarInfo = varId => {
        variant(${argument}){
             var_id,
             var_coordinate,
+            var_ref,
+            var_alt,
+            gene,
+            pair_base,
+            pair_coordinate,
+            pop_freq_gnomad_af_hom,
+            pop_freq_gnomad_ac_hom,
+            pop_freq_gnomad_af_het,
+            pop_freq_gnomad_ac_het,
+            pop_freq_helix_af_hom,
+            pop_freq_helix_counts_hom,
+            pop_freq_helix_af_het,
+            pop_freq_helix_counts_het,
+            pop_freq_mitomap,
+            pop_count_mitomap,
+            heteroplasmy_gnomad,
+            heteroplasmy_helix,
+            prediction_mitotip,
+            prediction_mitotip_category,
+            prediction_pon_mt_tRNA,
+            prediction_pon_mt_tRNA_category,
+            prediction_hmtvar,
+            prediction_hmtvar_category,
+            disease_status_mitomap,
+            diseases_mitomap,
+            disease_status_clinvar,
+            diseases_clinvar,
+            clinvar_variant_id,
+            haplogroups,
+            count_haplos,
+            conserv_phylop,
+            conserv_phastcons,
+            post_transcription_modifications,
+            structural_interaction_hmtvar,
+            domain
+       }
+    }`
+    
+
+    /*
+    const query = `{
+       variant(${argument}){
+            var_id,
+            var_coordinate,
             var_alt,
             var_ref,
             gene,
@@ -48,7 +92,7 @@ export const fetchVarInfo = varId => {
             domain
        }
     }`
-
+    */
     //console.log(query)
     //return fetch(process.env.GNOMAD_API_URL)(query)
     //console.log(fetch(query));

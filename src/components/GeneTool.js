@@ -59,7 +59,7 @@ class GeneTool extends React.Component{
 
     //download svg
     handleClick = () => {
-        var imageOptions = {
+        var defaultImageOptions = {
             scale: 5,
             encoderOptions: 1,
             backgroundColor: 'white',
@@ -69,6 +69,22 @@ class GeneTool extends React.Component{
             height: 750
         }
         var fileName = "mtDNA";
+        var imageOptions
+
+        if(document.getElementById('jpeg').checked){
+            imageOptions = { ...defaultImageOptions, encoderType: 'image/jpeg'}            
+            fileName = fileName + ".jpeg"
+        }
+        else if(document.getElementById('webp').checked){
+            imageOptions = { ...defaultImageOptions, encoderType: 'image/webp'}                        
+            fileName = fileName + ".webp"
+        }
+
+        else{
+            imageOptions = { ...defaultImageOptions, encoderType: 'image/png'}                        
+            fileName = fileName + ".png"
+        }
+
         saveSvgAsPng.saveSvgAsPng(document.getElementById('circle'), fileName, imageOptions);
     };
 
@@ -544,7 +560,28 @@ class GeneTool extends React.Component{
                         </div>
                     }
 
-                    <button id="download-btn" onClick={this.handleClick}>Download Image (png)</button>
+
+                    <div id="select-image-type" style={{display: "flex", alignItems: "center"}}>
+                        <div id="radio-button-area" style={{paddingRight: "25px"}}>
+                            <label>
+                                <input type='radio' name="image-type" id="png" class="with-gap" checked />
+                                <span>PNG</span>
+                            </label>
+                            <br />
+                            <label>
+                                <input type='radio' name="image-type" id="jpeg" class="with-gap"/>
+                                <span>JPEG</span>
+                            </label>
+                            <br />
+                            <label>
+                                <input type='radio' name="image-type" id="webp" class="with-gap"/>
+                                <span>WEBP</span>
+                            </label>
+                        </div>
+                        <button id='download-btn' onClick={this.handleClick}>Download Image</button>
+                    </div>
+                        
+
                     <p id="citation-note">If you use MitoVisualize, please cite "Lake NJ, Zhou L, Xu J, Lek M. 2021. MitoVisualize: A resource for analysis of variants in human mitochondrial RNAs and DNA. bioRxiv <a href="https://www.biorxiv.org/content/10.1101/2021.12.04.470997v1" target="_blank">doi: 10.1101/2021.12.04.470997</a>".</p>
 
                 </div>

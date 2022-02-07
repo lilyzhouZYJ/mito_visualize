@@ -140,7 +140,8 @@ class TrnaSVG extends React.Component{
         var data_row = varData[varDataKeys[0]]
         var i
         const sep = '\t'
-
+        const re = 'pop|heteroplasmy|count'
+        //const re2 = 'post_transcription_modifications'
 
         for(i= 1; i < varDataKeys.length; i++){
             header += sep + varDataKeys[i]
@@ -149,7 +150,15 @@ class TrnaSVG extends React.Component{
                 data_row += sep + varData[varDataKeys[i]]
             }
             else{
-                data_row += sep + 'NA'                
+                if(varDataKeys[i].match(re)){
+                    data_row += sep + '0'
+                }
+                else if(varDataKeys[i] == 'post_transcription_modifications'){
+                    data_row += sep + 'No'
+                }
+                else{
+                    data_row += sep + 'NA'
+                }                
             }
         }
 
