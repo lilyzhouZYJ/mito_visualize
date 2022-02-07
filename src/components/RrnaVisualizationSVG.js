@@ -118,10 +118,14 @@ class RrnaVisualizationSVG extends React.Component{
         console.log(imageOptions)
 
         if(this.props.gene == "MT-RNR1"){
-            saveSvgAsPng.saveSvgAsPng(document.getElementById('rrna-svg-container'), fileName, {...imageOptions, scale: 9 });
+            //Previously scale: 9
+            //width: 950,height: 1000
+
+            saveSvgAsPng.saveSvgAsPng(document.getElementById('rrna-svg-container'), fileName, {...imageOptions, scale: 4 });
         }
         else{
-            saveSvgAsPng.saveSvgAsPng(document.getElementById('rrna-svg-container'), fileName, {...imageOptions, scale: 4 });
+            //Previously scale: 4
+            saveSvgAsPng.saveSvgAsPng(document.getElementById('rrna-svg-container'), fileName, {...imageOptions, scale: 2 });
         }
 
     };
