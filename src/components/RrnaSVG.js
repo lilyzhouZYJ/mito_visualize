@@ -643,42 +643,62 @@ class RrnaSVG extends React.Component{
             SvgComponent = Mtrnr2;
             SvgComponentZoom = Mtrnr2Zoom;
         }
-    
-        if(varData){
-            return(
-                <div id="rrna-svg">   
-                    <div id="left-container">
-                        <h5>{gene}</h5>
-                        <h6>{this.state.varSubmitted}</h6>
-                        <SvgComponentZoom gene={gene} variant={this.state.varSubmitted} variantCor={this.state.varCor} />
-                        <SvgComponent gene={gene} variant={this.state.varSubmitted} variantCor={this.state.varCor}/>
-                        <div id="bottom-section">
-                            <ul id="notes">
-                                <li>Note: Thin lines represent Watson-Crick base pairs; dots represent non-Watson-Crick base pairs. Thick lines represent other types of structural interactions.</li>
-                                <li>Hovering over each base will display the genomic coordinate.</li>
-                                {gene=="MT-RNR1" ? 
-                                    <li>2D rRNA structure is per <a href="https://pubmed.ncbi.nlm.nih.gov/25838379/" target="_blank">Amunts, Brown et al 2015</a>.</li>
-                                    : <li>2D rRNA structure is per <a href="https://pubmed.ncbi.nlm.nih.gov/25278503/" target="_blank">Brown, Amunts et al 2014</a>.</li>
-                                }
-                            </ul>
 
-                            <div id="select-image-type" style={{display: "flex", alignItems: "center"}}>
-                                <div id="image-type-buttons" style={{paddingRight: "25px"}}>
-                                    <label>
-                                        <input type='radio' name="image-type" id="png" class="with-gap" checked />
-                                        <span>PNG</span>
-                                    </label>
-                                    <br />
-                                    <label>
-                                        <input type='radio' name="image-type" id="jpeg" class="with-gap"/>
-                                        <span>JPEG</span>
-                                    </label>
-                                    <br />
-                                    <label>
-                                        <input type='radio' name="image-type" id="webp" class="with-gap"/>
-                                        <span>WEBP</span>
-                                    </label>
-                                </div>
+        let varInfo;
+        let varInput;
+        let varInfoTable = null;
+        let varInfoDownload = null;
+        if(varData){
+            varInfo = <VarInfo variant={varSubmitted} gene={gene} dom={varData.dom} rnaType="rRNA" initLetter={initLetter} newLetter={newLetter} breakWC={breakWC} formWC={formWC} />;
+            varInput = <VarInput handleVarSubmit={this.handleVarSubmit} gene={gene} variant={this.props.variant}/>;
+            varInfoTable = <VarInfoTable variant={varSubmitted} varData={varData} rnaType="rRNA" />;
+            varInfoDownload = <button id='download-btn' onClick={this.downloadVarClick}>Download Variant Data</button>;
+        } else if (loadError){
+            varInfo = <VarInfo loadError={loadError} />;
+            varInput = <VarInput handleVarSubmit={this.handleVarSubmit} gene={gene}/>;
+        } else {
+            varInfo = this.state.varSubmitted !== null ? <VarInfo loading="Loading..." /> : null;
+            varInput = <VarInput handleVarSubmit={this.handleVarSubmit} gene={gene}/>;
+        }
+    
+        return(
+            <div id="rrna-svg">   
+                <div id="left-container">
+                    <h5>{gene}</h5>
+                    {varData && <h6>{this.state.varSubmitted}</h6>}
+
+                    {varData && <SvgComponentZoom gene={gene} variant={this.state.varSubmitted} variantCor={this.state.varCor} />}
+                    <SvgComponent gene={gene} variant={this.state.varSubmitted} variantCor={this.state.varCor}/>
+
+                    <div id="bottom-section">
+                        <ul id="notes">
+                            <li>Note: Thin lines represent Watson-Crick base pairs; dots represent non-Watson-Crick base pairs. Thick lines represent other types of structural interactions.</li>
+                            <li>Hovering over each base will display the genomic coordinate.</li>
+                            {gene=="MT-RNR1" ? 
+                                <li>2D rRNA structure is per <a href="https://pubmed.ncbi.nlm.nih.gov/25838379/" target="_blank">Amunts, Brown et al 2015</a>.</li>
+                                : <li>2D rRNA structure is per <a href="https://pubmed.ncbi.nlm.nih.gov/25278503/" target="_blank">Brown, Amunts et al 2014</a>.</li>
+                            }
+                        </ul>
+
+                        <div id="select-image-type" style={{display: "flex", alignItems: "center"}}>
+                            <div id="image-type-buttons" style={{paddingRight: "25px"}}>
+                                <label>
+                                    <input type='radio' name="image-type" id="png" class="with-gap" checked />
+                                    <span>PNG</span>
+                                </label>
+                                <br />
+                                <label>
+                                    <input type='radio' name="image-type" id="jpeg" class="with-gap"/>
+                                    <span>JPEG</span>
+                                </label>
+                                <br />
+                                <label>
+                                    <input type='radio' name="image-type" id="webp" class="with-gap"/>
+                                    <span>WEBP</span>
+                                </label>
+                            </div>
+                            
+                            {varData && 
                                 <div id="full-or-zoomed-in-buttons" style={{paddingRight: "25px"}}>
                                     <label>
                                         <input type='radio' name="download" id="zoomed-out" class="with-gap" checked/>
@@ -689,114 +709,23 @@ class RrnaSVG extends React.Component{
                                         <input type='radio' name="download" id="zoomed-in" class="with-gap"/>
                                         <span>Zoomed-in image</span>
                                     </label>
-
-                                    
                                 </div>
-                                
-                                <button id='download-btn' onClick={this.handleClick}>Download Image</button>
-                            </div>                            
+                            }
+                            
+                            <button id='download-btn' onClick={this.handleClick}>Download Image</button>
+                        </div>                            
 
-                            <p id="citation-note">If you use MitoVisualize, please cite "Lake NJ, Zhou L, Xu J, Lek M. 2021. MitoVisualize: A resource for analysis of variants in human mitochondrial RNAs and DNA. bioRxiv <a href="https://www.biorxiv.org/content/10.1101/2021.12.04.470997v1" target="_blank">doi: 10.1101/2021.12.04.470997</a>".</p>
-                        </div>
-                    </div>    
-                    <div id="right-container">
-                        <VarInput handleVarSubmit={this.handleVarSubmit} gene={gene} variant={this.props.variant}/>
-                        <VarInfo variant={varSubmitted} gene={gene} dom={varData.dom} rnaType="rRNA" initLetter={initLetter} newLetter={newLetter} breakWC={breakWC} formWC={formWC} />
-                        <VarInfoTable variant={varSubmitted} varData={varData} rnaType="rRNA" />
-                        <button id='download-btn' onClick={this.downloadVarClick}>Download Variant Data</button>
+                        <p id="citation-note">If you use MitoVisualize, please cite "Lake NJ, Zhou L, Xu J, Lek M. 2021. MitoVisualize: A resource for analysis of variants in human mitochondrial RNAs and DNA. bioRxiv <a href="https://www.biorxiv.org/content/10.1101/2021.12.04.470997v1" target="_blank">doi: 10.1101/2021.12.04.470997</a>".</p>
                     </div>
+                </div>    
+                <div id="right-container">
+                    {varInput}
+                    {varInfo}
+                    {varInfoTable}
+                    {varInfoDownload}
                 </div>
-            )
-        } else if (loadError){
-            return(
-                <div id="rrna-svg">   
-                    <div id="left-container">
-                        <h5>{gene}</h5>
-                        <SvgComponent gene={gene} variant={this.state.varSubmitted} variantCor={this.state.varCor}/>
-                        <div id="bottom-section">
-                            <ul id="notes">
-                                <li>Note: Thin lines represent Watson-Crick base pairs; dots represent non-Watson-Crick base pairs. Thick lines represent other types of structural interactions.</li>
-                                <li>Hovering over each base will display the genomic coordinate.</li>
-                                {gene=="MT-RNR1" ? 
-                                    <li>2D rRNA structure is per <a href="https://pubmed.ncbi.nlm.nih.gov/25838379/" target="_blank">Amunts, Brown et al 2015</a>.</li>
-                                    : <li>2D rRNA structure is per <a href="https://pubmed.ncbi.nlm.nih.gov/25278503/" target="_blank">Brown, Amunts et al 2014</a>.</li>
-                                }
-                            </ul>
-                            <div id="select-image-type" style={{display: "flex", alignItems: "center"}}>
-                                <div id="image-type-buttons" style={{paddingRight: "25px"}}>
-                                    <label>
-                                        <input type='radio' name="image-type" id="png" class="with-gap" checked />
-                                        <span>PNG</span>
-                                    </label>
-                                    <br />
-                                    <label>
-                                        <input type='radio' name="image-type" id="jpeg" class="with-gap"/>
-                                        <span>JPEG</span>
-                                    </label>
-                                    <br />
-                                    <label>
-                                        <input type='radio' name="image-type" id="webp" class="with-gap"/>
-                                        <span>WEBP</span>
-                                    </label>
-                                </div>                                
-                                <button id='download-btn' onClick={this.handleClick}>Download Image</button>
-                            </div>  
-                            <p id="citation-note">If you use MitoVisualize, please cite "Lake NJ, Zhou L, Xu J, Lek M. 2021. MitoVisualize: A resource for analysis of variants in human mitochondrial RNAs and DNA. bioRxiv <a href="https://www.biorxiv.org/content/10.1101/2021.12.04.470997v1" target="_blank">doi: 10.1101/2021.12.04.470997</a>".</p>
-                        </div>
-                    </div>    
-                    <div id="right-container">
-                        <VarInput handleVarSubmit={this.handleVarSubmit} gene={gene}/>
-                        <VarInfo loadError={loadError} />
-                    </div>
-                </div>
-            )
-        } else {
-            return(
-                <div id="rrna-svg">   
-                    <div id="left-container">
-                        <h5>{gene}</h5>
-                        <SvgComponent gene={gene} variant={this.state.varSubmitted} variantCor={this.state.varCor}/>
-                        <div id="bottom-section">
-                            <ul id="notes">
-                                <li>Note: Thin lines represent Watson-Crick base pairs; dots represent non-Watson-Crick base pairs. Thick lines represent other types of structural interactions.</li>
-                                <li>Hovering over each base will display the genomic coordinate.</li>
-                                {gene=="MT-RNR1" ? 
-                                    <li>2D rRNA structure is per <a href="https://pubmed.ncbi.nlm.nih.gov/25838379/" target="_blank">Amunts, Brown et al 2015</a>.</li>
-                                    : <li>2D rRNA structure is per <a href="https://pubmed.ncbi.nlm.nih.gov/25278503/" target="_blank">Brown, Amunts et al 2014</a>.</li>
-                                }
-                            </ul>
-                            <div id="select-image-type" style={{display: "flex", alignItems: "center"}}>
-                                <div id="image-type-buttons" style={{paddingRight: "25px"}}>
-                                    <label>
-                                        <input type='radio' name="image-type" id="png" class="with-gap" checked />
-                                        <span>PNG</span>
-                                    </label>
-                                    <br />
-                                    <label>
-                                        <input type='radio' name="image-type" id="jpeg" class="with-gap"/>
-                                        <span>JPEG</span>
-                                    </label>
-                                    <br />
-                                    <label>
-                                        <input type='radio' name="image-type" id="webp" class="with-gap"/>
-                                        <span>WEBP</span>
-                                    </label>
-                                </div>                                
-                                <button id='download-btn' onClick={this.handleClick}>Download Image</button>
-                            </div>
-                            <p id="citation-note">If you use MitoVisualize, please cite "Lake NJ, Zhou L, Xu J, Lek M. 2021. MitoVisualize: A resource for analysis of variants in human mitochondrial RNAs and DNA. bioRxiv <a href="https://www.biorxiv.org/content/10.1101/2021.12.04.470997v1" target="_blank">doi: 10.1101/2021.12.04.470997</a>".</p>
-                        </div>    
-                    </div>
-                    <div id="right-container">
-                        <VarInput handleVarSubmit={this.handleVarSubmit} gene={gene}/>
-                        {this.state.varSubmitted!==null &&
-                            <VarInfo loading="Loading..." />
-                        }
-                    </div>
-                </div>
-            )
-
-        }
+            </div>
+        )
     }
 }
 
