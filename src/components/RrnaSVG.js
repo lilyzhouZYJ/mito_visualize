@@ -42,26 +42,39 @@ class RrnaSVG extends React.Component{
         var baseImageOptions
         var imageOptions
 
-        if(this.props.gene=="MT-RNR1"){
-            if(document.getElementById('zoomed-out').checked){  //if the user chooses to download full image
-                /*
-                var imageOptions = {
+        /* Set up base image options */
+
+        if(document.getElementById('full-or-zoomed-in-buttons') == null || document.getElementById('zoomed-out').checked){
+            // if there is no "select full vs. zoomed-in image" option,
+            // or if user chooses to download full image, download full image.
+
+            if(this.props.gene=="MT-RNR1"){             // MT-RNR1 scaling
+                baseImageOptions = {
                     scale: 9,
                     encoderOptions: 1,
                     backgroundColor: 'white',
                     left: 5,
-                    top: 10,
+                    top: 5,
                     width: 950,
                     height: 1000
                 }
-                */
-
+            } else {                                    // MT-RNR2 scaling
                 baseImageOptions = {
-                    backgroundColor: 'white'
+                    scale: 4,
+                    encoderOptions: 1,
+                    backgroundColor: 'white',
+                    left: 110,
+                    top: 40,
+                    width: 2830,
+                    height: 1954
                 }
-
-
-            } else {    //if the user chooses to download zoomed-in image
+                console.log(baseImageOptions)
+            }
+            
+            
+        } else {
+            // download zoomed-in image
+            if(this.props.gene=="MT-RNR1"){             // MT-RNR1 scaling
                 baseImageOptions = {
                     scale: 9,
                     encoderOptions: 1,
@@ -71,30 +84,8 @@ class RrnaSVG extends React.Component{
                     width: 380,
                     height: 380
                 }
-
                 fileName = "-zoomed-in"
-
-            }
-        } else {
-            if(document.getElementById('zoomed-out').checked){
-                /*
-                var imageOptions = {
-                    scale: 4,
-                    encoderOptions: 1,
-                    backgroundColor: 'white',
-                    left: 100,
-                    top: 30,
-                    width: 2880,
-                    height: 1974
-                }
-                */
-                baseImageOptions = {
-                    backgroundColor: 'white'
-                }
-
-
-
-            } else {
+            } else {                                    // MT-RNR2 scaling
                 baseImageOptions = {
                     scale: 4,
                     encoderOptions: 1,
@@ -104,32 +95,19 @@ class RrnaSVG extends React.Component{
                     width: 760,
                     height: 760
                 }
-
                 fileName = '-zoomed-in';
-
             }
         }
 
+        /* Set up file name */
 
-        if(this.state.varSubmitted==null){
-            console.log("rRNA - No variant submitted")
-            //fileName = this.props.gene;
-            fileName = this.props.gene
-            // saveSvgAsPng.saveSvgAsPng(document.getElementById('rrna-svg-container'), fileName, imageOptions);
-        } else {
-            console.log("rRNA - Variant submitted")
-            //console.log(imageOptions)
+        if(this.state.varSubmitted==null){  // no variant; just gene name
+            fileName = this.props.gene;
+        } else {                            // show variant name in file name
             fileName = this.state.varSubmitted + " [" + this.props.gene + "]" + fileName;
-
-            /*
-            if(document.getElementById('select-download')==null||document.getElementById('zoomed-out').checked){
-                saveSvgAsPng.saveSvgAsPng(document.getElementById('rrna-svg-container'), fileName, imageOptions);
-            }
-            else{
-                saveSvgAsPng.saveSvgAsPng(document.getElementById('rrna-svg-container-zoom'), fileName, imageOptions);                
-            }
-            */
         }
+
+        /* Set up file type */
 
         if(document.getElementById('jpeg').checked){
             imageOptions = { ... baseImageOptions, encoderType: 'image/jpeg'}            
@@ -139,24 +117,21 @@ class RrnaSVG extends React.Component{
             imageOptions = { ... baseImageOptions, encoderType: 'image/webp'}            
             fileName = fileName + ".webp"
         }
-
         else{
             imageOptions = { ... baseImageOptions, encoderType: 'image/png'}            
             fileName = fileName + ".png"
         }
-        
-        console.log(imageOptions)
-        console.log(fileName)
 
+        /* Perform downloading */
 
-        if(document.getElementById('select-download')==null || document.getElementById('zoomed-out').checked || this.state.varSubmitted==null){
+        if(document.getElementById('full-or-zoomed-in-buttons')==null || document.getElementById('zoomed-out').checked || this.state.varSubmitted==null){
+            // download full image
             saveSvgAsPng.saveSvgAsPng(document.getElementById('rrna-svg-container'), fileName, imageOptions);
         }
         else{
+            // download zoomed in image
             saveSvgAsPng.saveSvgAsPng(document.getElementById('rrna-svg-container-zoom'), fileName, imageOptions);                
         }
-
-        // document.getElementById('gene-legend').remove();
     };
 
 
@@ -688,7 +663,7 @@ class RrnaSVG extends React.Component{
                             </ul>
 
                             <div id="select-image-type" style={{display: "flex", alignItems: "center"}}>
-                                <div id="radio-button-area" style={{paddingRight: "25px"}}>
+                                <div id="image-type-buttons" style={{paddingRight: "25px"}}>
                                     <label>
                                         <input type='radio' name="image-type" id="png" class="with-gap" checked />
                                         <span>PNG</span>
@@ -704,7 +679,7 @@ class RrnaSVG extends React.Component{
                                         <span>WEBP</span>
                                     </label>
                                 </div>
-                                <div id="radio-button-area" style={{paddingRight: "25px"}}>
+                                <div id="full-or-zoomed-in-buttons" style={{paddingRight: "25px"}}>
                                     <label>
                                         <input type='radio' name="download" id="zoomed-out" class="with-gap" checked/>
                                         <span>Full image</span>
@@ -747,7 +722,25 @@ class RrnaSVG extends React.Component{
                                     : <li>2D rRNA structure is per <a href="https://pubmed.ncbi.nlm.nih.gov/25278503/" target="_blank">Brown, Amunts et al 2014</a>.</li>
                                 }
                             </ul>
-                            <button id='download-btn' onClick={this.handleClick}>Download Image (png)</button>
+                            <div id="select-image-type" style={{display: "flex", alignItems: "center"}}>
+                                <div id="image-type-buttons" style={{paddingRight: "25px"}}>
+                                    <label>
+                                        <input type='radio' name="image-type" id="png" class="with-gap" checked />
+                                        <span>PNG</span>
+                                    </label>
+                                    <br />
+                                    <label>
+                                        <input type='radio' name="image-type" id="jpeg" class="with-gap"/>
+                                        <span>JPEG</span>
+                                    </label>
+                                    <br />
+                                    <label>
+                                        <input type='radio' name="image-type" id="webp" class="with-gap"/>
+                                        <span>WEBP</span>
+                                    </label>
+                                </div>                                
+                                <button id='download-btn' onClick={this.handleClick}>Download Image</button>
+                            </div>  
                             <p id="citation-note">If you use MitoVisualize, please cite "Lake NJ, Zhou L, Xu J, Lek M. 2021. MitoVisualize: A resource for analysis of variants in human mitochondrial RNAs and DNA. bioRxiv <a href="https://www.biorxiv.org/content/10.1101/2021.12.04.470997v1" target="_blank">doi: 10.1101/2021.12.04.470997</a>".</p>
                         </div>
                     </div>    
@@ -772,7 +765,25 @@ class RrnaSVG extends React.Component{
                                     : <li>2D rRNA structure is per <a href="https://pubmed.ncbi.nlm.nih.gov/25278503/" target="_blank">Brown, Amunts et al 2014</a>.</li>
                                 }
                             </ul>
-                            <button id='download-btn' onClick={this.handleClick}>Download Image (png)</button>
+                            <div id="select-image-type" style={{display: "flex", alignItems: "center"}}>
+                                <div id="image-type-buttons" style={{paddingRight: "25px"}}>
+                                    <label>
+                                        <input type='radio' name="image-type" id="png" class="with-gap" checked />
+                                        <span>PNG</span>
+                                    </label>
+                                    <br />
+                                    <label>
+                                        <input type='radio' name="image-type" id="jpeg" class="with-gap"/>
+                                        <span>JPEG</span>
+                                    </label>
+                                    <br />
+                                    <label>
+                                        <input type='radio' name="image-type" id="webp" class="with-gap"/>
+                                        <span>WEBP</span>
+                                    </label>
+                                </div>                                
+                                <button id='download-btn' onClick={this.handleClick}>Download Image</button>
+                            </div>
                             <p id="citation-note">If you use MitoVisualize, please cite "Lake NJ, Zhou L, Xu J, Lek M. 2021. MitoVisualize: A resource for analysis of variants in human mitochondrial RNAs and DNA. bioRxiv <a href="https://www.biorxiv.org/content/10.1101/2021.12.04.470997v1" target="_blank">doi: 10.1101/2021.12.04.470997</a>".</p>
                         </div>    
                     </div>
