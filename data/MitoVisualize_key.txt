@@ -1,0 +1,37 @@
+var_id	Variant
+var_coordinate	Variant mtDNA base coordinate
+var_ref	mtDNA reference base
+var_alt	mtDNA alternate base
+gene	Gene containing the variant
+pair_base	RNA base that pairs with variant base, if in a double-stranded stem (note RNA base may differ from the DNA base)
+pair_coordinate	mtDNA coordinate of the base which pairs with the variant base in the RNA structure, if applicable
+pop_freq_gnomad_af_hom	Population allele frequency of this variant at homoplasmy in gnomAD
+pop_freq_gnomad_ac_hom	Population allele count of this variant at homoplasmy in gnomAD
+pop_freq_gnomad_af_het	Population allele frequency of this variant at heteroplasmy in gnomAD
+pop_freq_gnomad_ac_het	Population allele count of this variant at heteroplasmy in gnomAD
+pop_freq_helix_af_hom	Population allele frequency of this variant at homoplasmy in HelixMTdb
+pop_freq_helix_counts_hom	Population allele count of this variant at homoplasmy in HelixMTdb
+pop_freq_helix_af_het	Population allele frequency of this variant at heteroplasmy in HelixMTdb
+pop_freq_helix_counts_het	Population allele count of this variant at heteroplasmy in HelixMTdb
+pop_freq_mitomap	Population allele frequency of this variant in MITOMAP
+pop_count_mitomap	Population allele count of this variant in MITOMAP
+heteroplasmy_gnomad	Population maximum heteroplasmy of this variant in gnomAD
+heteroplasmy_helix	Population maximum heteroplasmy of this variant in HelixMTdb
+prediction_mitotip	In silico prediction score returned by MitoTip
+prediction_mitotip_category	In silico prediction category returned by MitoTip
+prediction_pon_mt_tRNA	In silico prediction score returned by PON-mt-tRNA
+prediction_pon_mt_tRNA_category	In silico prediction category returned by PON-mt-tRNA
+prediction_hmtvar	In silico prediction score returned by HmtVar
+prediction_hmtvar_category	In silico prediction category returned by HmtVar
+disease_status_mitomap	Status of variant pathogenicity in MITOMAP
+diseases_mitomap	Diseases associated with the variant in MITOMAP
+disease_status_clinvar	Variant clinical significance in ClinVar
+diseases_clinvar	A list of phenotypes associated with the variant in ClinVar
+clinvar_variant_id	Variation ID in ClinVar
+haplogroups	List of haplogroups associated with the variant, if any
+count_haplos	Number of haplogroups associated with the variant
+conserv_phylop	PhyloP conservation score
+conserv_phastcons	PhastCons conservation score
+post_transcription_modifications	If the base with the variant is post-transcriptionally modified; if yes the modification is listed
+structural_interaction_hmtvar	If the base with the variant is involved in tRNA folding
+domain	tRNA domain containing the variant

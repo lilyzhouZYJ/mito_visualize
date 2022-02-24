@@ -156,15 +156,21 @@ class RrnaSVG extends React.Component{
         var i
         const sep = '\t'
         const re = 'pop|heteroplasmy|count'
+        const re2 = 'pair'
         //const re2 = 'post_transcription_modifications'
 
         for(i= 1; i < varDataKeys.length; i++){
-            header += sep + varDataKeys[i]
 
-            if(varData[varDataKeys[i]] !== null){
+            if(varDataKeys[i].match(re2)){
+                continue
+            }
+            else if(varData[varDataKeys[i]] !== null){
+                header += sep + varDataKeys[i]
                 data_row += sep + varData[varDataKeys[i]]
             }
             else{
+                header += sep + varDataKeys[i]
+                
                 if(varDataKeys[i].match(re)){
                     data_row += sep + '0'
                 }

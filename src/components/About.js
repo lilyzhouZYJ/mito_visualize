@@ -49,7 +49,8 @@ class About extends React.Component {
 		</ul>
 
 		<br />
-		<b>API:</b><br />
+		<b>Variant data & API:</b><br />
+        The variant annotations can be downloaded in tsv format via the ‘Download Variant Data’ button at the bottom of each variant page. <br /><br />
         MitoVisualize allows users to access its processed data directly via the <a href="https://mitovisualize.org/api" target="_blank">GraphQL interface</a>. 
         It allows for queries using mtDNA coordinate (example: <code>coordinate(var_coordinate:2492)</code>), variant ID (example: <code>variant(var_id:"m.5618T>A")</code>), or gene name (example: <code>gene(gene: "MT-TA")</code>). 
         To access specific fields, add the field name to the query (example: <code>post_transcription_modifications</code>). 
@@ -81,9 +82,11 @@ class About extends React.Component {
         has a homoplasmic allele count of 32 in gnomAD, and is predicted to be possibly benign by MitoTip.
 
 
-        <br />
+        <br /><br />
+        A key for the API fields and tsv file column names is provided in this <a href="./MitoVisualize_key.txt">file</a>
 
 		<br /><br /><br /><br /><br /><br />
+
          </div>
 
         )
