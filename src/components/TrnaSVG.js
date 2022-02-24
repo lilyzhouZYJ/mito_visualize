@@ -523,6 +523,9 @@ class TrnaSVG extends React.Component{
                         <VarInfo variant={varSubmitted} gene={gene} dom={varData.domain} rnaType="tRNA" initLetter={initLetter} newLetter={newLetter} breakWC={breakWC} formWC={formWC} />
                         <VarInfoTable variant={varSubmitted} varData={varData} rnaType="tRNA" />
                         <button id='download-btn' onClick={this.downloadVarClick}>Download Variant Data</button>
+                        <br />
+                        <i style={{fontSize: "13px", color:'gray'}}>See <a href="/about-page">About page</a> regarding format and key</i>
+                        <br /><br /><br />
                         <div id="results"></div>
                     </div>
                 </div>

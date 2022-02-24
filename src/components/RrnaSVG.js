@@ -654,11 +654,15 @@ class RrnaSVG extends React.Component{
         let varInput;
         let varInfoTable = null;
         let varInfoDownload = null;
+        let varInfoDownloadKey = null;
+
         if(varData){
             varInfo = <VarInfo variant={varSubmitted} gene={gene} dom={varData.dom} rnaType="rRNA" initLetter={initLetter} newLetter={newLetter} breakWC={breakWC} formWC={formWC} />;
             varInput = <VarInput handleVarSubmit={this.handleVarSubmit} gene={gene} variant={this.props.variant}/>;
             varInfoTable = <VarInfoTable variant={varSubmitted} varData={varData} rnaType="rRNA" />;
             varInfoDownload = <button id='download-btn' onClick={this.downloadVarClick}>Download Variant Data</button>;
+            varInfoDownloadKey = <i style={{fontSize: "13px", color:'gray'}}>See <a href="/about-page">About page</a> regarding format and key</i>;
+
         } else if (loadError){
             varInfo = <VarInfo loadError={loadError} />;
             varInput = <VarInput handleVarSubmit={this.handleVarSubmit} gene={gene}/>;
@@ -729,6 +733,8 @@ class RrnaSVG extends React.Component{
                     {varInfo}
                     {varInfoTable}
                     {varInfoDownload}
+                    <br />
+                    {varInfoDownloadKey}
                 </div>
             </div>
         )
