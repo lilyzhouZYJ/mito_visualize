@@ -1,7 +1,7 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom';
-import GeneDropDown from './GeneDropDown';
-import "./styles/RnaPages.css";
+import GeneDropDown from '../GeneDropDown';
+import "../styles/RnaPages.css";
 
 class RrnaPage extends React.Component{
 

@@ -1,38 +1,37 @@
 import React from 'react';
-import { fetchVarInfo, fetchCoorInfo } from './fetch.js'
-import { GENES_REVERSE_STRAND } from './params/params.js';
-import Citation from './Citation.js';
+import { fetchVarInfo, fetchCoorInfo } from '../fetch.js';
+import { GENES_REVERSE_STRAND } from '../params/params.js';
+import Citation from '../Citation.js';
+import VarInput from '../VarInput.js';
+import VarInfoTable from '../VarInfoTable.js';
+import VarInfo from '../VarInfo.js';
+import '../styles/VisualizeOptions.css';
 
-import Mtta from './tRNA/MT-TA';
-import Mttt from './tRNA/MT-TT';
-import Mtty from './tRNA/MT-TY';
-import Mttw from './tRNA/MT-TW';
-import Mttv from './tRNA/MT-TV';
-import Mtts1 from './tRNA/MT-TS1';
-import Mtts2 from './tRNA/MT-TS2';
-import Mttp from './tRNA/MT-TP';
-import Mttf from './tRNA/MT-TF';
-import Mttk from './tRNA/MT-TK';
-import Mttl1 from './tRNA/MT-TL1';
-import Mttl2 from './tRNA/MT-TL2';
-import Mtti from './tRNA/MT-TI';
-import Mtth from './tRNA/MT-TH';
-import Mttg from './tRNA/MT-TG';
-import Mttq from './tRNA/MT-TQ';
-import Mtte from './tRNA/MT-TE';
-import Mttc from './tRNA/MT-TC';
-import Mttd from './tRNA/MT-TD';
-import Mttn from './tRNA/MT-TN';
-import Mttm from './tRNA/MT-TM';
-import Mttr from './tRNA/MT-TR';
-import VarInput from './VarInput';
-import VarInfoTable from './VarInfoTable';
-import VarInfo from './VarInfo';
+/* Import tRNA SVG components */
+import Mtta from '../TrnaSVGs/MT-TA.js';
+import Mttt from '../TrnaSVGs/MT-TT.js';
+import Mtty from '../TrnaSVGs/MT-TY.js';
+import Mttw from '../TrnaSVGs/MT-TW.js';
+import Mttv from '../TrnaSVGs/MT-TV.js';
+import Mtts1 from '../TrnaSVGs/MT-TS1.js';
+import Mtts2 from '../TrnaSVGs/MT-TS2.js';
+import Mttp from '../TrnaSVGs/MT-TP.js';
+import Mttf from '../TrnaSVGs/MT-TF.js';
+import Mttk from '../TrnaSVGs/MT-TK.js';
+import Mttl1 from '../TrnaSVGs/MT-TL1.js';
+import Mttl2 from '../TrnaSVGs/MT-TL2.js';
+import Mtti from '../TrnaSVGs/MT-TI.js';
+import Mtth from '../TrnaSVGs/MT-TH.js';
+import Mttg from '../TrnaSVGs/MT-TG.js';
+import Mttq from '../TrnaSVGs/MT-TQ.js';
+import Mtte from '../TrnaSVGs/MT-TE.js';
+import Mttc from '../TrnaSVGs/MT-TC.js';
+import Mttd from '../TrnaSVGs/MT-TD.js';
+import Mttn from '../TrnaSVGs/MT-TN.js';
+import Mttm from '../TrnaSVGs/MT-TM.js';
+import Mttr from '../TrnaSVGs/MT-TR.js';
 
-
-import './styles/VisualizeOptions.css';
-
-//match each gene to its respective component
+// Match each gene to its respective component
 const tRNAs = {
     'MT-TA': Mtta,
     'MT-TT': Mttt,
@@ -41,38 +40,38 @@ const tRNAs = {
     'MT-TV': Mttv,
     'MT-TS1':Mtts1,
     'MT-TS2':Mtts2,
-    'MT-TP':Mttp,
-    'MT-TF':Mttf,
-    'MT-TK':Mttk,
-    'MT-TL1':Mttl1,
-    'MT-TL2':Mttl2,
-    'MT-TI':Mtti,
-    'MT-TH':Mtth,
-    'MT-TG':Mttg,
-    'MT-TQ':Mttq,
-    'MT-TE':Mtte,
-    'MT-TC':Mttc,
-    'MT-TD':Mttd,
-    'MT-TN':Mttn,
-    'MT-TM':Mttm,
-    'MT-TR':Mttr
+    'MT-TP': Mttp,
+    'MT-TF': Mttf,
+    'MT-TK': Mttk,
+    'MT-TL1': Mttl1,
+    'MT-TL2': Mttl2,
+    'MT-TI': Mtti,
+    'MT-TH': Mtth,
+    'MT-TG': Mttg,
+    'MT-TQ': Mttq,
+    'MT-TE': Mtte,
+    'MT-TC': Mttc,
+    'MT-TD': Mttd,
+    'MT-TN': Mttn,
+    'MT-TM': Mttm,
+    'MT-TR': Mttr
 };
 
+// Base pairs
 const pairs = {"A":"T", "T":"A", "G":"C", "C":"G"};
 
-//download SVG button setup
+// Download image setup
 const saveSvgAsPng = require('save-svg-as-png')
 const defaultImageOptions = {
-  scale: 5,
-  encoderOptions: 1,
-  backgroundColor: 'white',
-  left: 5,
-  top: -20,
-  height: 380,
-  width: 350
+    scale: 5,
+    encoderOptions: 1,
+    backgroundColor: 'white',
+    left: 5,
+    top: -20,
+    height: 380,
+    width: 350
 }
 
-var formWC, breakWC, pairCoor;
 
 class TrnaSVG extends React.Component{
 
@@ -88,18 +87,17 @@ class TrnaSVG extends React.Component{
         pairCoor: null,
     }
 
-    //download svg
+    // Download image
     handleClick = () => {
         var fileName;
-        var filePrefix
-        var imageOptions
+        var filePrefix;
+        var imageOptions;
 
         if(this.state.varSubmitted==null){
             filePrefix = this.props.gene;
         } else {
             filePrefix = this.state.varSubmitted + " [" + this.props.gene + "]";
         }
-
 
         if(document.getElementById('jpeg').checked){
             imageOptions = { ...defaultImageOptions, encoderType: 'image/jpeg'}            
@@ -109,7 +107,6 @@ class TrnaSVG extends React.Component{
             imageOptions = { ...defaultImageOptions, encoderType: 'image/webp'}                        
             fileName = filePrefix + ".webp"
         }
-
         else{
             imageOptions = { ...defaultImageOptions, encoderType: 'image/png'}                        
             fileName = filePrefix + ".png"
@@ -119,32 +116,20 @@ class TrnaSVG extends React.Component{
     };
 
 
-    //download var data as table
+    // Download var data as table
     // https://stackoverflow.com/questions/27013963/write-to-csv-file-locally-with-html5
     downloadVarClick = () => {
-        console.log("In download Var click")
-
-
-
         const {varData, varCor} = this.state
-
-        console.log(varData)
-        //console.log(varCor)
-        //console.log(Object.keys(varData))
-
         const varDataKeys = Object.keys(varData)
-        console.log(varDataKeys)
 
         var header = varDataKeys[0]
         var data_row = varData[varDataKeys[0]]
         var i
         const sep = '\t'
         const re = 'pop|heteroplasmy|count'
-        //const re2 = 'post_transcription_modifications'
         const re2 = 'pair'
 
-        for(i= 1; i < varDataKeys.length; i++){
-
+        for(i = 1; i < varDataKeys.length; i++){
             if(varDataKeys[i].match(re2)){
                 continue
             }
@@ -167,10 +152,6 @@ class TrnaSVG extends React.Component{
             }
         }
 
-        //console.log(header)
-        //console.log(data_row)
-
-        //var fileName = 'm_' + varData.var_coordinate + '_' + varData.var_ref + '_' + varData.var_alt + '.tsv'
         var fileName = `m_${varData.var_coordinate}_${varData.var_ref}_${varData.var_alt}.tsv`
 
         var data = header + '\n' + data_row + '\n'
@@ -186,25 +167,13 @@ class TrnaSVG extends React.Component{
         exportLink.onclick = () => requestAnimationFrame(() => URL.revokeObjectURL(uri));
         exportLink.click();
         document.body.removeChild(exportLink);
-
-
-        //exportLink.appendChild(document.createTextNode('test.csv'));
-        //exportLink.onclick = () => requestAnimationFrame(() => URL.revokeObjectURL(url));
-
-
-        //document.getElementById('results').appendChild(exportLink);
-
-
     };
-
-
 
     loadData = (variant, varCoor) => {
 
         this.setState({loadError:null, varData:null});
 
         fetchVarInfo(variant).then(response => {
-            //console.log(response)
             var varData = response.data.variant;
 
             if(!varData) {
@@ -214,11 +183,10 @@ class TrnaSVG extends React.Component{
                         this.setState({loadError: "Expected "+var_ref+" at position m."+varCoor});
                     }
                 })
-
             } else {
                 var initLetter = variant[variant.length-3];
                 var newLetter = variant[variant.length-1];
-                //if the gene is on the reverse strand
+                // if the gene is on the reverse strand
                 if(GENES_REVERSE_STRAND.includes(this.props.gene)){ 
                     initLetter = pairs[initLetter];
                     newLetter = pairs[newLetter];
@@ -233,14 +201,8 @@ class TrnaSVG extends React.Component{
 
                 this.setState({loadError:null, varData:varData, initLetter:initLetter, newLetter:newLetter, formWC:formWC, breakWC:breakWC, pairCoor:pairCoor});
             }
-            // console.log(this.state.varData);
         })
     }
-
-
-
-
-
 
     componentDidMount(){
         // if variant has already been passed as prop
@@ -251,56 +213,31 @@ class TrnaSVG extends React.Component{
             this.setState({varSubmitted: variant, varCor: varCoor});
             this.loadData(variant, varCoor);
         }
-
-        /*document.getElementById('svg-container').setAttribute("height","500");
-        document.getElementById('svg-container').setAttribute("width","500");
-        document.getElementById('svg-container').setAttribute("viewBox","0 0 400 400");*/
     }
 
-
-
-    //if a variant is submitted
+    // If a variant is submitted
     handleVarSubmit = (varSubmitted,variantCor) => {
-
-
         if(varSubmitted==''&&variantCor==''){
             this.setState({varSubmitted:null,varCor:null, varData:null, loadError:null})
-        }
-        else{
-
+        } else {
             const VARIANT_ID_REGEX = /^m\.([0-9]+)([acgt]+)>([acgt]+)$/i
             const match = VARIANT_ID_REGEX.exec(varSubmitted)
 
             var variantId = "m-"+match[1]+"-"+match[2]+"-"+match[3]
 
             window.location.href = '/variant/'+variantId;
-
         }
-
-        /*
-        if(varSubmitted==''&&variantCor==''){
-            this.setState({varSubmitted:null,varCor:null, varData:null, loadError:null});
-        } else {
-            if(varSubmitted !== this.state.varSubmitted){
-                this.setState({varSubmitted:varSubmitted,varCor:variantCor}); 
-                this.loadData(varSubmitted, variantCor); 
-            }
-        }
-        */
     }
 
-
-
-    //remove preexisting variant highlight
+    // Remove preexisting variant highlight
     removeVariantHighlight() {
-
-        //remove variant name in svg legend
+        // remove variant name in svg legend
         var legExists = document.getElementById('var-legend');
         if(legExists!==null){
             legExists.remove();
         }
 
-        //remove highlighted letter
+        // remove highlighted letter
         var elementExists = document.getElementById('highlight');
         if(elementExists!==null){
             elementExists.removeAttribute('id');
@@ -308,13 +245,13 @@ class TrnaSVG extends React.Component{
             elementExists.removeAttribute('class');
         }
 
-        //remove highlighted background
+        // remove highlighted background
         var elementExists = document.getElementById('highlight-background');
         if(elementExists!==null){
             elementExists.remove();
         }
 
-        //remove highlighted pairing circle
+        // remove highlighted pairing circle
         var elementExists = document.getElementById('highlight-circle');
         if(elementExists!==null){
             var newLine = document.createElementNS('http://www.w3.org/2000/svg','line');
@@ -328,7 +265,7 @@ class TrnaSVG extends React.Component{
             elementExists.remove();
         }
 
-        //remove highlighted pairing line
+        // remove highlighted pairing line
         var elementExists = document.getElementById('highlight-line');
         if(elementExists!==null){
             var newCircle = document.createElementNS('http://www.w3.org/2000/svg','circle');
@@ -344,7 +281,7 @@ class TrnaSVG extends React.Component{
             elementExists.remove();
         }
 
-        //remove note on variant highlight
+        // remove note on variant highlight
         var noteExists = document.getElementById('varNote');
         if(noteExists!==null){
             noteExists.remove();
@@ -466,57 +403,52 @@ class TrnaSVG extends React.Component{
             varNote.innerHTML = "The base and pair type change (if applicable) is shown in red.";
             varNote.setAttribute('id','varNote');
             document.getElementById('notes').appendChild(varNote);
-
         }
-        
     }
 
     render() {
+        const gene = this.props.gene;
+        const { varSubmitted, varData, loadError, initLetter, newLetter, breakWC, formWC } = this.state;
+        const SvgComponent = tRNAs[gene];
 
-        var gene = this.props.gene;
-        // const variant = this.props.variant
+        return(
+            <div id="trna-svg">
+                <div id="left-container">
+                    <SvgComponent />
+                    <ul id="notes">
+                        {GENES_REVERSE_STRAND.includes(gene) &&
+                                <li>Note: {gene} is on the reverse strand.</li>
+                        }
+                        <li>Lines represent Watson-Crick (WC) base pairs, and dots non-WC pairs.</li>
+                        <li>Hovering over each base will display the genomic coordinate.</li>
+                        <li>2D cloverleaf tRNA structures are per <a href="https://pubmed.ncbi.nlm.nih.gov/17585048/" target="_blank">Putz et al</a> as shown on <a href="http://mamit-trna.u-strasbg.fr/human.asp" target="_blank">Mamit-tRNA</a>.</li>
+                    </ul>
 
-        const { varSubmitted, varCor, varData, loadError, initLetter, newLetter, breakWC, formWC, pairCoor } = this.state;
-       
-        var SvgComponent = tRNAs[gene];
+                    <div id="select-image-type" style={{display: "flex", alignItems: "center"}}>
+                        <div id="radio-button-area" style={{paddingRight: "25px"}}>
+                            <label>
+                                <input type='radio' name="image-type" id="png" class="with-gap" checked />
+                                <span>PNG</span>
+                            </label>
+                            <br />
+                            <label>
+                                <input type='radio' name="image-type" id="jpeg" class="with-gap"/>
+                                <span>JPEG</span>
+                            </label>
+                            <br />
+                            <label>
+                                <input type='radio' name="image-type" id="webp" class="with-gap"/>
+                                <span>WEBP</span>
+                            </label>
+                        </div>
+                        
+                        <button id='download-btn' onClick={this.handleClick}>Download Image</button>
+                    </div>                            
 
-        if(varData){
-            return(
-                <div id="trna-svg">
-                    <div id="left-container">
-                        <SvgComponent />
-                        <ul id="notes">
-                            {GENES_REVERSE_STRAND.includes(gene) &&
-                                    <li>Note: {gene} is on the reverse strand.</li>
-                            }
-                            <li>Lines represent Watson-Crick (WC) base pairs, and dots non-WC pairs.</li>
-                            <li>Hovering over each base will display the genomic coordinate.</li>
-                            <li>2D cloverleaf tRNA structures are per <a href="https://pubmed.ncbi.nlm.nih.gov/17585048/" target="_blank">Putz et al</a> as shown on <a href="http://mamit-trna.u-strasbg.fr/human.asp" target="_blank">Mamit-tRNA</a>.</li>
-                        </ul>
+                    <Citation />
+                </div>
 
-                        <div id="select-image-type" style={{display: "flex", alignItems: "center"}}>
-                            <div id="radio-button-area" style={{paddingRight: "25px"}}>
-                                <label>
-                                    <input type='radio' name="image-type" id="png" class="with-gap" checked />
-                                    <span>PNG</span>
-                                </label>
-                                <br />
-                                <label>
-                                    <input type='radio' name="image-type" id="jpeg" class="with-gap"/>
-                                    <span>JPEG</span>
-                                </label>
-                                <br />
-                                <label>
-                                    <input type='radio' name="image-type" id="webp" class="with-gap"/>
-                                    <span>WEBP</span>
-                                </label>
-                            </div>
-                            
-                            <button id='download-btn' onClick={this.handleClick}>Download Image</button>
-                        </div>                            
-
-                        <Citation />
-                    </div>
+                {varData ?
                     <div id="right-container">
                         <VarInput handleVarSubmit={this.handleVarSubmit} gene={gene} variant={this.props.variant}/>
                         <VarInfo variant={varSubmitted} gene={gene} dom={varData.domain} rnaType="tRNA" initLetter={initLetter} newLetter={newLetter} breakWC={breakWC} formWC={formWC} />
@@ -525,101 +457,24 @@ class TrnaSVG extends React.Component{
                         <br />
                         <i style={{fontSize: "13px", color:'gray'}}>See <a href="/about-page">About page</a> regarding format and key</i>
                         <br /><br /><br />
-                        <div id="results"></div>
                     </div>
-                </div>
-            )
-        } else if (loadError) {
-            return(
-                <div id="trna-svg">
-                    <div id="left-container">
-                        <SvgComponent />
-                        <ul id="notes">
-                            {GENES_REVERSE_STRAND.includes(gene) &&
-                                    <li>Note: {gene} is on the reverse strand.</li>
-                            }
-                            <li>Lines represent Watson-Crick (WC) base pairs, and dots non-WC pairs.</li>
-                            <li>Hovering over each base will display the genomic coordinate.</li>
-                            <li>2D cloverleaf tRNA structures are per <a href="https://pubmed.ncbi.nlm.nih.gov/17585048/" target="_blank">Putz et al</a> as shown on <a href="http://mamit-trna.u-strasbg.fr/human.asp" target="_blank">Mamit-tRNA</a>.</li>
-                        </ul>
-
-                        <div id="select-image-type" style={{display: "flex", alignItems: "center"}}>
-                            <div id="radio-button-area" style={{paddingRight: "25px"}}>
-                                <label>
-                                    <input type='radio' name="image-type" id="png" class="with-gap" checked />
-                                    <span>PNG</span>
-                                </label>
-                                <br />
-                                <label>
-                                    <input type='radio' name="image-type" id="jpeg" class="with-gap"/>
-                                    <span>JPEG</span>
-                                </label>
-                                <br />
-                                <label>
-                                    <input type='radio' name="image-type" id="webp" class="with-gap"/>
-                                    <span>WEBP</span>
-                                </label>
-                            </div>
-                            
-                            <button id='download-btn' onClick={this.handleClick}>Download Image</button>
-                        </div>                            
-
-                        <Citation />
-                    </div>
+                : loadError ?
                     <div id="right-container">
                         <VarInput handleVarSubmit={this.handleVarSubmit} gene={gene}/>
                         <VarInfo loadError={loadError} />
                     </div>
-                </div>
-            )
-        } else {
-            return(
-                <div id="trna-svg">
-                    <div id="left-container">
-                        <SvgComponent />
-                        <ul id="notes">
-                            {GENES_REVERSE_STRAND.includes(gene) &&
-                                    <li>Note: {gene} is on the reverse strand.</li>
-                            }
-                            <li>Lines represent Watson-Crick (WC) base pairs, and dots non-WC pairs.</li>
-                            <li>Hovering over each base will display the genomic coordinate.</li>
-                            <li>2D cloverleaf tRNA structures are per <a href="https://pubmed.ncbi.nlm.nih.gov/17585048/" target="_blank">Putz et al</a> as shown on <a href="http://mamit-trna.u-strasbg.fr/human.asp" target="_blank">Mamit-tRNA</a>.</li>
-                        </ul>
-
-                        <div id="select-image-type" style={{display: "flex", alignItems: "center"}}>
-                            <div id="radio-button-area" style={{paddingRight: "25px"}}>
-                                <label>
-                                    <input type='radio' name="image-type" id="png" class="with-gap" checked />
-                                    <span>PNG</span>
-                                </label>
-                                <br />
-                                <label>
-                                    <input type='radio' name="image-type" id="jpeg" class="with-gap"/>
-                                    <span>JPEG</span>
-                                </label>
-                                <br />
-                                <label>
-                                    <input type='radio' name="image-type" id="webp" class="with-gap"/>
-                                    <span>WEBP</span>
-                                </label>
-                            </div>
-                            
-                            <button id='download-btn' onClick={this.handleClick}>Download Image</button>
-                        </div>                            
-
-                        <Citation />
-                    </div>
+                : 
                     <div id="right-container">
                         <VarInput handleVarSubmit={this.handleVarSubmit} gene={gene}/>
                         {this.state.varSubmitted!==null &&
                             <VarInfo loading="Loading..."/>
                         }
                     </div>
-                </div>
-            )
-        }
+                }
+                
+            </div>
+        )
     }
-
 }
 
 export default TrnaSVG;

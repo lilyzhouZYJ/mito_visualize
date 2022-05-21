@@ -1,17 +1,15 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import { Redirect } from 'react-router-dom';
-import { fetchVarInfo, fetchCoorInfo } from './fetch.js'
+import { fetchVarInfo, fetchCoorInfo } from '../fetch.js'
 
-import Mtrnr1 from './rRNA/MT-RNR1';
-import Mtrnr1Zoom from './rRNA/MT-RNR1-zoom';
-import Mtrnr2 from './rRNA/MT-RNR2';
-import Mtrnr2Zoom from './rRNA/MT-RNR2-zoom';
-import VarInput from './VarInput';
-import VarInfo from './VarInfo';
-import VarInfoTable from './VarInfoTable';
+import Mtrnr1 from '../rRNA/MT-RNR1';
+import Mtrnr1Zoom from '../rRNA/MT-RNR1-zoom';
+import Mtrnr2 from '../rRNA/MT-RNR2';
+import Mtrnr2Zoom from '../rRNA/MT-RNR2-zoom';
+import VarInput from '../VarInput';
+import VarInfo from '../VarInfo';
+import VarInfoTable from '../VarInfoTable';
 
-import Citation from './Citation.js';
+import Citation from '../Citation.js';
 
 import "./styles/VariantHighlight.css";
 import './styles/VisualizeOptions.css';
@@ -137,21 +135,11 @@ class RrnaSVG extends React.Component{
     };
 
 
-    //download var data as table
+    // Download var data as table
     // https://stackoverflow.com/questions/27013963/write-to-csv-file-locally-with-html5
     downloadVarClick = () => {
-        console.log("In download Var click")
-
-        
         const {varData, varCor} = this.state
-
-        console.log(varData)
-        console.log(varCor)
-        //console.log(Object.keys(varData))
-
         const varDataKeys = Object.keys(varData)
-        console.log(varDataKeys)
-
         
         var header = varDataKeys[0]
         var data_row = varData[varDataKeys[0]]
@@ -159,9 +147,8 @@ class RrnaSVG extends React.Component{
         const sep = '\t'
         const re = 'pop|heteroplasmy|count'
         const re2 = 'pair'
-        //const re2 = 'post_transcription_modifications'
 
-        for(i= 1; i < varDataKeys.length; i++){
+        for(i = 1; i < varDataKeys.length; i++){
 
             if(varDataKeys[i].match(re2)){
                 continue
@@ -238,38 +225,18 @@ class RrnaSVG extends React.Component{
     }
 
 
-    //if a variant is submitted
+    // If a variant is submitted
     handleVarSubmit = (varSubmitted,variantCor) => {
-
         if(varSubmitted==''&&variantCor==''){
             this.setState({varSubmitted:null,varCor:null, varData:null, loadError:null})
         }
         else{
-
             const VARIANT_ID_REGEX = /^m\.([0-9]+)([acgt]+)>([acgt]+)$/i
             const match = VARIANT_ID_REGEX.exec(varSubmitted)
 
             var variantId = "m-"+match[1]+"-"+match[2]+"-"+match[3]
-            // console.log("In handleVarSubmit: "+varSubmitted+" variantId: "+variantId)
-
             window.location.href = '/variant/'+variantId;
-
         }
-        /*
-        if(varSubmitted==''&&variantCor==''){
-            this.setState({varSubmitted:null,varCor:null, varData:null, loadError:null})
-        } else {
-            if(varSubmitted !== this.state.varSubmitted){
-                this.setState({varSubmitted:varSubmitted,varCor:variantCor});  
-                this.loadData(varSubmitted, variantCor);
-            }
-        }
-        */
-        /*
-        return(
-            <Redirect push to={'./variant/'+variantId} />
-        )
-        */
     }
 
 
@@ -369,7 +336,6 @@ class RrnaSVG extends React.Component{
 
 
 	componentDidMount(){
-
 		// if variant has already been passed as prop
 		if(this.props.variant){
 			var variant = this.props.variant;
@@ -378,7 +344,6 @@ class RrnaSVG extends React.Component{
             this.loadData(variant, varCoor);
 			this.setState({varSubmitted: variant, varCor: varCoor});
 		}
-
 	}
 
 
@@ -637,7 +602,7 @@ class RrnaSVG extends React.Component{
 
     render(){
         
-        const { varSubmitted, varCor, varData, loadError, initLetter, newLetter, breakWC, formWC, pairCoor } = this.state;
+        const { varSubmitted, varCor, varData, loadError, initLetter, newLetter, breakWC, formWC } = this.state;
 
         var gene = this.props.gene;
 
@@ -650,27 +615,6 @@ class RrnaSVG extends React.Component{
         } else {
             SvgComponent = Mtrnr2;
             SvgComponentZoom = Mtrnr2Zoom;
-        }
-
-        let varInfo;
-        let varInput;
-        let varInfoTable = null;
-        let varInfoDownload = null;
-        let varInfoDownloadKey = null;
-
-        if(varData){
-            varInfo = <VarInfo variant={varSubmitted} gene={gene} dom={varData.dom} rnaType="rRNA" initLetter={initLetter} newLetter={newLetter} breakWC={breakWC} formWC={formWC} />;
-            varInput = <VarInput handleVarSubmit={this.handleVarSubmit} gene={gene} variant={this.props.variant}/>;
-            varInfoTable = <VarInfoTable variant={varSubmitted} varData={varData} rnaType="rRNA" />;
-            varInfoDownload = <button id='download-btn' onClick={this.downloadVarClick}>Download Variant Data</button>;
-            varInfoDownloadKey = <i style={{fontSize: "13px", color:'gray'}}>See <a href="/about-page">About page</a> regarding format and key</i>;
-
-        } else if (loadError){
-            varInfo = <VarInfo loadError={loadError} />;
-            varInput = <VarInput handleVarSubmit={this.handleVarSubmit} gene={gene}/>;
-        } else {
-            varInfo = this.state.varSubmitted !== null ? <VarInfo loading="Loading..." /> : null;
-            varInput = <VarInput handleVarSubmit={this.handleVarSubmit} gene={gene}/>;
         }
     
         return(
@@ -729,15 +673,31 @@ class RrnaSVG extends React.Component{
 
                         <Citation />
                     </div>
-                </div>    
-                <div id="right-container">
-                    {varInput}
-                    {varInfo}
-                    {varInfoTable}
-                    {varInfoDownload}
-                    <br />
-                    {varInfoDownloadKey}
-                </div>
+                </div> 
+
+                {varData ?
+                    <div id="right-container">
+                        <VarInput handleVarSubmit={this.handleVarSubmit} gene={gene} variant={this.props.variant}/>
+                        <VarInfo variant={varSubmitted} gene={gene} dom={varData.dom} rnaType="rRNA" initLetter={initLetter} newLetter={newLetter} breakWC={breakWC} formWC={formWC} />
+                        <VarInfoTable variant={varSubmitted} varData={varData} rnaType="rRNA" />
+                        <button id='download-btn' onClick={this.downloadVarClick}>Download Variant Data</button>
+                        <br />
+                        <i style={{fontSize: "13px", color:'gray'}}>See <a href="/about-page">About page</a> regarding format and key</i>
+                        <br /><br /><br />
+                    </div>
+                : loadError ?
+                    <div id="right-container">
+                        <VarInput handleVarSubmit={this.handleVarSubmit} gene={gene} />
+                        <VarInfo loadError={loadError} />
+                    </div>
+                : 
+                    <div id="right-container">
+                        <VarInput handleVarSubmit={this.handleVarSubmit} gene={gene} />
+                        {this.state.varSubmitted!==null &&
+                            <VarInfo loading="Loading..."/>
+                        }
+                    </div>
+                }
             </div>
         )
     }

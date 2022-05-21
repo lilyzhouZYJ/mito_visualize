@@ -1,12 +1,12 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
-import About from './About';
+
+/* Import components */
 import Home from './Home';
-import TrnaPage from './TrnaPage';
-import RrnaPage from './RrnaPage';
+import About from './About';
 import GeneTool from './GeneTool';
-import TrnaSVG from './TrnaSVG';
-import RrnaSVG from './RrnaSVG';
+import VariantPage from './VariantPage/VariantPage';
+import VariantSVGPage from './VariantPage/VariantSVGPage';
 import VisualizationPage from './VisualizationPage';
 import TrnaVisualizationSVG from './TrnaVisualizationSVG';
 import RrnaVisualizationSVG from './RrnaVisualizationSVG';
@@ -28,8 +28,8 @@ export default function Routes() {
     return (
         <Switch>
             <Route exact path='/' component={Home} />
-            <Route path='/trna-page' component={TrnaPage} />
-            <Route path='/rrna-page' component={RrnaPage} />
+            <Route path='/trna-page' render={(props) => <VariantPage rnaType="tRNA" {...props} />} />
+            <Route path='/rrna-page' render={(props) => <VariantPage rnaType="rRNA" {...props} />} />
             <Route path='/mtdna' component={GeneTool} />
             <Route exact path='/trna-visualization' render={(props) => <VisualizationPage rnaType="tRNA" {...props} />} />
             <Route exact path='/rrna-visualization' render={(props) => <VisualizationPage rnaType="rRNA" {...props} />} />
@@ -41,11 +41,11 @@ export default function Routes() {
                 render={({ match }) => {
                     if(match.params.gene[3]=='T'){
                         return (
-                            <TrnaSVG gene={match.params.gene} />
+                            <VariantSVGPage rnaType='tRNA' gene={match.params.gene} />
                         )
                     } else {
                         return (
-                            <RrnaSVG gene={match.params.gene} />
+                            <VariantSVGPage rnaType='rRNA' gene={match.params.gene} />
                         )
                     }
                 }}
@@ -122,14 +122,16 @@ export default function Routes() {
                             )
                     } else if (newGene[3]=='T') {
                         return (
-                            <TrnaSVG
+                            <VariantSVGPage
+                                rnaType='tRNA'
                                 gene={newGene}
                                 variant={variant_reformat}
                             />
                         )
                     } else {
                         return (
-                            <RrnaSVG
+                            <VariantSVGPage
+                                rnaType='rRNA'
                                 gene={newGene}
                                 variant={variant_reformat}
                             />
