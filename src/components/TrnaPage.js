@@ -1,33 +1,7 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom';
 import GeneDropDown from './GeneDropDown';
-
 import './styles/RnaPages.css';
-
-//list of all valid gene names
-const components = [
-    'MT-TA',
-    'MT-TT',
-    'MT-TW',
-    'MT-TY',
-    'MT-TV',
-    'MT-TS1',
-    'MT-TS2',
-    'MT-TP',
-    'MT-TF',
-    'MT-TK',
-    'MT-TL1',
-    'MT-TL2',
-    'MT-TI',
-    'MT-TH',
-    'MT-TG',
-    'MT-TQ',
-    'MT-TE',
-    'MT-TC',
-    'MT-TD',
-    'MT-TN',
-    'MT-TM',
-    'MT-TR'];
 
 class TrnaPage extends React.Component{
 
@@ -41,28 +15,19 @@ class TrnaPage extends React.Component{
     }
     
     render() {
-
-        if(this.state.geneSubmitted){   //when a gene has been selected, redirect to trna svg page
+        if(this.state.geneSubmitted){  
+            // If a gene has been selected, redirect to the tRNA SVG page
             var geneInput = document.getElementById('gene-input').value;
-            if(components.includes(geneInput)){
-                return(
-                    <Redirect push to={'./'+geneInput} />
-                );
-            }
-            // else{
-            //     return(
-            //         <Redirect push to={'./variant/'+mitoInput} />
-            //     );
-            // }
-        }
-        else{   //a gene hasn't been selected, show dropdown menu
+            return(
+                <Redirect push to={'./'+geneInput} />
+            );
+        } else{   
+            // If a gene hasn't been selected, show dropdown menu to select gene
             return(
                 <GeneDropDown rnaType="tRNA" onSubmit={this.handleGeneSubmit}/>
             )
         }
-
     }
-    
 }
 
 export default TrnaPage;
