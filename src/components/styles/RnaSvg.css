@@ -1,0 +1,23 @@
+
+/* Legend in each SVG */
+#svg-container .legend {
+    font-family: sans-serif;
+    text-anchor: start;
+    font-weight: bold;
+}
+
+/* Gene name legend */
+#svg-container #gene-name-legend {
+    font-size: 17px;
+}
+
+/* Gene type (mt-tRNA / mt-rRNA) legend */
+#svg-container #gene-type-legend {
+    font-size: 12px;
+}
+
+/* Superscript in gene type legend */
+#svg-container #gene-type-legend tspan {
+    font-size: 9px;
+    vertical-align: top;
+}

@@ -6,10 +6,11 @@ class Mtte extends React.Component{
         
         return(
             <svg id="svg-container" height="500" width="500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
-                <text x='35' y='10' style={{fontSize:'17', fontFamily:"sans-serif",textAnchor:'start',fontWeight:'bold'}}>MT-TE</text>
-                <text x='35' y='35' style={{fontSize:'12', fontFamily:"sans-serif",textAnchor:'start',fontWeight:'bold'}}>mt-tRNA
-                    <tspan style={{fontSize:'9'}} baselineShift="super">Glu</tspan>
+                <text x='35' y='10' className='legend' id='gene-name-legend'>MT-TE</text>
+                <text x='35' y='35' className='legend' id='gene-type-legend'>mt-tRNA
+                    <tspan>Glu</tspan>
                 </text>
+
                 <text x="205" y="10">A<title></title> </text>
                 <text x="205" y="25">C<title></title> </text>
                 <text x="205" y="40">C<title></title> </text>
