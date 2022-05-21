@@ -11,6 +11,8 @@ import VarInput from './VarInput';
 import VarInfo from './VarInfo';
 import VarInfoTable from './VarInfoTable';
 
+import Citation from './Citation.js';
+
 import "./styles/VariantHighlight.css";
 import './styles/VisualizeOptions.css';
 
@@ -725,15 +727,7 @@ class RrnaSVG extends React.Component{
                             <button id='download-btn' onClick={this.handleClick}>Download Image</button>
                         </div>                            
 
-                        <p id="citation-note">
-                            If you use MitoVisualize, please cite
-                            "Lake NJ, Zhou L, Xu J, Lek M. MitoVisualize: a resource for analysis of variants 
-                            in human mitochondrial RNAs and DNA. Bioinformatics. 2022 May 13;38(10):2967-2969.&nbsp;
-                            <a href="https://academic.oup.com/bioinformatics/article-abstract/38/10/2967/6585389" target="_blank">
-                                doi: 10.1093/bioinformatics/btac216
-                            </a>.
-                            PMID: 35561159."
-                        </p>
+                        <Citation />
                     </div>
                 </div>    
                 <div id="right-container">

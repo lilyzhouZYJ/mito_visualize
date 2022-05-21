@@ -29,7 +29,19 @@ export const TRNA_GENES = [
 export const RRNA_GENES = [
     'MT-RNR1',
     'MT-RNR2'
-]
+];
+
+// List of genes on the reverse strand
+export const GENES_REVERSE_STRAND = [
+    "MT-TQ",
+    "MT-TA",
+    "MT-TN",
+    "MT-TC",
+    "MT-TY",
+    "MT-TS1",
+    "MT-TE",
+    "MT-TP"
+];
 
 // Match all genes to their respective regions
 export const ALL_GENE_COORDINATES = {

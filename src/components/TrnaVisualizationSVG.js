@@ -23,56 +23,54 @@ import Mttm from './tRNA/MT-TM';
 import Mttr from './tRNA/MT-TR';
 
 import VisualizeOptions from './VisualizeOptions';
+import Citation from './Citation';
+import { GENES_REVERSE_STRAND } from './params/params';
 import './styles/VisualizeOptions.css';
 
-//match each gene to its respective component
+// Match each gene to its respective component
 const RNAs = {
     'MT-TA': Mtta,
     'MT-TT': Mttt,
     'MT-TW': Mttw,
     'MT-TY': Mtty,
     'MT-TV': Mttv,
-    'MT-TS1':Mtts1,
-    'MT-TS2':Mtts2,
-    'MT-TP':Mttp,
-    'MT-TF':Mttf,
-    'MT-TK':Mttk,
-    'MT-TL1':Mttl1,
-    'MT-TL2':Mttl2,
-    'MT-TI':Mtti,
-    'MT-TH':Mtth,
-    'MT-TG':Mttg,
-    'MT-TQ':Mttq,
-    'MT-TE':Mtte,
-    'MT-TC':Mttc,
-    'MT-TD':Mttd,
-    'MT-TN':Mttn,
-    'MT-TM':Mttm,
-    'MT-TR':Mttr,
+    'MT-TS1': Mtts1,
+    'MT-TS2': Mtts2,
+    'MT-TP': Mttp,
+    'MT-TF': Mttf,
+    'MT-TK': Mttk,
+    'MT-TL1': Mttl1,
+    'MT-TL2': Mttl2,
+    'MT-TI': Mtti,
+    'MT-TH': Mtth,
+    'MT-TG': Mttg,
+    'MT-TQ': Mttq,
+    'MT-TE': Mtte,
+    'MT-TC': Mttc,
+    'MT-TD': Mttd,
+    'MT-TN': Mttn,
+    'MT-TM': Mttm,
+    'MT-TR': Mttr,
 };
 
-//genes on the reverse strand
-const reverseStrand = ["MT-TQ","MT-TA","MT-TN","MT-TC","MT-TY","MT-TS1","MT-TE","MT-TP"];
-
-//download SVG button setup
+// Download image button setup
 const saveSvgAsPng = require('save-svg-as-png')
 const defaultImageOptions = {
-  scale: 5,
-  encoderOptions: 1,
-  backgroundColor: 'white',
-  left: 5,
-  top: -20,
-  height: 380,
-  width: 350
+    scale: 5,
+    encoderOptions: 1,
+    backgroundColor: 'white',
+    left: 5,
+    top: -20,
+    height: 380,
+    width: 350
 }
 
 class TrnaVisualizationSVG extends React.Component{
 
-    //download svg
+    // Download image
     handleClick = () => {
         var fileName;
-        //fileName = this.props.gene;
-        var imageOptions
+        var imageOptions;
 
         if(document.getElementById('jpeg').checked){
             imageOptions = { ...defaultImageOptions, encoderType: 'image/jpeg'}            
@@ -82,13 +80,10 @@ class TrnaVisualizationSVG extends React.Component{
             imageOptions = { ...defaultImageOptions, encoderType: 'image/webp'}                        
             fileName = this.props.gene + ".webp"
         }
-
         else{
             imageOptions = { ...defaultImageOptions, encoderType: 'image/png'}                        
             fileName = this.props.gene + ".png"
         }
-
-
 
         saveSvgAsPng.saveSvgAsPng(document.getElementById('svg-container'), fileName, imageOptions);
     };
@@ -100,7 +95,6 @@ class TrnaVisualizationSVG extends React.Component{
     }
 
     render() {
-
         var gene = this.props.gene;
         var rnaType = this.props.rnaType;
        
@@ -111,7 +105,7 @@ class TrnaVisualizationSVG extends React.Component{
                 <div id="left-container">
                     <SvgComponent gene={gene} />
                     <ul id="notes">
-                        {reverseStrand.includes(gene) &&
+                        {GENES_REVERSE_STRAND.includes(gene) &&
                             <li>Note: {gene} is on the reverse strand.</li>
                         }
                         <li>Lines represent Watson-Crick (WC) base pairs, and dots non-WC pairs.</li>
@@ -141,15 +135,7 @@ class TrnaVisualizationSVG extends React.Component{
                         <button id='download-btn' onClick={this.handleClick}>Download Image</button>
                     </div>                            
                     
-                    <p id="citation-note">
-                        If you use MitoVisualize, please cite
-                        "Lake NJ, Zhou L, Xu J, Lek M. MitoVisualize: a resource for analysis of variants 
-                        in human mitochondrial RNAs and DNA. Bioinformatics. 2022 May 13;38(10):2967-2969.&nbsp;
-                        <a href="https://academic.oup.com/bioinformatics/article-abstract/38/10/2967/6585389" target="_blank">
-                            doi: 10.1093/bioinformatics/btac216
-                        </a>.
-                        PMID: 35561159."
-                    </p>
+                    <Citation />
                 </div>
                 <div id="right-container">
                     <VisualizeOptions gene={gene} rnaType={rnaType} />

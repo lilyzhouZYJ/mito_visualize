@@ -1,5 +1,7 @@
 import React from 'react';
 import { fetchVarInfo, fetchCoorInfo } from './fetch.js'
+import { GENES_REVERSE_STRAND } from './params/params.js';
+import Citation from './Citation.js';
 
 import Mtta from './tRNA/MT-TA';
 import Mttt from './tRNA/MT-TT';
@@ -57,9 +59,6 @@ const tRNAs = {
 };
 
 const pairs = {"A":"T", "T":"A", "G":"C", "C":"G"};
-
-//tRNA-coding genes on the reverse strand
-const reverseStrand = ["MT-TQ","MT-TA","MT-TN","MT-TC","MT-TY","MT-TS1","MT-TE","MT-TP"];
 
 //download SVG button setup
 const saveSvgAsPng = require('save-svg-as-png')
@@ -220,7 +219,7 @@ class TrnaSVG extends React.Component{
                 var initLetter = variant[variant.length-3];
                 var newLetter = variant[variant.length-1];
                 //if the gene is on the reverse strand
-                if(reverseStrand.includes(this.props.gene)){ 
+                if(GENES_REVERSE_STRAND.includes(this.props.gene)){ 
                     initLetter = pairs[initLetter];
                     newLetter = pairs[newLetter];
                 }
@@ -487,7 +486,7 @@ class TrnaSVG extends React.Component{
                     <div id="left-container">
                         <SvgComponent />
                         <ul id="notes">
-                            {reverseStrand.includes(gene) &&
+                            {GENES_REVERSE_STRAND.includes(gene) &&
                                     <li>Note: {gene} is on the reverse strand.</li>
                             }
                             <li>Lines represent Watson-Crick (WC) base pairs, and dots non-WC pairs.</li>
@@ -516,15 +515,7 @@ class TrnaSVG extends React.Component{
                             <button id='download-btn' onClick={this.handleClick}>Download Image</button>
                         </div>                            
 
-                        <p id="citation-note">
-                            If you use MitoVisualize, please cite
-                            "Lake NJ, Zhou L, Xu J, Lek M. MitoVisualize: a resource for analysis of variants 
-                            in human mitochondrial RNAs and DNA. Bioinformatics. 2022 May 13;38(10):2967-2969.&nbsp;
-                            <a href="https://academic.oup.com/bioinformatics/article-abstract/38/10/2967/6585389" target="_blank">
-                                doi: 10.1093/bioinformatics/btac216
-                            </a>.
-                            PMID: 35561159."
-                        </p>
+                        <Citation />
                     </div>
                     <div id="right-container">
                         <VarInput handleVarSubmit={this.handleVarSubmit} gene={gene} variant={this.props.variant}/>
@@ -544,7 +535,7 @@ class TrnaSVG extends React.Component{
                     <div id="left-container">
                         <SvgComponent />
                         <ul id="notes">
-                            {reverseStrand.includes(gene) &&
+                            {GENES_REVERSE_STRAND.includes(gene) &&
                                     <li>Note: {gene} is on the reverse strand.</li>
                             }
                             <li>Lines represent Watson-Crick (WC) base pairs, and dots non-WC pairs.</li>
@@ -573,15 +564,7 @@ class TrnaSVG extends React.Component{
                             <button id='download-btn' onClick={this.handleClick}>Download Image</button>
                         </div>                            
 
-                        <p id="citation-note">
-                            If you use MitoVisualize, please cite
-                            "Lake NJ, Zhou L, Xu J, Lek M. MitoVisualize: a resource for analysis of variants 
-                            in human mitochondrial RNAs and DNA. Bioinformatics. 2022 May 13;38(10):2967-2969.&nbsp;
-                            <a href="https://academic.oup.com/bioinformatics/article-abstract/38/10/2967/6585389" target="_blank">
-                                doi: 10.1093/bioinformatics/btac216
-                            </a>.
-                            PMID: 35561159."
-                        </p>
+                        <Citation />
                     </div>
                     <div id="right-container">
                         <VarInput handleVarSubmit={this.handleVarSubmit} gene={gene}/>
@@ -595,7 +578,7 @@ class TrnaSVG extends React.Component{
                     <div id="left-container">
                         <SvgComponent />
                         <ul id="notes">
-                            {reverseStrand.includes(gene) &&
+                            {GENES_REVERSE_STRAND.includes(gene) &&
                                     <li>Note: {gene} is on the reverse strand.</li>
                             }
                             <li>Lines represent Watson-Crick (WC) base pairs, and dots non-WC pairs.</li>
@@ -624,16 +607,7 @@ class TrnaSVG extends React.Component{
                             <button id='download-btn' onClick={this.handleClick}>Download Image</button>
                         </div>                            
 
-
-                        <p id="citation-note">
-                            If you use MitoVisualize, please cite
-                            "Lake NJ, Zhou L, Xu J, Lek M. MitoVisualize: a resource for analysis of variants 
-                            in human mitochondrial RNAs and DNA. Bioinformatics. 2022 May 13;38(10):2967-2969.&nbsp;
-                            <a href="https://academic.oup.com/bioinformatics/article-abstract/38/10/2967/6585389" target="_blank">
-                                doi: 10.1093/bioinformatics/btac216
-                            </a>.
-                            PMID: 35561159."
-                        </p>
+                        <Citation />
                     </div>
                     <div id="right-container">
                         <VarInput handleVarSubmit={this.handleVarSubmit} gene={gene}/>
