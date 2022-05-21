@@ -4,6 +4,7 @@ import './styles/VisualizeOptions.css';
 import loadGif from './images/loading.gif';
 // Loading GIF from: https://gifimage.net/loading-text-gif-14/
 
+/* List of options for visualizing information on RNA structure */
 
 // Stores fetched data into the following variables
 var hasHgroup = [];                     // associated with haplogroups
