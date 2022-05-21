@@ -67,3 +67,20 @@ export const RNA_GENE_COORDINATES = {
     'MT-TT': [15888,15953],
     'MT-TP': [15956,16023],
 };
+
+// Match all protein-encoding genes to their respective regions
+export const PROTEIN_GENE_COORDINATES = {
+    'MT-ND1':[3307,4262],
+    'MT-ND2':[4470,5511],
+    'MT-CO1':[5904,7445],
+    'MT-CO2':[7586,8269],
+    'MT-ATP8':[8366,8572],
+    'MT-ATP6':[8527,9207],
+    'MT-CO3':[9207,9990],
+    'MT-ND3':[10059,10404],
+    'MT-ND4L':[10470,10766],
+    'MT-ND4':[10760,12137],
+    'MT-ND5': [12337,14148],
+    'MT-ND6': [14149,14673],
+    'MT-CYB': [14747,15887],
+};
