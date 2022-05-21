@@ -1,3 +1,36 @@
+
+// List of all tRNA genes
+export const TRNA_GENES = [
+    'MT-TA',
+    'MT-TT',
+    'MT-TW',
+    'MT-TY',
+    'MT-TV',
+    'MT-TS1',
+    'MT-TS2',
+    'MT-TP',
+    'MT-TF',
+    'MT-TK',
+    'MT-TL1',
+    'MT-TL2',
+    'MT-TI',
+    'MT-TH',
+    'MT-TG',
+    'MT-TQ',
+    'MT-TE',
+    'MT-TC',
+    'MT-TD',
+    'MT-TN',
+    'MT-TM',
+    'MT-TR'
+];
+
+// List of all rRNA genes
+export const RRNA_GENES = [
+    'MT-RNR1',
+    'MT-RNR2'
+]
+
 // Match all genes to their respective regions
 export const ALL_GENE_COORDINATES = {
     'MT-TF': [577,647],
