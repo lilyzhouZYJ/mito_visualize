@@ -7,39 +7,11 @@ import RrnaPage from './RrnaPage';
 import GeneTool from './GeneTool';
 import TrnaSVG from './TrnaSVG';
 import RrnaSVG from './RrnaSVG';
-import GeneDropDown from './GeneDropDown';
 import VisualizationPage from './VisualizationPage';
 import TrnaVisualizationSVG from './TrnaVisualizationSVG';
 import RrnaVisualizationSVG from './RrnaVisualizationSVG';
-
 import { Page, PageHeading } from './Page'
-
-const loc = {   //list of all RNAs with their respective genomic coordinates
-    'MT-TF': [577,647],
-    'MT-RNR1': [648,1601],
-    'MT-TV':  [1602,1670],
-    'MT-RNR2':[1671, 3229],
-    'MT-TL1':[3230, 3304],
-    'MT-TI':[4263,4331],
-    'MT-TQ':[4329,4400],
-    'MT-TM':[4402,4469],
-    'MT-TW':[5512,5579],
-    'MT-TA':[5587,5655],
-    'MT-TN':[5657,5729],
-    'MT-TC':[5761,5826],
-    'MT-TY':[5826,5891],
-    'MT-TS1':[7446,7514],
-    'MT-TD':[7518,7585],
-    'MT-TK':[8295,8364],
-    'MT-TG':[9991,10058],
-    'MT-TR':[10405,10469],
-    'MT-TH':[12138,12206],
-    'MT-TS2': [12207,12265],
-    'MT-TL2': [12266,12336],
-    'MT-TE': [14674,14742],
-    'MT-TT': [15888,15953],
-    'MT-TP': [15956,16023],
-};
+import { RNA_GENE_COORDINATES } from './params/params.js';
 
 
 // list of all protein-coding genes
@@ -145,8 +117,8 @@ export default function Routes() {
               var variantCor = variant_reformat.replace(/\D/g, "")
 
               var newGene = null;
-              for(var key in loc){
-                  if(variantCor>=loc[key][0]&&variantCor<=loc[key][1]){
+              for(var key in RNA_GENE_COORDINATES){
+                  if(variantCor>=RNA_GENE_COORDINATES[key][0]&&variantCor<=RNA_GENE_COORDINATES[key][1]){
                       newGene = key;
                   }
               }

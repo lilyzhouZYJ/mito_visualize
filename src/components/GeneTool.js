@@ -1,49 +1,8 @@
 import React from 'react';
 import './styles/GeneTool.css';
+import { ALL_GENE_COORDINATES } from './params/params.js';
 
 const saveSvgAsPng = require('save-svg-as-png');
-
-//match each gene to its respective region
-var dict = {
-    'MT-TF': [577,647],
-    'MT-RNR1': [648,1601],
-    'MT-TV':  [1602,1670],
-    'MT-RNR2':[1671, 3229],
-    'MT-TL1':[3230, 3304],
-    'MT-ND1':[3307,4262],
-    'MT-TI':[4263,4331],
-    'MT-TQ':[4329,4400],
-    'MT-TM':[4402,4469],
-    'MT-ND2':[4470,5511],
-    'MT-TW':[5512,5579],
-    'MT-TA':[5587,5655],
-    'MT-TN':[5657,5729],
-    'MT-TC':[5761,5826],
-    'MT-TY':[5826,5891],
-    'MT-CO1':[5904,7445],
-    'MT-TS1':[7446,7514],
-    'MT-TD':[7518,7585],
-    'MT-CO2':[7586,8269],
-    'MT-TK':[8295,8364],
-    'MT-ATP8':[8366,8572],
-    'MT-ATP6':[8527,9207],
-    'MT-CO3':[9207,9990],
-    'MT-TG':[9991,10058],
-    'MT-ND3':[10059,10404],
-    'MT-TR':[10405,10469],
-    'MT-ND4L':[10470,10766],
-    'MT-ND4':[10760,12137],
-    'MT-TH':[12138,12206],
-    'MT-TS2': [12207,12265],
-    'MT-TL2': [12266,12336],
-    'MT-ND5': [12337,14148],
-    'MT-ND6': [14149,14673],
-    'MT-TE': [14674,14742],
-    'MT-CYB': [14747,15887],
-    'MT-TT': [15888,15953],
-    'MT-TP': [15956,16023],
-};
-
 
 class GeneTool extends React.Component{
 
@@ -276,7 +235,7 @@ class GeneTool extends React.Component{
          * Text Labels
          **************/
         
-        for (const [key, value] of Object.entries(dict)) {
+        for (const [key, value] of Object.entries(ALL_GENE_COORDINATES)) {
 
             var textPos = (value[0]+value[1])/2;
             var textAngle = -textPos/16569*2*Math.PI-Math.PI/2;  //text angle in radians
@@ -358,7 +317,7 @@ class GeneTool extends React.Component{
     handleSubmitGene = (e) => {
         e.preventDefault();
         var newGene = document.getElementById('gene-name').value;
-        var newPos = dict[newGene];
+        var newPos = ALL_GENE_COORDINATES[newGene];
 
         this.removeHighlights();
 
@@ -510,10 +469,10 @@ class GeneTool extends React.Component{
 
             //get genes within the inputed region
             var genes = [];
-            for (var g in dict){
-                if(startCoor<=dict[g][0] && endCoor>=dict[g][1]){ genes.push(g) }
-                else if(startCoor>=dict[g][0] && startCoor<=dict[g][1]) { genes.push(g) }
-                else if(endCoor>=dict[g][0] && endCoor<=dict[g][1]) { genes.push(g) }
+            for (var g in ALL_GENE_COORDINATES){
+                if(startCoor<=ALL_GENE_COORDINATES[g][0] && endCoor>=ALL_GENE_COORDINATES[g][1]){ genes.push(g) }
+                else if(startCoor>=ALL_GENE_COORDINATES[g][0] && startCoor<=ALL_GENE_COORDINATES[g][1]) { genes.push(g) }
+                else if(endCoor>=ALL_GENE_COORDINATES[g][0] && endCoor<=ALL_GENE_COORDINATES[g][1]) { genes.push(g) }
             }
 
             // add text label in the middle of circle
