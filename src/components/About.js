@@ -58,21 +58,21 @@ class About extends React.Component {
 		<b>Variant data & API:</b><br />
         The variant annotations can be downloaded in tsv format via the ‘Download Variant Data’ button at the bottom of each variant page. <br /><br />
         MitoVisualize allows users to access its processed data directly via the <a href="https://mitovisualize.org/api" target="_blank">GraphQL interface</a>. 
-        It allows for queries using mtDNA coordinate (example: <code>coordinate(var_coordinate:2492)</code>), variant ID (example: <code>variant(var_id:"m.5618T>A")</code>), or gene name (example: <code>gene(gene: "MT-TA")</code>). 
+        It allows for queries using mtDNA coordinate (example: <code>coordinate(var_coordinate:2492)</code>), variant ID (example: <code>variant(var_id:"m.5618T&gt;A")</code>), or gene name (example: <code>gene(gene: "MT-TA")</code>). 
         To access specific fields, add the field name to the query (example: <code>post_transcription_modifications</code>). 
         A complete list of fields can be found on the GraphQL interface in the Documentation Explorer in the top-right corner. 
         The query output is in JSON format which allows for easy parsing.
         <br />
 
-        Example: The user may search for the variant with ID "m.5618T>C" in the following format:
+        Example: The user may search for the variant with ID "m.5618T&gt;C" in the following format:
         <br /><br />
         <pre style={{marginLeft: "2rem"}}>
           <code>
-            variant(var_id:"m.5618T>C")&#123;<br />&#9;gene<br />&#9;domain<br />&#9;pop_freq_gnomad_ac_hom<br />&#9;prediction_mitotip_category<br />&#125;
+            variant(var_id:"m.5618T&gt;C")&#123;<br />&#9;gene<br />&#9;domain<br />&#9;pop_freq_gnomad_ac_hom<br />&#9;prediction_mitotip_category<br />&#125;
           </code>
         </pre>
 
-        The query indicates that the user is searching for data about the variant m.5618T>C, and is looking for its 
+        The query indicates that the user is searching for data about the variant m.5618T&gt;C, and is looking for its 
         gene, domain, homoplasmic allele count in gnomAD, and in silico prediction based on MitoTip. 
 
         The query will render the following result:
