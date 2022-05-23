@@ -1,14 +1,18 @@
 import React from 'react';
-import Mtrnr1 from './rRNA/MT-RNR1';
-import Mtrnr2 from './rRNA/MT-RNR2';
 
+/**
+ * Displays SVGs for rRNA genes and visualization options.
+ */
+
+import Mtrnr1 from '../RrnaSVGs/MT-RNR1';
+import Mtrnr2 from '../RrnaSVGs/MT-RNR2';
 import VisualizeOptions from './VisualizeOptions';
-import Citation from './Citation';
-import './styles/VisualizeOptions.css';
+import Citation from '../Citation';
+import '../styles/VisualizeOptions.css';
 
 const saveSvgAsPng = require('save-svg-as-png');
 
-//match each gene to its respective component
+// Match each gene to its respective component
 const RNAs = {
     'MT-RNR1': Mtrnr1,
     'MT-RNR2': Mtrnr2
@@ -17,68 +21,19 @@ const RNAs = {
 class RrnaVisualizationSVG extends React.Component{
 
     componentDidMount(){
-        
+        // Adjust container for MT-RNR2
         if(this.props.gene=="MT-RNR2"){
             document.getElementById('rrna-svg-container').setAttribute("height","650");
             document.getElementById('rrna-svg-container').setAttribute("width","800");
 
-            // for svg to not overlap with right container
+            // make sure svg does not overlap with right container
             document.getElementById('left-container').style.minWidth = "800px";
         }
-        
     }
 
-
-    //download svg
+    // Download svg
     handleClick = () => {
         var fileName = "";
-        /*
-        if(this.props.gene=="MT-RNR1"){
-
-            
-            var imageOptions = {
-                scale: 9,
-                encoderOptions: 1,
-                backgroundColor: 'white',
-                left: 5,
-                top: 10,
-                width: 950,
-                height: 1000
-            }
-            
-
-            var imageOptions = {
-                backgroundColor: 'white',
-                //encoderType: 'image/jpeg'
-            }
-
-
-        } else {
-
-            var imageOptions = {
-                backgroundColor: 'white',
-                //encoderType: 'image/jpeg'
-            }
-
-
-            
-            var imageOptions = {
-                scale: 4,
-                encoderOptions: 1,
-                backgroundColor: 'white',
-                left: 100,
-                top: 30,
-                width: 2880,
-                height: 1974
-            }
-            
-        }
-        
-        */
-
-
-        //fileName = this.props.gene;
-        //fileName = this.props.gene + ".jpeg"
 
         if(document.getElementById('jpeg').checked){
 
@@ -114,21 +69,15 @@ class RrnaVisualizationSVG extends React.Component{
 
         }
 
-        console.log("In rna-visualization button click");
-        console.log(this.props.gene)
-        console.log(imageOptions)
-
         if(this.props.gene == "MT-RNR1"){
             //Previously scale: 9
             //width: 950,height: 1000
-
             saveSvgAsPng.saveSvgAsPng(document.getElementById('rrna-svg-container'), fileName, {...imageOptions, scale: 4 });
         }
         else{
             //Previously scale: 4
             saveSvgAsPng.saveSvgAsPng(document.getElementById('rrna-svg-container'), fileName, {...imageOptions, scale: 2 });
         }
-
     };
 
     render() {

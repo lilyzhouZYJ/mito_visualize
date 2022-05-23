@@ -1,10 +1,10 @@
 import React from 'react';
 import { fetchVarInfo, fetchCoorInfo } from '../fetch.js'
 
-import Mtrnr1 from '../rRNA/MT-RNR1';
-import Mtrnr1Zoom from '../rRNA/MT-RNR1-zoom';
-import Mtrnr2 from '../rRNA/MT-RNR2';
-import Mtrnr2Zoom from '../rRNA/MT-RNR2-zoom';
+import Mtrnr1 from '../RrnaSVGs/MT-RNR1.js';
+import Mtrnr1Zoom from '../RrnaSVGs/MT-RNR1-zoom.js';
+import Mtrnr2 from '../RrnaSVGs/MT-RNR2.js';
+import Mtrnr2Zoom from '../RrnaSVGs/MT-RNR2-zoom.js';
 import VarInput from '../VarInput';
 import VarInfo from '../VarInfo';
 import VarInfoTable from '../VarInfoTable';

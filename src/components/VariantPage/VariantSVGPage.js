@@ -33,10 +33,10 @@ import Mttm from '../TrnaSVGs/MT-TM.js';
 import Mttr from '../TrnaSVGs/MT-TR.js';
 
 /* Import rRNA SVG components */
-import Mtrnr1 from '../rRNA/MT-RNR1';
-import Mtrnr1Zoom from '../rRNA/MT-RNR1-zoom';
-import Mtrnr2 from '../rRNA/MT-RNR2';
-import Mtrnr2Zoom from '../rRNA/MT-RNR2-zoom';
+import Mtrnr1 from '../RrnaSVGs/MT-RNR1';
+import Mtrnr1Zoom from '../RrnaSVGs/MT-RNR1-zoom';
+import Mtrnr2 from '../RrnaSVGs/MT-RNR2';
+import Mtrnr2Zoom from '../RrnaSVGs/MT-RNR2-zoom';
 
 /* Styling */
 import '../styles/VariantHighlight.css';

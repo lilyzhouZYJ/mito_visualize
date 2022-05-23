@@ -1,5 +1,9 @@
 import React from 'react';
 
+/**
+ * Displays a table of information on the variant.
+ */
+
 class VarInfoTable extends React.Component{
 
     checkboxChanged = () => {
@@ -8,7 +12,7 @@ class VarInfoTable extends React.Component{
         } else {
             document.getElementById('expanded-label').innerHTML = 'Show less';
         }
-    }    
+    }
 
     render() {   
     
@@ -153,8 +157,7 @@ class VarInfoTable extends React.Component{
                 </table>
             )
         }
-    }
-    
+    }   
 }
 
 export default VarInfoTable;

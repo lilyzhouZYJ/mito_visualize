@@ -1,31 +1,36 @@
 import React from 'react';
-import Mtta from './TrnaSVGs/MT-TA';
-import Mttt from './TrnaSVGs/MT-TT';
-import Mtty from './TrnaSVGs/MT-TY';
-import Mttw from './TrnaSVGs/MT-TW';
-import Mttv from './TrnaSVGs/MT-TV';
-import Mtts1 from './TrnaSVGs/MT-TS1';
-import Mtts2 from './TrnaSVGs/MT-TS2';
-import Mttp from './TrnaSVGs/MT-TP';
-import Mttf from './TrnaSVGs/MT-TF';
-import Mttk from './TrnaSVGs/MT-TK';
-import Mttl1 from './TrnaSVGs/MT-TL1';
-import Mttl2 from './TrnaSVGs/MT-TL2';
-import Mtti from './TrnaSVGs/MT-TI';
-import Mtth from './TrnaSVGs/MT-TH';
-import Mttg from './TrnaSVGs/MT-TG';
-import Mttq from './TrnaSVGs/MT-TQ';
-import Mtte from './TrnaSVGs/MT-TE';
-import Mttc from './TrnaSVGs/MT-TC';
-import Mttd from './TrnaSVGs/MT-TD';
-import Mttn from './TrnaSVGs/MT-TN';
-import Mttm from './TrnaSVGs/MT-TM';
-import Mttr from './TrnaSVGs/MT-TR';
+
+/**
+ * Displays SVGs for tRNA genes and visualization options.
+ */
+
+import Mtta from '../TrnaSVGs/MT-TA';
+import Mttt from '../TrnaSVGs/MT-TT';
+import Mtty from '../TrnaSVGs/MT-TY';
+import Mttw from '../TrnaSVGs/MT-TW';
+import Mttv from '../TrnaSVGs/MT-TV';
+import Mtts1 from '../TrnaSVGs/MT-TS1';
+import Mtts2 from '../TrnaSVGs/MT-TS2';
+import Mttp from '../TrnaSVGs/MT-TP';
+import Mttf from '../TrnaSVGs/MT-TF';
+import Mttk from '../TrnaSVGs/MT-TK';
+import Mttl1 from '../TrnaSVGs/MT-TL1';
+import Mttl2 from '../TrnaSVGs/MT-TL2';
+import Mtti from '../TrnaSVGs/MT-TI';
+import Mtth from '../TrnaSVGs/MT-TH';
+import Mttg from '../TrnaSVGs/MT-TG';
+import Mttq from '../TrnaSVGs/MT-TQ';
+import Mtte from '../TrnaSVGs/MT-TE';
+import Mttc from '../TrnaSVGs/MT-TC';
+import Mttd from '../TrnaSVGs/MT-TD';
+import Mttn from '../TrnaSVGs/MT-TN';
+import Mttm from '../TrnaSVGs/MT-TM';
+import Mttr from '../TrnaSVGs/MT-TR';
 
 import VisualizeOptions from './VisualizeOptions';
-import Citation from './Citation';
-import { GENES_REVERSE_STRAND } from './params/params';
-import './styles/VisualizeOptions.css';
+import Citation from '../Citation';
+import { GENES_REVERSE_STRAND } from '../params/params';
+import '../styles/VisualizeOptions.css';
 
 // Match each gene to its respective component
 const RNAs = {
@@ -142,8 +147,7 @@ class TrnaVisualizationSVG extends React.Component{
                 </div>
             </div>
         )
-    }
-    
+    }   
 }
 
 export default TrnaVisualizationSVG;

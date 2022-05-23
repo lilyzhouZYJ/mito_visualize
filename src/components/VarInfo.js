@@ -1,6 +1,10 @@
 import React from 'react';
 import loadGif from './images/loading.gif';
-// image from: https://gifimage.net/loading-text-gif-14/
+// gif from: https://gifimage.net/loading-text-gif-14/
+
+/**
+ * Displays one-sentence description of the variant.
+ */
 
 class VarInfo extends React.Component{
 
@@ -19,12 +23,12 @@ class VarInfo extends React.Component{
                 <div id='var-info'>
                     {dom != null ?
                        <div>
-                           This variant in the {this.props.gene} gene results in a {initLetter}>{newLetter} change in the {dom} domain of the {this.props.rnaType}{wc}.
+                           This variant in the {this.props.gene} gene results in a {initLetter}&gt;{newLetter} change in the {dom} domain of the {this.props.rnaType}{wc}.
                            <div className="help-tip">
                                <p>Structural domains are per <a href="https://pubmed.ncbi.nlm.nih.gov/17585048/" target="_blank">Putz et al 2007</a>, following the tRNA numbering conversion table on <a href="http://mamit-trna.u-strasbg.fr/Summary.asp" target="_blank">Mamit-tRNA</a>.</p>
                            </div>
                        </div>
-                       : <p>This variant in the {this.props.gene} gene results in a {initLetter}>{newLetter} change in the {this.props.rnaType}{wc}.</p>
+                       : <p>This variant in the {this.props.gene} gene results in a {initLetter}&gt;{newLetter} change in the {this.props.rnaType}{wc}.</p>
                     }
                 </div>
             ) 

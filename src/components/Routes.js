@@ -7,9 +7,9 @@ import About from './About';
 import GeneTool from './GeneTool';
 import VariantPage from './VariantPage/VariantPage';
 import VariantSVGPage from './VariantPage/VariantSVGPage';
-import VisualizationPage from './VisualizationPage';
-import TrnaVisualizationSVG from './TrnaVisualizationSVG';
-import RrnaVisualizationSVG from './RrnaVisualizationSVG';
+import VisualizationPage from './GenePage/VisualizationPage';
+import TrnaVisualizationSVG from './GenePage/TrnaVisualizationSVG';
+import RrnaVisualizationSVG from './GenePage/RrnaVisualizationSVG';
 import { Page, PageHeading } from './Page'
 import { RNA_GENE_COORDINATES, PROTEIN_GENE_COORDINATES } from './params/params.js';
 
