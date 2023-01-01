@@ -16,7 +16,7 @@
     "graphql": "^15.5.2",
     "lodash": "^4.17.21",
     "nodemon": "^2.0.12",
-    "webpack": "^4.46.0",
-    "webpack-cli": "^3.3.12"
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1"
   }
 }
